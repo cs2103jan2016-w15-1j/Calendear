@@ -16,6 +16,8 @@ class Task {
 	private GregorianCalendar endTime;
 	private String location;
 	private String note;
+	private boolean isImportant;
+	private boolean isFinished = false;
 	
 	public Task(String name) {
 		type = TASK_TYPE.FLOATING;
@@ -67,6 +69,14 @@ class Task {
 		return note;
 	}
 	
+	public boolean isImportant(){
+		return isImportant;
+	}
+	
+	public boolean isFinished(){
+		return isFinished;
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -89,6 +99,14 @@ class Task {
 	
 	public void writeNote(String note){
 		this.note = note;
+	}
+	
+	public void markImportant(boolean isImportant){
+		this.isImportant = isImportant;
+	}
+	
+	public void setIsFinished(boolean isFinished){
+		this.isFinished = isFinished;
 	}
 	
 }
