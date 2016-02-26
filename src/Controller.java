@@ -1,10 +1,8 @@
 import calendear.action.Action;
 import calendear.util.CommandAdd;
 import calendear.storage.DataManager;
-import calendear.util.Task;
-import calendear.util.Command;
-import calendear.util.Parser;
-import calendear.util.CMD_TYPE;
+import calendear.util.*;
+import calendear.view.View;
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -18,10 +16,11 @@ public class Controller {
 	public static void main(String[] args) {
 		String nameOfFile = args[0];
 		
-//		Create or set file
 		createOrFindFile(nameOfFile);
 
-//		instantiateOrPopulateTasks();
+		instantiateOrPopulateTasks();
+		
+		View.displayWelcome();
 		
 		repl();
 	}
@@ -39,6 +38,8 @@ public class Controller {
 	    _scanner = new Scanner(System.in);
 
 	    while(true) {
+	    	View.displayRequestForInput();
+	    	
 	    	String userCommand = _scanner.nextLine();
 	    	
 //	    	Parse Tokens
@@ -46,25 +47,38 @@ public class Controller {
 //	    	Do Actions
 	    	switch(command.getType()) {
 	    		case ADD: Task addedTask = _action.exeAdd((CommandAdd) command);
+	    				  View.displayAdd(addedTask);
 	    				  break;
-	    		case DISPLAY: 
-	    				break;
-	    		case DELETE:
-	    				break;
-	    		case UPDATE:
-	    				break;
+	    		case DISPLAY: ArrayList<Task> tasks = _action.exeDisplay((CommandDisplay) command);
+	    					  View.displayDisplay(tasks);
+	    					  break;
+	    		
+	    		case DELETE:  Task deletedTask = _action.exeDelete((CommandDelete) command);
+	    					  View.displayDelete(deletedTask);
+	    					  break;
+	    		
+	    		case UPDATE:  Task updatedTask = _action.exeUpdate((CommandUpdate) command);
+	    					  View.displayUpdate(updatedTask);
+	    					  break;
+	    		
 	    		case SEARCH:
 	    				break;
+	    		
 	    		case MARK:
 	    				break;
+	    		
 	    		case TAG:
 	    				break;
+	    		
 	    		case LINK_GOOGLE:
 	    				break;
+	    		
 	    		case DONE:
 	    				break;
-	    		case EXIT:
-	    				break;
+	    		
+	    		case EXIT:  View.displayExit();
+	    					System.exit(0);
+	    					break;
 	    		default:
 	    				break;
 	    	}
