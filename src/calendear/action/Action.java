@@ -18,7 +18,6 @@ public class Action {
 	private Stack<Command> _previousCommand;
 	private DataManager _dm; 
 	
-	
 	//constructor
 	/**
 	 * default constructor, not used.
