@@ -8,17 +8,16 @@ import calendear.util.Task;
 
 public class Action {
 	private LinkedList<Task> data_;
-	private Stack<Command> previousData_;//last in first out
+	private Stack<HistoryState> previousData_;//last in first out
 	
 	//constructor
 	public Action(){
 		data_ = new LinkedList<Task>();
-		previousData_ = new Stack<Command>();
+		previousData_ = new Stack<HistoryState>();
 	}
 	
 	public void add(Task t){
 		data_.add(t);
-		previousData_.push(new CommandAdd(t));
 	}
 	/**
 	 * remove task with id

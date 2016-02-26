@@ -2,18 +2,18 @@ package calendear.command;
 
 import calendear.util.*;
 
-public class CommandState {
+public class HistoryState {
 	private Task beforeModification_;
 	private CMD_TYPE t_;
 	private int taskId_;
 	
-	public CommandState(Task newTask, CMD_TYPE ty){
+	public HistoryState(Task newTask, CMD_TYPE ty){
 		beforeModification_ = newTask;
 		t_ = ty;
 		//taskId_ = newTask.getId();
 	}
 	
-	public CommandState(CMD_TYPE ty, int id){// for add
+	public HistoryState(CMD_TYPE ty, int id){// for add
 		//id
 		taskId_ = id;
 	}
