@@ -44,7 +44,7 @@ public class Action {
 	 * @param c
 	 * @return
 	 */
-	public Task add(CommandAdd c){
+	public Task exeAdd(CommandAdd c){
 		Task addedTask = c.getTask();
 		_data.add(addedTask);
 		c.setTask(null);
@@ -56,7 +56,7 @@ public class Action {
 	 * remove task with id
 	 * @param id
 	 */
-	public Task delete(CommandDelete c){
+	public Task exeDelete(CommandDelete c){
 		int id = c.getIndex();
 		Task t = _data.get(id);
 		_data.set(id, null);
@@ -67,7 +67,7 @@ public class Action {
 	}
 
 
-	public Task update(CommandUpdate c){
+	public Task exeUpdate(CommandUpdate c){
 		String newName = c.getNewName();
 		int id = c.getIndex();
 		Task toBeModified = _data.get(id);
@@ -82,7 +82,7 @@ public class Action {
 	 * @param c
 	 * @return arrayList containing tasks to show, all null elements should not be shown
 	 */
-	public ArrayList<Task> display(CommandDisplay c){
+	public ArrayList<Task> exeDisplay(CommandDisplay c){
 		if(c.isOnlyImportantDisplayed()){
 			//prepares an arraylist where all non important tasks are represented as null
 			ArrayList<Task> imp = new ArrayList<Task>();
@@ -100,19 +100,19 @@ public class Action {
 		}
 	}
 	
-	public void search(String str){
+	public void exeSearch(String str){
 		
 	}
 	
-	public void undo(){
+	public void exeUndo(){
 		
 	}
 	
-	public void tag(){
+	public void exeTag(){
 		
 	}
 	
-	public void mark(){
+	public void exeMark(){
 		
 	}
 }
