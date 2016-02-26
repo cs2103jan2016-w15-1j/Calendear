@@ -1,30 +1,37 @@
 package calendear.util;
 
 public abstract class Command {
-	
+	private Task previousTask;
+
 	protected CMD_TYPE type;
 	
 	public CMD_TYPE getType(){
 		return type;
 	}
-
-	
+	public Task getTask(){
+		return previousTask;
+	}
+	public void setTask(Task t){
+		previousTask = t;
+	}
 }
 
 class CommandAdd extends Command {
 	
-	private Task task;
+	private Task addedTask;
 	
 	public CommandAdd(Task task){
 		type = CMD_TYPE.ADD;
-		this.task = task;
+		this.addedTask = task;
 	}
 	
 	public Task getTask(){
-		return task;
+		return addedTask;
 	}
 	
-	
+	public void setTask(Task t){
+		this.addedTask = t;
+	}
 	
 }
 
@@ -61,6 +68,8 @@ class CommandUpdate extends Command {
 	public String getNewName(){
 		return newName;
 	}
+	
+	//update may not be only update name, should store task instead
 	
 }
 

@@ -26,29 +26,45 @@ public class Action {
 	
 	public Action(ArrayList<Task> tasks) {
 		_data = tasks;
+		_previousData = new Stack<Command>();
+		_previousCommand = new Stack<Command>();
 	}
-	
-	public void add(Command c){
+	/**
+	 * returns the task that was added.
+	 * id is arrayList.size() - 1
+	 * @param c
+	 * @return
+	 */
+	public Task add(Command c){
 		Task addedTask = c.getTask();
-		
+		_data.add(addedTask);
+		c.setTask(null);
+		_previousData.push(c);
+		return addedTask;
 	}
 	/**
 	 * remove task with id
 	 * @param id
 	 */
-	public void delete(Command c){
-		//data_.remove(id);
+	public Task delete(Command c){
+		int id = c.getIndex();
+		Task t = _data.get(id);
+		c.setTask(t);
+		_previousData.push(c);
+		return t;
 	}
-	/**
-	 * TODO
-	 * @param id
-	 */
-	public void update(int id){
-		
+
+
+	public void update(Command c){
+		String newName = c.getNewName();
+		int id = c.getIndex();
+		Task toBeModified = _data.get(id);
+		String oldName = toBeModified.getName();
+		//TODO
 	}
 	
-	public void display(){
-		
+	public ArrayList display(){
+		return _data;
 	}
 	
 	public void search(String str){
@@ -67,3 +83,5 @@ public class Action {
 		
 	}
 }
+
+
