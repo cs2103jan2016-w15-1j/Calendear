@@ -17,6 +17,10 @@ public class Action {
 		previousData_ = new Stack<HistoryState>();
 	}
 	
+	public Action(ArrayList<Task> tasks) {
+		
+	}
+	
 	public void add(Task t){
 		data_.add(t);
 	}
