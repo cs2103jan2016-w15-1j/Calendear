@@ -45,7 +45,7 @@ public class Controller {
 	    	Command command = Parser.parse(userCommand);
 //	    	Do Actions
 	    	switch(command.getType()) {
-	    		case ADD: Task addedTask = _action.add((CommandAdd) command);
+	    		case ADD: Task addedTask = _action.exeAdd((CommandAdd) command);
 	    				  break;
 	    		case DISPLAY: 
 	    				break;
