@@ -6,6 +6,7 @@ import java.util.Stack;
 import calendear.util.Command;
 import calendear.util.CMD_TYPE;
 import calendear.util.Task;
+import calendear.storage.DataManager;
 /**
  * 
  * @author Wu XiaoXiao
@@ -15,6 +16,7 @@ public class Action {
 	private ArrayList<Task> _data;
 	private Stack<Command> _previousData;//last in first out
 	private Stack<Command> _previousCommand;
+	private DataManager _dm; 
 	
 	
 	//constructor
@@ -24,10 +26,11 @@ public class Action {
 		_previousCommand = new Stack<Command>();
 	}
 	
-	public Action(ArrayList<Task> tasks) {
+	public Action(ArrayList<Task> tasks, DataManager dm) {
 		_data = tasks;
 		_previousData = new Stack<Command>();
 		_previousCommand = new Stack<Command>();
+		_dm = dm;
 	}
 	/**
 	 * returns the task that was added.
@@ -40,6 +43,7 @@ public class Action {
 		_data.add(addedTask);
 		c.setTask(null);
 		_previousData.push(c);
+		_dm.updateData(_data);
 		return addedTask;
 	}
 	/**
@@ -49,8 +53,10 @@ public class Action {
 	public Task delete(Command c){
 		int id = c.getIndex();
 		Task t = _data.get(id);
+		_data.set(id, null);
 		c.setTask(t);
 		_previousData.push(c);
+		_dm.updateData(_data);
 		return t;
 	}
 
@@ -63,8 +69,17 @@ public class Action {
 		//TODO
 	}
 	
-	public ArrayList display(){
-		return _data;
+	public ArrayList display(Command c){
+		if(c.isOnlyImportantDisplayed()){
+			ArrayList<Task> imp = new ArrayList<Task>();
+			for(int i = 0; i< _data.size(); i++){
+				if(_data.get(i).isImportant()){
+					
+				}
+			}
+		}else{
+			return _data;
+		}
 	}
 	
 	public void search(String str){
