@@ -12,6 +12,10 @@ public class CommandAdd extends Command {
 	public Task getTask(){
 		return task;
 	}
+
+	public void setTask(Task t) {
+		task = t;	
+	}
 	
 	
 	

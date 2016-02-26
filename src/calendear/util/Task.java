@@ -16,6 +16,7 @@ public class Task {
 	private GregorianCalendar endTime;
 	private String location;
 	private String note;
+	private String tag;
 	private boolean isImportant;
 	private boolean isFinished = false;
 	
@@ -69,6 +70,10 @@ public class Task {
 		return note;
 	}
 	
+	public String getTag(){
+		return tag;
+	}
+	
 	public boolean isImportant(){
 		return isImportant;
 	}
@@ -101,12 +106,25 @@ public class Task {
 		this.note = note;
 	}
 	
+	public void setTag(String tag){
+		this.tag = tag;
+	}
+	
 	public void markImportant(boolean isImportant){
 		this.isImportant = isImportant;
 	}
 	
 	public void setIsFinished(boolean isFinished){
 		this.isFinished = isFinished;
+	}
+	
+	public String toSaveable() {
+		return "";
+	}
+	
+	public static Task parseSaveable(String allString) {
+		Task t = new Task("");
+		return t;
 	}
 	
 }
