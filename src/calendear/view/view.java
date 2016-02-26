@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import calendear.util.Task;
 
-public class View {
+public final class View {
 	
 	private static final String HEADER_NAME = "task name: ";
 	private static final String HEADER_TAG = "tag:\n";
