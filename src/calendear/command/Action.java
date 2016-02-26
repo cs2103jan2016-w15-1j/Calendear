@@ -1,7 +1,10 @@
-package calendear.util;
+package calendear.command;
 
 import java.util.LinkedList;
 import java.util.Stack;
+
+import calendear.util.Command;
+import calendear.util.Task;
 
 public class Action {
 	private LinkedList<Task> data_;

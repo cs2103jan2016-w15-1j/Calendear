@@ -1,10 +1,5 @@
 package calendear.util;
 
-enum CMD_TYPE {
-	ADD, DISPLAY, UPDATE, DELETE, SEARCH, SORT, 
-	MARK, DONE, UNDO, TAG, LINK_GOOGLE, EXIT, INVALID
-};	
-
 public class Command {
 	
 	protected CMD_TYPE type;

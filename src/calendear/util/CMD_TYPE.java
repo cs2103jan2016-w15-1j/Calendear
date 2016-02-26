@@ -1,0 +1,6 @@
+package calendear.util;
+
+public enum CMD_TYPE {
+	ADD, DISPLAY, UPDATE, DELETE, SEARCH, SORT, 
+	MARK, DONE, UNDO, TAG, LINK_GOOGLE, EXIT, INVALID
+}

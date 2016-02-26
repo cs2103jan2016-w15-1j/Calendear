@@ -6,7 +6,7 @@ enum TASK_TYPE{
 	EVENT, DEADLINE, FLOATING, RECURRING
 };
 
-class Task {
+public class Task {
 	
 	public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, dd-MMM-yyyy, HH:mm");
 	
