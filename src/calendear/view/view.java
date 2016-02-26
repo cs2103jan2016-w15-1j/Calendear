@@ -1,5 +1,5 @@
 package calendear.view;
 
-public class view {
+public class View {
 	
 }
