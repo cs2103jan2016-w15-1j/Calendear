@@ -61,12 +61,14 @@ public class Action {
 	}
 
 
-	public void update(Command c){
+	public Task update(Command c){
 		String newName = c.getNewName();
 		int id = c.getIndex();
 		Task toBeModified = _data.get(id);
 		String oldName = toBeModified.getName();
 		//TODO
+		toBeModified.setName(newName);
+		return toBeModified;
 	}
 	
 	public ArrayList display(Command c){
