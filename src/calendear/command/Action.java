@@ -9,6 +9,7 @@ import calendear.util.Task;
 public class Action {
 	private LinkedList<Task> data_;
 	private Stack<HistoryState> previousData_;//last in first out
+	private Stack<Command> previousCommand_;
 	
 	//constructor
 	public Action(){
