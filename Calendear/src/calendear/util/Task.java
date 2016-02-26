@@ -16,6 +16,7 @@ public class Task {
 	private GregorianCalendar endTime;
 	private String location;
 	private String note;
+	private String tag;
 	private boolean isImportant;
 	private boolean isFinished = false;
 	
@@ -69,6 +70,10 @@ public class Task {
 		return note;
 	}
 	
+	public String getTag(){
+		return tag;
+	}
+	
 	public boolean isImportant(){
 		return isImportant;
 	}
@@ -99,6 +104,10 @@ public class Task {
 	
 	public void writeNote(String note){
 		this.note = note;
+	}
+	
+	public void setTag(String tag){
+		this.tag = tag;
 	}
 	
 	public void markImportant(boolean isImportant){

@@ -35,6 +35,59 @@ public class View {
 	private static final String MSG_YES = "yes";
 	private static final String MSG_NO = "no";
 	
+	public static void displayAdd(Task task){
+		System.out.println(MSG_ADD+ getDetailsOfTask(task));
+	}
+	
+	public static void displayDelete(Task task){
+		System.out.println(MSG_DELETE+ getDetailsOfTask(task));
+	}
+	
+	public static void displayUpdate(Task task){
+		System.out.println(MSG_UPDATE+ getDetailsOfTask(task));
+	}
+	
+	public static void displayMark(Task task){
+		System.out.println(MSG_MARK+ getDetailsOfTask(task));
+	}
+	
+	public static void displayTag(Task task){
+		System.out.println(MSG_TAG+ getDetailsOfTask(task));
+	}
+	
+	public static void displayDone(Task task){
+		System.out.println(MSG_DONE+ getDetailsOfTask(task));
+	}
+	
+	public static void displayUndo(Task task){
+		System.out.println(MSG_UNDO+ getDetailsOfTask(task));
+	}
+	
+	public static void displayDisplay(ArrayList<Task> taskArr){
+		System.out.println(MSG_DISPLAY+ getDetailsOfTaskArr(taskArr));
+	}
+	
+	public static void displaySort(ArrayList<Task> taskArr){
+		System.out.println(MSG_SORT+ getDetailsOfTaskArr(taskArr));
+	}
+	
+	public static void displaySearch(ArrayList<Task> taskArr){
+		System.out.println(MSG_SEARCH+ getDetailsOfTaskArr(taskArr));
+	}
+	
+	public static void displayLinkGoogle(){
+		System.out.println(MSG_LINKGOOGLE);
+	}
+	
+	public static void displayExit(){
+		System.out.println(MSG_EXIT);
+	}
+	
+	public static void displayInvalid(){
+		System.out.println(MSG_INVALID);
+	}
+	
+	
 	public static String getDetailsOfTaskArr(ArrayList<Task> taskArr){
 		String output="";
 		for(int i=0;i<taskArr.size();i++){
@@ -75,7 +128,11 @@ public class View {
 		else if(!task.isFinished()){
 			details+=HEADER_FINISHED+MSG_NO+"\n";
 		}
+		return details;
 	}
+	
+	
+	
 
 	
 	
