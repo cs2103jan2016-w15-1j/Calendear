@@ -1,6 +1,9 @@
 import calendear.action.Action;
 import calendear.storage.DataManager;
 import calendear.util.Task;
+import calendear.util.Command;
+import calendear.util.Parser;
+import calendear.util.CMD_TYPE;
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -17,7 +20,7 @@ public class Controller {
 //		Create or set file
 		createOrFindFile(nameOfFile);
 
-		instantiateOrPopulateTasks();
+//		instantiateOrPopulateTasks();
 		
 		repl();
 	}
@@ -31,7 +34,6 @@ public class Controller {
 		_action = new Action(tasks);
 	}
 	
-	
 	private static void repl() {
 	    _scanner = new Scanner(System.in);
 
@@ -39,10 +41,32 @@ public class Controller {
 	    	String userCommand = _scanner.nextLine();
 	    	
 //	    	Parse Tokens
-
+	    	Command command = Parser.parse(userCommand);
 //	    	Do Actions
-	    	
-//	    	Render View
+	    	switch(command.getType()) {
+	    		case ADD: 
+	    				break;
+	    		case DISPLAY: 
+	    				break;
+	    		case DELETE:
+	    				break;
+	    		case UPDATE:
+	    				break;
+	    		case SEARCH:
+	    				break;
+	    		case MARK:
+	    				break;
+	    		case TAG:
+	    				break;
+	    		case LINK_GOOGLE:
+	    				break;
+	    		case DONE:
+	    				break;
+	    		case EXIT:
+	    				break;
+	    		default:
+	    				break;
+	    	}
 	    }
 	}
 
