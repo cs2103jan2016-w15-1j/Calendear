@@ -182,6 +182,3 @@ class CommandInvalid extends Command {
 		return command;
 	}
 }
-
-
-
