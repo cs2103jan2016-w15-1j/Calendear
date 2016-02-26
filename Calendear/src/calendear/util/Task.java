@@ -109,4 +109,13 @@ public class Task {
 		this.isFinished = isFinished;
 	}
 	
+	public String toSaveable() {
+		return "";
+	}
+	
+	public static Task parseSaveable(String allString) {
+		Task t = new Task("");
+		return t;
+	}
+	
 }
