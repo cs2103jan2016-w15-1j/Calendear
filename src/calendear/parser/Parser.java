@@ -1,9 +1,11 @@
-package calendear.util;
+package calendear.parser;
 
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import calendear.util.*;
+
 import java.text.ParseException;
 
 public class Parser {

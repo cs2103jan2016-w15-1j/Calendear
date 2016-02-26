@@ -46,13 +46,14 @@ public class Controller {
 	    	Command command = Parser.parse(userCommand);
 //	    	Do Actions
 	    	switch(command.getType()) {
-	    		case ADD: Task addedTask = _action.exeAdd((CommandAdd) command);
-	    				  View.displayAdd(addedTask);
-	    				  break;
+		    	case ADD:	  Task addedTask = _action.exeAdd((CommandAdd) command);
+		    				  View.displayAdd(addedTask);
+		    				  break;
+		    				  
 	    		case DISPLAY: ArrayList<Task> tasks = _action.exeDisplay((CommandDisplay) command);
 	    					  View.displayDisplay(tasks);
 	    					  break;
-	    		
+	    					  
 	    		case DELETE:  Task deletedTask = _action.exeDelete((CommandDelete) command);
 	    					  View.displayDelete(deletedTask);
 	    					  break;
