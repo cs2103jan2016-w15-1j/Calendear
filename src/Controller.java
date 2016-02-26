@@ -1,6 +1,9 @@
-import calendear.command.Action;
+import calendear.action.Action;
 import calendear.storage.DataManager;
+import calendear.util.Task;
+
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Controller {
 	
@@ -20,12 +23,12 @@ public class Controller {
 	}
 	
 	public static void createOrFindFile(String nameOfFile) {
-//		Check whether the data exists in this path
-		
+		_dataManager = new DataManager(nameOfFile);
 	}
 	
 	public static void instantiateOrPopulateTasks() {
-		_action = new Action();
+		ArrayList<Task> tasks = _dataManager.buildData();
+		_action = new Action(tasks);
 	}
 	
 	
