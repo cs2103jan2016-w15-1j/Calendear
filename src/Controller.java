@@ -31,7 +31,7 @@ public class Controller {
 	
 	public static void instantiateOrPopulateTasks() {
 		ArrayList<Task> tasks = _dataManager.buildData();
-		_action = new Action(tasks);
+		_action = new Action(tasks, _dataManager);
 	}
 	
 	private static void repl() {
@@ -44,8 +44,8 @@ public class Controller {
 	    	Command command = Parser.parse(userCommand);
 //	    	Do Actions
 	    	switch(command.getType()) {
-	    		case ADD: 
-	    				break;
+	    		case ADD: Task addedTask = _action.add(command);
+	    				  break;
 	    		case DISPLAY: 
 	    				break;
 	    		case DELETE:
