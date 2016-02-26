@@ -3,7 +3,7 @@ import calendear.util.CommandAdd;
 import calendear.storage.DataManager;
 import calendear.util.Task;
 import calendear.util.Command;
-import calendear.util.Parser;
+import calendear.parser.Parser;
 import calendear.util.CMD_TYPE;
 
 import java.util.Scanner;
