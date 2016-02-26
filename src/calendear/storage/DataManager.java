@@ -79,7 +79,7 @@ public class DataManager {
 	public DataManager(String name) {
 		try {
 			_nameOfFile = name;
-			_file = new File("./" + _nameOfFile);
+			_file = new File(_nameOfFile);
 			_file.createNewFile();
 	    }
 	    catch(IOException ex) {
