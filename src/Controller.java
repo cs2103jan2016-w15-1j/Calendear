@@ -1,4 +1,5 @@
 import calendear.action.Action;
+import calendear.util.CommandAdd;
 import calendear.storage.DataManager;
 import calendear.util.Task;
 import calendear.util.Command;
@@ -44,7 +45,7 @@ public class Controller {
 	    	Command command = Parser.parse(userCommand);
 //	    	Do Actions
 	    	switch(command.getType()) {
-	    		case ADD: Task addedTask = _action.add(command);
+	    		case ADD: Task addedTask = _action.add((CommandAdd) command);
 	    				  break;
 	    		case DISPLAY: 
 	    				break;

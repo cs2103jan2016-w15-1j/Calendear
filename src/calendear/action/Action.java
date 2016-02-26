@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import calendear.util.Command;
+import calendear.util.CommandAdd;
+import calendear.util.CommandDelete;
+import calendear.util.CommandDisplay;
+import calendear.util.CommandUpdate;
 import calendear.util.CMD_TYPE;
 import calendear.util.Task;
 import calendear.storage.DataManager;
@@ -40,7 +44,7 @@ public class Action {
 	 * @param c
 	 * @return
 	 */
-	public Task add(Command c){
+	public Task add(CommandAdd c){
 		Task addedTask = c.getTask();
 		_data.add(addedTask);
 		c.setTask(null);
@@ -52,18 +56,18 @@ public class Action {
 	 * remove task with id
 	 * @param id
 	 */
-	public Task delete(Command c){
+	public Task delete(CommandDelete c){
 		int id = c.getIndex();
 		Task t = _data.get(id);
 		_data.set(id, null);
-		c.setTask(t);
+		c.setDeletedTask(t);
 		_previousData.push(c);
 		_dm.updateData(_data);
 		return t;
 	}
 
 
-	public Task update(Command c){
+	public Task update(CommandUpdate c){
 		String newName = c.getNewName();
 		int id = c.getIndex();
 		Task toBeModified = _data.get(id);
@@ -72,12 +76,13 @@ public class Action {
 		toBeModified.setName(newName);
 		return toBeModified;
 	}
+	
 	/**
 	 * 
 	 * @param c
 	 * @return arrayList containing tasks to show, all null elements should not be shown
 	 */
-	public ArrayList display(Command c){
+	public ArrayList<Task> display(CommandDisplay c){
 		if(c.isOnlyImportantDisplayed()){
 			//prepares an arraylist where all non important tasks are represented as null
 			ArrayList<Task> imp = new ArrayList<Task>();
@@ -89,6 +94,7 @@ public class Action {
 					imp.add(null);
 				}
 			}
+			return imp;
 		}else{
 			return _data;
 		}
