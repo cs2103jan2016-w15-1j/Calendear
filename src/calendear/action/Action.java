@@ -20,6 +20,9 @@ public class Action {
 	
 	
 	//constructor
+	/**
+	 * default constructor, not used.
+	 */
 	public Action(){
 		_data = new ArrayList<Task>();
 		_previousData = new Stack<Command>();
@@ -70,9 +73,14 @@ public class Action {
 		toBeModified.setName(newName);
 		return toBeModified;
 	}
-	
+	/**
+	 * 
+	 * @param c
+	 * @return arrayList containing tasks to show, all null elements should not be shown
+	 */
 	public ArrayList display(Command c){
 		if(c.isOnlyImportantDisplayed()){
+			//prepares an arraylist where all non important tasks are represented as null
 			ArrayList<Task> imp = new ArrayList<Task>();
 			for(int i = 0; i< _data.size(); i++){
 				Task temp = _data.get(i);
