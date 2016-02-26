@@ -73,8 +73,11 @@ public class Action {
 		if(c.isOnlyImportantDisplayed()){
 			ArrayList<Task> imp = new ArrayList<Task>();
 			for(int i = 0; i< _data.size(); i++){
-				if(_data.get(i).isImportant()){
-					
+				Task temp = _data.get(i);
+				if(temp.isImportant()){
+					imp.add(temp);
+				}else{
+					imp.add(null);
 				}
 			}
 		}else{
