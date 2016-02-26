@@ -22,8 +22,10 @@ public class Action {
 	private Stack<Command> _previousCommand;
 	private DataManager _dm; 
 	
-	
 	//constructor
+	/**
+	 * default constructor, not used.
+	 */
 	public Action(){
 		_data = new ArrayList<Task>();
 		_previousData = new Stack<Command>();
@@ -75,8 +77,14 @@ public class Action {
 		return toBeModified;
 	}
 	
+	/**
+	 * 
+	 * @param c
+	 * @return arrayList containing tasks to show, all null elements should not be shown
+	 */
 	public ArrayList<Task> display(CommandDisplay c){
 		if(c.isOnlyImportantDisplayed()){
+			//prepares an arraylist where all non important tasks are represented as null
 			ArrayList<Task> imp = new ArrayList<Task>();
 			for(int i = 0; i< _data.size(); i++){
 				Task temp = _data.get(i);
