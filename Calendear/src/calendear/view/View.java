@@ -35,6 +35,15 @@ public class View {
 	private static final String MSG_YES = "yes";
 	private static final String MSG_NO = "no";
 	
+	
+	public static void displayWelcome(){
+		System.out.println(MSG_WELCOME);
+	}
+	
+	public static void displayRequestForInput(){
+		System.out.println(MSG_COMMAND);
+	}
+	
 	public static void displayAdd(Task task){
 		System.out.println(MSG_ADD+ getDetailsOfTask(task));
 	}
