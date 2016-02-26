@@ -1,35 +1,35 @@
-package calendear.command;
+package calendear.action;
 
 import calendear.util.*;
 
 public class HistoryState {
-	private Task beforeModification_;
-	private CMD_TYPE t_;
-	private int taskId_;
+	private Task _beforeModification;
+	private CMD_TYPE _t;
+	private int _taskId;
 	
 	public HistoryState(Task newTask, CMD_TYPE ty){
-		beforeModification_ = newTask;
-		t_ = ty;
+		_beforeModification = newTask;
+		_t = ty;
 		//taskId_ = newTask.getId();
 	}
 	
 	public HistoryState(CMD_TYPE ty, int id){// for add
 		//id
-		taskId_ = id;
+		_taskId = id;
 	}
 	
 	/**
 	 * accessors
 	 */
 	public Task getTask(){
-		return beforeModification_;
+		return _beforeModification;
 	}
 	
 	public CMD_TYPE getType(){
-		return t_;
+		return _t;
 	}
 	
 	public int getId(){
-		return taskId_;
+		return _taskId;
 	}
 }
