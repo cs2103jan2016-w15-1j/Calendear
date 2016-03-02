@@ -120,7 +120,7 @@ public final class View {
 			details+=HEADER_STARTTIME+task.getStartTimeStr()+"\n";
 		}
 		if(task.getEndTime()!=null){
-			details+=HEADER_STARTTIME+task.getEndTimeStr()+"\n";
+			details+=HEADER_ENDTIME+task.getEndTimeStr()+"\n";
 		}
 		if(task.getLocation()!=null){
 			details+=HEADER_LOCATION+task.getLocation()+"\n";

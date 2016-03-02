@@ -18,8 +18,8 @@ import calendear.storage.DataManager;
  */
 public class Action {
 	private ArrayList<Task> _data;
-	private Stack<Command> _previousData;//last in first out
-	private Stack<Command> _previousCommand;
+	private Stack<Command> _undoStack;
+	private Stack<Command> _redoStack;
 	private DataManager _dm; 
 	
 	//constructor
@@ -28,14 +28,14 @@ public class Action {
 	 */
 	public Action(){
 		_data = new ArrayList<Task>();
-		_previousData = new Stack<Command>();
-		_previousCommand = new Stack<Command>();
+		_undoStack = new Stack<Command>();
+		_redoStack = new Stack<Command>();
 	}
 	
 	public Action(ArrayList<Task> tasks, DataManager dm) {
 		_data = tasks;
-		_previousData = new Stack<Command>();
-		_previousCommand = new Stack<Command>();
+		_undoStack = new Stack<Command>();
+		_redoStack = new Stack<Command>();
 		_dm = dm;
 	}
 	/**
@@ -48,7 +48,7 @@ public class Action {
 		Task addedTask = c.getTask();
 		_data.add(addedTask);
 		c.setTask(null);
-		_previousData.push(c);
+		_undoStack.push(c);
 		_dm.updateData(_data);
 		return addedTask;
 	}
@@ -61,7 +61,7 @@ public class Action {
 		Task t = _data.get(id);
 		_data.set(id, null);
 		c.setDeletedTask(t);
-		_previousData.push(c);
+		_undoStack.push(c);
 		_dm.updateData(_data);
 		return t;
 	}
