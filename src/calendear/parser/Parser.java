@@ -84,7 +84,7 @@ public class Parser {
 	}
 	
 	private static Command parseDisplayCmd(String[] words, String rawInput){
-		if (words[1].equals("!")){
+		if (words.length >= 2 && words[1].equals("!")){
 			return new CommandDisplay(true);
 		} else {
 			return new CommandDisplay(false);
