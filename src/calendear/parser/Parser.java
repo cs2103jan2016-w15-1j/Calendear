@@ -23,10 +23,14 @@ public class Parser {
 	private static final String CMD_STR_LINK_GOOGLE = ".linkGoogle";
 	private static final String CMD_STR_EXIT = ".exit";
 	
+	private static final String IMPORTANT = "!";
+	
 //	private static final String PATTERN_DATE_FORMAT = 
 //								"\\b(\\d){1,2}([:\\-/]\\d\\d[:\\-/]||(\\w){3})\\d\\d";
-	private static final String PATTERN_ADD_CMD = 
-								"(\\.add +)(.+)(by +)(\\b(\\d){1,2}([:\\-/]\\d\\d[:\\-/]||(\\w){3})\\d\\d)";
+	private static final String PATTERN_ADD_DEADLINE = "(\\.add +)(.+)(\\.by +)(.+)";
+	private static final String PATTERN_ADD_EVENT = "(\\.add +)(.+)(\\.from +)(.+)(\\.to)(.+)";
+	private static final String PATTERN_ADD_FLOATING = "(\\.add +)(.+)";
+	private static final String PATTERN_UPDATE_NAME_BY_INDEX = "(\\.update +)(\\d+) +(.+)";
 	
 	public static Command parse(String rawInput){	
 		String input = rawInput.trim();
@@ -34,7 +38,7 @@ public class Parser {
 		return parseCommand(words, rawInput);
 	}
 	
-	public static Command parseCommand(String[] words, String rawInput){
+	private static Command parseCommand(String[] words, String rawInput){
 		
 		switch (words[0]){
 			case CMD_STR_ADD:
@@ -68,10 +72,29 @@ public class Parser {
 	
 	private static Command parseAddCmd(String[] words, String rawInput){
 		
-		
-		Pattern pattern = Pattern.compile(PATTERN_ADD_CMD);
+		Pattern pattern = Pattern.compile(PATTERN_ADD_DEADLINE);
 		Matcher matcher = pattern.matcher(rawInput);
-		matcher.find();
+		if (matcher.find()) {
+			return parseAddDeadline(rawInput, matcher);
+		}
+		
+		pattern = Pattern.compile(PATTERN_ADD_EVENT);
+		matcher = pattern.matcher(rawInput);
+		if (matcher.find()) {
+			return parseAddEvent(rawInput, matcher);
+		}
+		
+		pattern = Pattern.compile(PATTERN_ADD_FLOATING);
+		matcher = pattern.matcher(rawInput);
+		if (matcher.find()) {
+			return parseAddFloating(rawInput, matcher);
+		}
+		
+		return new CommandInvalid(rawInput);
+		
+	}
+
+	private static Command parseAddDeadline(String rawInput, Matcher matcher) {
 		GregorianCalendar time;
 		try {
 			time = DateParser.parse(matcher.group(4));
@@ -80,11 +103,27 @@ public class Parser {
 		}
 		Task task = new Task (matcher.group(2), time);
 		return new CommandAdd(task);
-
+	}
+	
+	private static Command parseAddEvent(String rawInput, Matcher matcher) {
+		GregorianCalendar startTime, endTime;
+		try {
+			startTime = DateParser.parse(matcher.group(4));
+			endTime = DateParser.parse(matcher.group(6));
+		} catch (ParseException e) {
+			return new CommandInvalid(rawInput);
+		}
+		Task task = new Task (matcher.group(2), startTime, endTime);
+		return new CommandAdd(task);
+	}
+	
+	private static Command parseAddFloating(String rawInput, Matcher matcher) {
+		Task task = new Task (matcher.group(2));
+		return new CommandAdd(task);
 	}
 	
 	private static Command parseDisplayCmd(String[] words, String rawInput){
-		if (words.length>1 && words[1].equals("!")){
+		if (words.length>1 && words[1].equals(IMPORTANT)){
 			return new CommandDisplay(true);
 		} else {
 			return new CommandDisplay(false);
@@ -92,7 +131,20 @@ public class Parser {
 	}
 	
 	private static Command parseUpdateCmd(String[] words, String rawInput){
-		return null;
+		Pattern pattern = Pattern.compile(PATTERN_UPDATE_NAME_BY_INDEX);
+		Matcher matcher = pattern.matcher(rawInput);
+		if (matcher.find()){
+			try {	
+				int index = Integer.parseInt(matcher.group(2));
+				String newName = matcher.group(3);
+				return new CommandUpdate(index, newName);
+			}
+			catch (NumberFormatException e){
+				return new CommandInvalid(rawInput);
+			}
+		}
+		
+		return new CommandInvalid(rawInput);
 	}
 	
 	private static Command parseDeleteCmd(String[] words, String rawInput){
@@ -144,7 +196,7 @@ public class Parser {
 
 class DateParser {
 	
-	public static final SimpleDateFormat dateFormatterType1 = new SimpleDateFormat("dd/MM/yy");
+	public static final SimpleDateFormat dateFormatterType1 = new SimpleDateFormat("dd/MM/yy HH:mm");
 	
 	public static GregorianCalendar parse(String timeStr)
 	throws ParseException {
