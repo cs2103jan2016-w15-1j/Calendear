@@ -131,7 +131,7 @@ public class Action {
 	 * @return
 	 */
 	private ArrayList<Task> getNoNullArr(){
-		ArrayList toReturn = new ArrayList<Task>();
+		ArrayList<Task> toReturn = new ArrayList<Task>();
 		Task t=  null;
 		for(int i = 0; i<_data.size(); i++){
 			t = _data.get(i);
