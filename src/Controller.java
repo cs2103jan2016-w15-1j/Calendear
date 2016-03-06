@@ -13,7 +13,6 @@ public class Controller {
 	
 	private static Scanner _scanner;
 	private static Action _action;
-	private static DataManager _dataManager;
 	
 	public static void main(String[] args) {
 		String nameOfFile = args[0];

@@ -45,7 +45,7 @@ public class DataManager {
 
 			for (int i=0; i < tasksList.size(); i++) {
 				Task currentTask = tasksList.get(i);
-
+				System.out.println(currentTask.getName());
 				bw.write(currentTask.toSaveable());
 				bw.newLine();
 			}
