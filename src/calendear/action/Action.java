@@ -32,6 +32,13 @@ public class Action {
 		_redoStack = new Stack<Command>();
 	}
 	
+	public Action(String nameOfFile) {
+		_undoStack = new Stack<Command>();
+		_redoStack = new Stack<Command>();
+		_dm = new DataManager(nameOfFile);
+		_data = _dm.buildData();
+	}
+	
 	public Action(ArrayList<Task> tasks, DataManager dm) {
 		_data = tasks;
 		_undoStack = new Stack<Command>();

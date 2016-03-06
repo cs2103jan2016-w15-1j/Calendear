@@ -18,22 +18,15 @@ public class Controller {
 	public static void main(String[] args) {
 		String nameOfFile = args[0];
 		
-		createOrFindFile(nameOfFile);
-
-		instantiateOrPopulateTasks();
+		instantiateActions(nameOfFile);
 		
 		View.displayWelcome();
 		
 		repl();
 	}
 	
-	public static void createOrFindFile(String nameOfFile) {
-		_dataManager = new DataManager(nameOfFile);
-	}
-	
-	public static void instantiateOrPopulateTasks() {
-		ArrayList<Task> tasks = _dataManager.buildData();
-		_action = new Action(tasks, _dataManager);
+	public static void instantiateActions(String nameOfFile) {
+		_action = new Action(nameOfFile);
 	}
 	
 	private static void repl() {
