@@ -49,7 +49,7 @@ public class Action {
 		_data.add(addedTask);
 		c.setTask(null);
 		_undoStack.push(c);
-		_dm.updateData(_data);
+		_dm.updateData(getNoNullArr());
 		return addedTask;
 	}
 	/**
@@ -62,7 +62,7 @@ public class Action {
 		_data.set(id, null);
 		c.setDeletedTask(t);
 		_undoStack.push(c);
-		_dm.updateData(_data);
+		_dm.updateData(getNoNullArr());
 		return t;
 	}
 
@@ -115,6 +115,27 @@ public class Action {
 	public void exeMark(){
 		
 	}
+	
+	public void exeSort(){
+		
+	}
+	/**
+	 * returns an array of data with null objects removed
+	 * @return
+	 */
+	private ArrayList<Task> getNoNullArr(){
+		ArrayList toReturn = new ArrayList<Task>();
+		Task t=  null;
+		for(int i = 0; i<_data.size(); i++){
+			t = _data.get(i);
+			if(t != null){
+				toReturn.add(t);
+			}
+		}
+		return toReturn;
+	}
+	
+	
 }
 
 
