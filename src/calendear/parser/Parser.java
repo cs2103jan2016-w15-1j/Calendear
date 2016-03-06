@@ -93,7 +93,8 @@ public class Parser {
 		return new CommandInvalid(rawInput);
 		
 	}
-
+	
+	// .add <name> .by dd/MM/yy HH:mm
 	private static Command parseAddDeadline(String rawInput, Matcher matcher) {
 		GregorianCalendar time;
 		try {
@@ -105,6 +106,7 @@ public class Parser {
 		return new CommandAdd(task);
 	}
 	
+	// .add <name> .from dd/MM/yy HH:mm .to dd/MM/yy HH:mm
 	private static Command parseAddEvent(String rawInput, Matcher matcher) {
 		GregorianCalendar startTime, endTime;
 		try {
@@ -117,6 +119,7 @@ public class Parser {
 		return new CommandAdd(task);
 	}
 	
+	// .add <name>
 	private static Command parseAddFloating(String rawInput, Matcher matcher) {
 		Task task = new Task (matcher.group(2));
 		return new CommandAdd(task);
@@ -130,6 +133,7 @@ public class Parser {
 		}
 	}
 	
+	// .update <index> <new name>
 	private static Command parseUpdateCmd(String[] words, String rawInput){
 		Pattern pattern = Pattern.compile(PATTERN_UPDATE_NAME_BY_INDEX);
 		Matcher matcher = pattern.matcher(rawInput);
