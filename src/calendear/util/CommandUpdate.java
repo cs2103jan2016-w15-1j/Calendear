@@ -11,6 +11,11 @@ public class CommandUpdate extends Command {
 	private int index;
 	private String newName;
 	
+	/* for both int[]updateChesklist and String[]newInfo 
+	[0:name][1:type][2:starttime]
+	[3:endtime][4:location][5:note]
+	[6:tag][7:important][8:finished]
+	*/
 	private int[] updateChecklist;
 	private String[] newInfo;
 	
