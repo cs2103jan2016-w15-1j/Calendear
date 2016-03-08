@@ -2,10 +2,6 @@ package calendear.util;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
-enum TASK_TYPE{
-	EVENT, DEADLINE, FLOATING, RECURRING
-};
-
 public class Task {
 	
 	public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, dd-MMM-yyyy, HH:mm");
