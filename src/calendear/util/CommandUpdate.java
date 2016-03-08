@@ -1,12 +1,16 @@
 package calendear.util;
 
-/**
- * 
- * @author Viet Thang
- * 
- *
- */
 public class CommandUpdate extends Command {
+	
+	public static final int UPDATE_CODE_NAME = 0;
+	public static final int UPDATE_CODE_TYPE = 1;
+	public static final int UPDATE_CODE_START_TIME = 2;
+	public static final int UPDATE_CODE_END_TIME = 3;
+	public static final int UPDATE_CODE_LOCATION = 4;
+	public static final int UPDATE_CODE_NOTE = 5;
+	public static final int UPDATE_CODE_TAG = 6;
+	public static final int UPDATE_CODE_IMPORTANT = 7;
+	public static final int UPDATE_CODE_FINISHED = 8;
 	
 	private int index;
 	private String newName;

@@ -31,7 +31,12 @@ public class Parser {
 	private static final String PATTERN_ADD_EVENT = "(\\.add +)(.+)(\\.from +)(.+)(\\.to)(.+)";
 	private static final String PATTERN_ADD_FLOATING = "(\\.add +)(.+)";
 	private static final String PATTERN_UPDATE_NAME_BY_INDEX = "(\\.update +)(\\d+) +(.+)";
-	
+	private static final String PATTERN_UPDATE_MULTIPLE_FIELD_BY_INDEX = 
+	"(\\.update) +(\\d+) +"
+	+ "(?:(?:(\\.name) *([^\\.]+)) *|(?:(\\.by) *([^\\.]+)) *|(?:(\\.from) *([^\\.]+)) *"
+	+ "|(?:(\\.to) *([^\\.]+)) *|(?:(\\.float) *()) *|(?:(\\.at) *([^\\.]+)) *"
+	+ "|(?:(\\.note) *([^\\.]+)) *|(?:(\\.tag) *([^\\.]+)) *|(?:(\\.mark) *()) *|(?:(\\.done) *()) *)+";
+	private static final int NUM_OF_UPDATE_KEYWORD = 10;
 	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
 	
 	public static Command parse(String rawInput){	
