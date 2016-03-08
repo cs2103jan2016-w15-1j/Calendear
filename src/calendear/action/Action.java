@@ -39,11 +39,11 @@ public class Action {
 		_data = _dm.buildData();
 	}
 	
-	public Action(ArrayList<Task> tasks, DataManager dm) {
+	public Action(ArrayList<Task> tasks, String nameOfFile) {
 		_data = tasks;
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
-		_dm = dm;
+		_dm = new DataManager(nameOfFile);
 	}
 	/**
 	 * returns the task that was added.
@@ -95,7 +95,7 @@ public class Action {
 			ArrayList<Task> imp = new ArrayList<Task>();
 			for(int i = 0; i< _data.size(); i++){
 				Task temp = _data.get(i);
-				if(temp.isImportant()){
+				if(temp != null && temp.isImportant()){
 					imp.add(temp);
 				}else{
 					imp.add(null);
