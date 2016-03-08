@@ -75,13 +75,73 @@ public class Action {
 
 
 	public Task exeUpdate(CommandUpdate c){
-		String newName = c.getNewName();
-		int id = c.getIndex();
-		Task toBeModified = _data.get(id);
-		String oldName = toBeModified.getName();
-		//TODO
-		toBeModified.setName(newName);
-		return toBeModified;
+		int changeId = c.getIndex();
+		final int NAME_ID = 0;
+		final int TYPE_ID = 1;
+		final int STARTT_ID = 2;
+		final int ENDT_ID = 3;
+		final int LOCATION_ID = 4;
+		final int NOTE_ID = 5;
+		final int TAG_ID = 6;
+		final int IMP_ID = 7;//important
+		final int COMP_ID = 8;//finished
+		
+		Task toUpdate = _data.get(changeId);
+		try{
+			
+			int[] u = c.getChecklist();
+			String[] i = c.getNewInfo();
+			
+			if(u[NAME_ID] == 1){
+				//name
+				String oldName = toUpdate.getName();
+				toUpdate.setName(i[NAME_ID]);
+				i[NAME_ID] = oldName;
+			}
+			if(u[TYPE_ID] == 1){
+				//cannot see task type from here
+				//protected
+			}
+			if(u[STARTT_ID] == 1){
+				//start time
+				//doesnt really make sense to convert from here
+			}
+			if(u[ENDT_ID] == 1){
+				//end time
+			}
+			if(u[LOCATION_ID] == 1){
+				String newLoc = i[LOCATION_ID];
+				i[LOCATION_ID] = toUpdate.getLocation();
+				toUpdate.setLocation(newLoc);
+			}
+			if(u[NOTE_ID] == 1){
+				String newNote = i[NOTE_ID];
+				i[LOCATION_ID] = toUpdate.getLocation();
+				toUpdate.setLocation(newNote);
+			}
+			if(u[TAG_ID] == 1){
+				//can be a series of tags, need to specify 
+				// add/delete/replace
+			}
+			if(u[IMP_ID] == 1){
+				boolean isImportant = Boolean.valueOf(i[IMP_ID]);
+				i[IMP_ID] = Boolean.toString(toUpdate.isImportant());
+				toUpdate.markImportant(isImportant);
+			}
+			if(u[COMP_ID] == 1){
+				boolean isFinished = Boolean.valueOf(i[COMP_ID]);
+				i[COMP_ID] = Boolean.toString(toUpdate.isFinished());
+				toUpdate.setIsFinished(isFinished);
+			}
+			
+			_undoStack.add(c);
+			_dm.updateData(getNoNullArr());
+		}catch (NullPointerException e){
+			e.printStackTrace();
+		}catch (ArrayIndexOutOfBoundsException e){
+			e.printStackTrace();
+		}
+		return toUpdate;
 	}
 	
 	/**
@@ -124,6 +184,10 @@ public class Action {
 	}
 	
 	public void exeSort(){
+		
+	}
+	
+	public void exeExit(){
 		
 	}
 	/**
