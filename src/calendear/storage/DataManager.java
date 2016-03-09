@@ -11,11 +11,19 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 
+/**
+ * DataManager class that handles file IO to flat file database
+ * @author Phang Chun Rong A0139060M
+ *
+ */
 public class DataManager {
 	
 	private String _nameOfFile;
 	private File _file;
-	
+
+	/**
+	 * @return an ArrayList of tasks based on the stored file.
+	 */
 	public ArrayList<Task> buildData() {
 		ArrayList<Task> tasks = new ArrayList<Task>();
 		try {
@@ -37,6 +45,10 @@ public class DataManager {
 		return tasks;
 	}
 	
+	/**
+	 * Takes in an ArrayList of Tasks and saves it into the database.
+	 * @param tasksList
+	 */
 	public void updateData(ArrayList<Task> tasksList) {
 		wipeFile(); // Clears file content first
 		
@@ -73,12 +85,12 @@ public class DataManager {
 
 	
 	/**
-	* DataManager constructor. 
-	* Takes in a String as parameter for filename.
-	*/
-	public DataManager(String name) {
+	 * DataManager constructor
+	 * @param fileName
+	 */
+	public DataManager(String fileName) {
 		try {
-			_nameOfFile = name;
+			_nameOfFile = fileName;
 			_file = new File(_nameOfFile);
 			_file.createNewFile();
 	    }
