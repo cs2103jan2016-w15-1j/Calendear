@@ -31,6 +31,7 @@ public class CommandUpdate extends Command {
 	
 	public CommandUpdate (int index, boolean[] updateChecklist, Object[] newInfo){
 		type = CMD_TYPE.UPDATE;
+		this.index = index;
 		this.updateChecklist = updateChecklist;
 		this.newInfo = newInfo;
 	}
