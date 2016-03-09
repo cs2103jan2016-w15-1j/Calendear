@@ -13,7 +13,6 @@ public class CommandUpdate extends Command {
 	public static final int CODE_UPDATE_FINISHED = 8;
 	
 	private int index;
-	private String newName;
 	
 	/* for both int[]updateChesklist and String[]newInfo 
 	[0:name][1:type][2:starttime]
@@ -28,7 +27,6 @@ public class CommandUpdate extends Command {
 	public CommandUpdate (int index, String newName){
 		type = CMD_TYPE.UPDATE;
 		this.index = index;
-		this.newName = newName;
 	}
 	
 	public CommandUpdate (int index, boolean[] updateChecklist, Object[] newInfo){
@@ -40,11 +38,7 @@ public class CommandUpdate extends Command {
 	public int getIndex(){
 		return index;
 	}
-	
-	
-	public String getNewName(){
-		return newName;
-	}
+
 	
 	public boolean[] getChecklist(){
 		return updateChecklist;
