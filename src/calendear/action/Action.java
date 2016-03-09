@@ -2,6 +2,9 @@ package calendear.action;
 
 import java.util.ArrayList;
 import java.util.Stack;
+import java.util.GregorianCalendar;
+
+import com.sun.xml.internal.bind.v2.model.core.ID;
 
 import calendear.util.Command;
 import calendear.util.CommandAdd;
@@ -10,6 +13,7 @@ import calendear.util.CommandDisplay;
 import calendear.util.CommandUpdate;
 import calendear.util.CMD_TYPE;
 import calendear.util.Task;
+import calendear.util.TASK_TYPE;
 import calendear.storage.DataManager;
 /**
  * 
@@ -89,47 +93,54 @@ public class Action {
 		Task toUpdate = _data.get(changeId);
 		try{
 			
-			int[] u = c.getChecklist();
-			String[] i = c.getNewInfo();
+			boolean[] u = c.getChecklist();//refactor to isChanged in the future
+			Object[] i = c.getNewInfo();
 			
-			if(u[NAME_ID] == 1){
+			if(u[NAME_ID]){
 				//name
 				String oldName = toUpdate.getName();
-				toUpdate.setName(i[NAME_ID]);
+				toUpdate.setName((String)i[NAME_ID]);
 				i[NAME_ID] = oldName;
 			}
-			if(u[TYPE_ID] == 1){
-				//cannot see task type from here
-				//protected
+			if(u[TYPE_ID]){
+				//type
+				TASK_TYPE oldType = toUpdate.getType();
+				toUpdate.setType((TASK_TYPE)i[TYPE_ID]);
+				i[TYPE_ID] = (Object)oldType;
 			}
-			if(u[STARTT_ID] == 1){
+			if(u[STARTT_ID]){
 				//start time
-				//doesnt really make sense to convert from here
+				GregorianCalendar oldStartTime = toUpdate.getStartTime();
+				toUpdate.setStartTime((GregorianCalendar) i[STARTT_ID]);
+				i[STARTT_ID] = (Object)oldStartTime;
 			}
-			if(u[ENDT_ID] == 1){
+			if(u[ENDT_ID]){
 				//end time
+				GregorianCalendar oldEndTime = toUpdate.getEndTime();
+				toUpdate.setEndTime((GregorianCalendar) i[ENDT_ID]);
+				i[ENDT_ID] = (Object)oldEndTime;
 			}
-			if(u[LOCATION_ID] == 1){
-				String newLoc = i[LOCATION_ID];
+			if(u[LOCATION_ID]){
+				String newLoc = (String)i[LOCATION_ID];
 				i[LOCATION_ID] = toUpdate.getLocation();
 				toUpdate.setLocation(newLoc);
 			}
-			if(u[NOTE_ID] == 1){
-				String newNote = i[NOTE_ID];
+			if(u[NOTE_ID]){
+				String newNote = (String)i[NOTE_ID];
 				i[LOCATION_ID] = toUpdate.getLocation();
 				toUpdate.setLocation(newNote);
 			}
-			if(u[TAG_ID] == 1){
+			if(u[TAG_ID]){
 				//can be a series of tags, need to specify 
 				// add/delete/replace
 			}
-			if(u[IMP_ID] == 1){
-				boolean isImportant = Boolean.valueOf(i[IMP_ID]);
+			if(u[IMP_ID]){
+				boolean isImportant = (boolean)i[IMP_ID];
 				i[IMP_ID] = Boolean.toString(toUpdate.isImportant());
 				toUpdate.markImportant(isImportant);
 			}
-			if(u[COMP_ID] == 1){
-				boolean isFinished = Boolean.valueOf(i[COMP_ID]);
+			if(u[COMP_ID]){
+				boolean isFinished = (boolean)i[COMP_ID];
 				i[COMP_ID] = Boolean.toString(toUpdate.isFinished());
 				toUpdate.setIsFinished(isFinished);
 			}

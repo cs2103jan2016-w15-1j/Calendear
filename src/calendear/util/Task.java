@@ -86,7 +86,7 @@ public class Task {
 		this.startTime = time;
 	}
 	
-	public void setEndTIme(GregorianCalendar time) {
+	public void setEndTime(GregorianCalendar time) {
 		this.endTime = time;
 	}
 	
