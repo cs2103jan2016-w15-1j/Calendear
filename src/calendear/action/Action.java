@@ -2,6 +2,9 @@ package calendear.action;
 
 import java.util.ArrayList;
 import java.util.Stack;
+import java.util.GregorianCalendar;
+
+import com.sun.xml.internal.bind.v2.model.core.ID;
 
 import calendear.util.Command;
 import calendear.util.CommandAdd;
@@ -10,6 +13,7 @@ import calendear.util.CommandDisplay;
 import calendear.util.CommandUpdate;
 import calendear.util.CMD_TYPE;
 import calendear.util.Task;
+import calendear.util.TASK_TYPE;
 import calendear.storage.DataManager;
 /**
  * 
@@ -39,11 +43,11 @@ public class Action {
 		_data = _dm.buildData();
 	}
 	
-	public Action(ArrayList<Task> tasks, DataManager dm) {
+	public Action(ArrayList<Task> tasks, String nameOfFile) {
 		_data = tasks;
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
-		_dm = dm;
+		_dm = new DataManager(nameOfFile);
 	}
 	/**
 	 * returns the task that was added.
@@ -75,13 +79,80 @@ public class Action {
 
 
 	public Task exeUpdate(CommandUpdate c){
-		String newName = c.getNewName();
-		int id = c.getIndex();
-		Task toBeModified = _data.get(id);
-		String oldName = toBeModified.getName();
-		//TODO
-		toBeModified.setName(newName);
-		return toBeModified;
+		int changeId = c.getIndex();
+		final int NAME_ID = 0;
+		final int TYPE_ID = 1;
+		final int STARTT_ID = 2;
+		final int ENDT_ID = 3;
+		final int LOCATION_ID = 4;
+		final int NOTE_ID = 5;
+		final int TAG_ID = 6;
+		final int IMP_ID = 7;//important
+		final int COMP_ID = 8;//finished
+		
+		Task toUpdate = _data.get(changeId);
+		try{
+			
+			boolean[] u = c.getChecklist();//refactor to isChanged in the future
+			Object[] i = c.getNewInfo();
+			
+			if(u[NAME_ID]){
+				//name
+				String oldName = toUpdate.getName();
+				toUpdate.setName((String)i[NAME_ID]);
+				i[NAME_ID] = oldName;
+			}
+			if(u[TYPE_ID]){
+				//type
+				TASK_TYPE oldType = toUpdate.getType();
+				toUpdate.setType((TASK_TYPE)i[TYPE_ID]);
+				i[TYPE_ID] = (Object)oldType;
+			}
+			if(u[STARTT_ID]){
+				//start time
+				GregorianCalendar oldStartTime = toUpdate.getStartTime();
+				toUpdate.setStartTime((GregorianCalendar) i[STARTT_ID]);
+				i[STARTT_ID] = (Object)oldStartTime;
+			}
+			if(u[ENDT_ID]){
+				//end time
+				GregorianCalendar oldEndTime = toUpdate.getEndTime();
+				toUpdate.setEndTime((GregorianCalendar) i[ENDT_ID]);
+				i[ENDT_ID] = (Object)oldEndTime;
+			}
+			if(u[LOCATION_ID]){
+				String newLoc = (String)i[LOCATION_ID];
+				i[LOCATION_ID] = toUpdate.getLocation();
+				toUpdate.setLocation(newLoc);
+			}
+			if(u[NOTE_ID]){
+				String newNote = (String)i[NOTE_ID];
+				i[LOCATION_ID] = toUpdate.getLocation();
+				toUpdate.setLocation(newNote);
+			}
+			if(u[TAG_ID]){
+				//can be a series of tags, need to specify 
+				// add/delete/replace
+			}
+			if(u[IMP_ID]){
+				boolean isImportant = (boolean)i[IMP_ID];
+				i[IMP_ID] = Boolean.toString(toUpdate.isImportant());
+				toUpdate.markImportant(isImportant);
+			}
+			if(u[COMP_ID]){
+				boolean isFinished = (boolean)i[COMP_ID];
+				i[COMP_ID] = Boolean.toString(toUpdate.isFinished());
+				toUpdate.setIsFinished(isFinished);
+			}
+			
+			_undoStack.add(c);
+			_dm.updateData(getNoNullArr());
+		}catch (NullPointerException e){
+			e.printStackTrace();
+		}catch (ArrayIndexOutOfBoundsException e){
+			e.printStackTrace();
+		}
+		return toUpdate;
 	}
 	
 	/**
@@ -95,7 +166,7 @@ public class Action {
 			ArrayList<Task> imp = new ArrayList<Task>();
 			for(int i = 0; i< _data.size(); i++){
 				Task temp = _data.get(i);
-				if(temp.isImportant()){
+				if(temp != null && temp.isImportant()){
 					imp.add(temp);
 				}else{
 					imp.add(null);
@@ -124,6 +195,10 @@ public class Action {
 	}
 	
 	public void exeSort(){
+		
+	}
+	
+	public void exeExit(){
 		
 	}
 	/**
