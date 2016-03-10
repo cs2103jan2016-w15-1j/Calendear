@@ -1,6 +1,5 @@
 package calendear.parser;
 
-import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
