@@ -1,6 +1,7 @@
 package calendear.util;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.Scanner;
 
 public class Task {
 	
@@ -69,16 +70,10 @@ public class Task {
 	}
 	
 	public String getStartTimeStr() {
-		if (startTime == null) {
-			return NULL;
-		}
 		return dateFormatter.format(startTime.getTime());
 	}
 	
 	public String getEndTimeStr() {
-		if (endTime == null) {
-			return NULL;
-		}
 		return dateFormatter.format(endTime.getTime());
 	}
 	
@@ -172,8 +167,33 @@ public class Task {
 	}
 	
 	public static Task parseSaveable(String allString) {
-		Task t = new Task("");
-		return t;
+//		Scanner sc = new Scanner(allString);
+//		sc.nextLine(); //pass the open bracket "{"
+//		String name = sc.nextLine();
+//		String typeStr = sc.nextLine();
+//		String startTimeStr = sc.nextLine();
+//		String endTimeStr = sc.nextLine();
+//		String location = sc.nextLine();
+//		String note = sc.nextLine();
+//		String tag = sc.nextLine();
+//		String importantStr = sc.nextLine();
+//		String finishedStr = sc.nextLine();
+//		sc.close();
+//		Task res;
+//		switch (typeStr){
+//			case STR_DEADLINE:
+//				res = parseDeadline(name, endTimeStr);
+//				break;
+//			case STR_EVENT:
+//				res = parseEvent(name, endTimeStr);
+//				break;
+//			case STR_FLOAT:
+//				res = parseFloat(name, endTimeStr);
+//				break;
+//			default:
+//				throw new Parse
+//		}
+		return new Task("");
 	}
 	
 }
