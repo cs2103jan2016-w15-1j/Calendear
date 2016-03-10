@@ -348,15 +348,3 @@ public class Parser {
 	
 }
 
-class DateParser {
-	
-	public static final SimpleDateFormat dateFormatterType1 = new SimpleDateFormat("dd/MM/yy HH:mm");
-	
-	public static GregorianCalendar parse(String timeStr)
-	throws ParseException {
-		timeStr.trim();
-		GregorianCalendar result = new GregorianCalendar();
-		result.setTime(dateFormatterType1.parse(timeStr));
-		return result;
-	}
-}
