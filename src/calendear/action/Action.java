@@ -1,5 +1,6 @@
 package calendear.action;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.GregorianCalendar;
@@ -36,7 +37,7 @@ public class Action {
 		_redoStack = new Stack<Command>();
 	}
 	
-	public Action(String nameOfFile) {
+	public Action(String nameOfFile) throws ParseException {
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
 		_dm = new DataManager(nameOfFile);
