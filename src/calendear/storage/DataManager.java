@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
-
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class DataManager {
@@ -16,7 +16,7 @@ public class DataManager {
 	private String _nameOfFile;
 	private File _file;
 	
-	public ArrayList<Task> buildData() {
+	public ArrayList<Task> buildData() throws ParseException {
 		ArrayList<Task> tasks = new ArrayList<Task>();
 		try {
 			FileReader fileReader = new FileReader(_file);

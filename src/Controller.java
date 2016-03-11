@@ -7,6 +7,7 @@ import calendear.parser.Parser;
 import calendear.view.View;
 
 import java.util.Scanner;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class Controller {
@@ -17,14 +18,18 @@ public class Controller {
 	public static void main(String[] args) {
 		String nameOfFile = args[0];
 		
-		instantiateActions(nameOfFile);
+		try {
+			instantiateActions(nameOfFile);
+		} catch (ParseException e) {
+			System.out.println("file reading failed");
+		}
 		
 		View.displayWelcome();
 		
 		repl();
 	}
 	
-	public static void instantiateActions(String nameOfFile) {
+	public static void instantiateActions(String nameOfFile) throws ParseException {
 		_action = new Action(nameOfFile);
 	}
 	
