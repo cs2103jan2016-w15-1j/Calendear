@@ -6,9 +6,10 @@ import java.util.Scanner;
 public class Task {
 	
 	public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, dd-MMM-yyyy, HH:mm");
-	private static final String NEWLINE = System.getProperty("line.separator");
+	//private static final String OBJ_SEPERATOR = System.getProperty("line.separator");
 	private static final String TAB = "    ";
 	private static final String NULL = "null";
+	private static final String OBJ_SEPERATOR = ".";
 	private static final String IMPORTANT = "important";
 	private static final String NOT_IMPORTANT = "not important";
 	private static final String FINISHED = "finished";
@@ -70,10 +71,16 @@ public class Task {
 	}
 	
 	public String getStartTimeStr() {
+		if (startTime == null) {
+			return NULL;
+		}
 		return dateFormatter.format(startTime.getTime());
 	}
 	
 	public String getEndTimeStr() {
+		if (endTime == null) {
+			return NULL;
+		}
 		return dateFormatter.format(endTime.getTime());
 	}
 	
@@ -152,16 +159,16 @@ public class Task {
 	}
 	
 	public String toSaveable() {
-		String res = "{" + NEWLINE;
-		res += TAB + getName() + NEWLINE;
-		res += TAB + getTypeStr() + NEWLINE;
-		res += TAB + getStartTimeStr() + NEWLINE;
-		res += TAB + getEndTimeStr() + NEWLINE;
-		res += TAB + getLocation() + NEWLINE;
-		res += TAB + getNote() + NEWLINE;
-		res += TAB + getTag() + NEWLINE;
-		res += TAB + getImportantStr() + NEWLINE;
-		res += TAB + getFinishedStr() + NEWLINE;
+		String res = "{" + OBJ_SEPERATOR;
+		res += TAB + getName() + OBJ_SEPERATOR;
+		res += TAB + getTypeStr() + OBJ_SEPERATOR;
+		res += TAB + getStartTimeStr() + OBJ_SEPERATOR;
+		res += TAB + getEndTimeStr() + OBJ_SEPERATOR;
+		res += TAB + getLocation() + OBJ_SEPERATOR;
+		res += TAB + getNote() + OBJ_SEPERATOR;
+		res += TAB + getTag() + OBJ_SEPERATOR;
+		res += TAB + getImportantStr() + OBJ_SEPERATOR;
+		res += TAB + getFinishedStr() + OBJ_SEPERATOR;
 		res += "}";
 		return res;
 	}
