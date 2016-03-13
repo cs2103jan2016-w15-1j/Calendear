@@ -1,5 +1,6 @@
 package calendear.action;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.GregorianCalendar;
@@ -36,7 +37,7 @@ public class Action {
 		_redoStack = new Stack<Command>();
 	}
 	
-	public Action(String nameOfFile) {
+	public Action(String nameOfFile) throws ParseException {
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
 		_dm = new DataManager(nameOfFile);
@@ -133,6 +134,7 @@ public class Action {
 			if(u[TAG_ID]){
 				//can be a series of tags, need to specify 
 				// add/delete/replace
+				//TODO
 			}
 			if(u[IMP_ID]){
 				boolean isImportant = (boolean)i[IMP_ID];
@@ -182,8 +184,47 @@ public class Action {
 		
 	}
 	
-	public void exeUndo(){
+	public void exeUndo() throws WrongCommandException{
+		Command previousCmd = _undoStack.pop();
+		CMD_TYPE cmdType = previousCmd.getType();
 		
+		switch(cmdType){
+			case ADD: 
+				//TODO
+				break;
+			case DISPLAY:
+				//TODO
+				break;
+			case UPDATE:
+				//TODO
+				break;
+			case DELETE:
+				//TODO
+				break;
+			case SEARCH:
+				//TODO
+				break;
+			case SORT:
+				//TODO
+				break;
+			case MARK:
+				//TODO
+				break;
+			case DONE:
+				//TODO
+				break;
+			case UNDO:
+				//TODO
+				break;
+			case TAG:
+				//TODO
+				break;
+			case LINK_GOOGLE:
+				//TODO
+				break;
+			default:
+				throw new WrongCommandException("Detected Wrong Command in exeUndo");
+		}
 	}
 	
 	public void exeTag(){

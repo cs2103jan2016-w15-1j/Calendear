@@ -1,6 +1,5 @@
 package calendear.parser;
 
-import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,9 +37,9 @@ public class Parser {
 	
 //	private static final String PATTERN_DATE_FORMAT = 
 //								"\\b(\\d){1,2}([:\\-/]\\d\\d[:\\-/]||(\\w){3})\\d\\d";
-	private static final String PATTERN_ADD_DEADLINE = "(\\.add +)(.+)(\\.by +)(.+)";
-	private static final String PATTERN_ADD_EVENT = "(\\.add +)(.+)(\\.from +)(.+)(\\.to)(.+)";
-	private static final String PATTERN_ADD_FLOATING = "(\\.add +)(.+)";
+	private static final String PATTERN_ADD_DEADLINE = "(\\.add) +(.+)(\\.by +)(.+)";
+	private static final String PATTERN_ADD_EVENT = "(\\.add) +(.+)(\\.from +)(.+)(\\.to)(.+)";
+	private static final String PATTERN_ADD_FLOATING = "(\\.add) +(.+)";
 	private static final String PATTERN_UPDATE_NAME_BY_INDEX = "(\\.update +)(\\d+) +(.+)";
 	private static final String PATTERN_UPDATE_MULTIPLE_FIELD_BY_INDEX = 
 	"(\\.update) +(\\d+) +"
@@ -348,15 +347,3 @@ public class Parser {
 	
 }
 
-class DateParser {
-	
-	public static final SimpleDateFormat dateFormatterType1 = new SimpleDateFormat("dd/MM/yy HH:mm");
-	
-	public static GregorianCalendar parse(String timeStr)
-	throws ParseException {
-		timeStr.trim();
-		GregorianCalendar result = new GregorianCalendar();
-		result.setTime(dateFormatterType1.parse(timeStr));
-		return result;
-	}
-}
