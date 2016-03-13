@@ -1,7 +1,6 @@
 import calendear.action.Action;
 import calendear.parser.Parser;
 import calendear.util.CommandAdd;
-import calendear.storage.DataManager;
 import calendear.util.*;
 import calendear.parser.Parser;
 import calendear.view.View;
