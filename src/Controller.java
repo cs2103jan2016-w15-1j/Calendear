@@ -1,9 +1,7 @@
-import calendear.action.Action;
-import calendear.parser.Parser;
-import calendear.util.CommandAdd;
-import calendear.storage.DataManager;
+import calendear.action.CDLogic;
+
 import calendear.util.*;
-import calendear.parser.Parser;
+
 import calendear.view.View;
 
 import java.util.Scanner;
@@ -12,52 +10,56 @@ import java.util.ArrayList;
 
 public class Controller {
 	
-	private static Scanner _scanner;
-	private static Action _action;
+	private Scanner _scanner;
+	private CDLogic _cdLogic;
+	
 	
 	public static void main(String[] args) {
 		String nameOfFile = args[0];
 		
+		Controller controller = new Controller(nameOfFile);
+		controller.startApplication();
+	}
+	
+	public Controller(String nameOfFile) {
 		try {
-			instantiateActions(nameOfFile);
+			instantiateLogic(nameOfFile);
 		} catch (ParseException e) {
 			System.out.println("file reading failed");
 		}
 		
 		View.displayWelcome();
-		
-		repl();
 	}
 	
-	public static void instantiateActions(String nameOfFile) throws ParseException {
-		_action = new Action(nameOfFile);
+	public void instantiateLogic(String nameOfFile) throws ParseException {
+		_cdLogic = new CDLogic(nameOfFile);
 	}
 	
-	private static void repl() {
+	private void startApplication() {
 	    _scanner = new Scanner(System.in);
 
 	    while(true) {
+	    	
 	    	View.displayRequestForInput();
 	    	
 	    	String userCommand = _scanner.nextLine();
-	    	
 //	    	Parse Tokens
-	    	Command command = Parser.parse(userCommand);
+	    	Command command = _cdLogic.parseInput(userCommand);
 //	    	Do Actions
 	    	switch(command.getType()) {
-		    	case ADD:	  Task addedTask = _action.exeAdd((CommandAdd) command);
+		    	case ADD:	  Task addedTask = _cdLogic.exeAdd((CommandAdd) command);
 		    				  View.displayAdd(addedTask);
 		    				  break;
 		    				  
-	    		case DISPLAY: ArrayList<Task> tasks = _action.exeDisplay((CommandDisplay) command);
+	    		case DISPLAY: ArrayList<Task> tasks = _cdLogic.exeDisplay((CommandDisplay) command);
 	    					  View.displayDisplay(tasks);
 	    					  break;
 	    					  
-	    		case DELETE:  Task deletedTask = _action.exeDelete((CommandDelete) command);
+	    		case DELETE:  Task deletedTask = _cdLogic.exeDelete((CommandDelete) command);
 	    					  View.displayDelete(deletedTask);
 	    					  break;
 	    		
-	    		case UPDATE:  Task updatedTask = _action.exeUpdate((CommandUpdate) command);
+	    		case UPDATE:  Task updatedTask = _cdLogic.exeUpdate((CommandUpdate) command);
 	    					  View.displayUpdate(updatedTask);
 	    					  break;
 	    		
