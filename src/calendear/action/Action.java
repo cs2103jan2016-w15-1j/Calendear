@@ -184,10 +184,9 @@ public class Action {
 		
 	}
 	
-	public void exeUndo() throws WrongCommandException{
+	public void exeUndo(){
 		Command previousCmd = _undoStack.pop();
 		CMD_TYPE cmdType = previousCmd.getType();
-		
 		switch(cmdType){
 			case ADD: 
 				//TODO
@@ -223,7 +222,7 @@ public class Action {
 				//TODO
 				break;
 			default:
-				throw new WrongCommandException("Detected Wrong Command in exeUndo");
+				System.out.println("received wrong command in action.exeUndo");
 		}
 	}
 	
