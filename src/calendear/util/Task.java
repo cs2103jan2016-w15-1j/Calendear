@@ -4,15 +4,18 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
+import org.ocpsoft.prettytime.shade.edu.emory.mathcs.backport.java.util.Arrays;
+
 import calendear.parser.DateParser;
 
 public class Task {
 	
-	public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, dd-MMM-yyyy, HH:mm");
+	public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy, HH:mm");
 	//private static final String OBJ_SEPERATOR = System.getProperty("line.separator");
 	private static final String TAB = "    ";
 	private static final String NULL = "null";
 	private static final String OBJ_SEPERATOR = ".";
+	private static final String PATTERN_OBJ_SEPERATOR = "\\.";
 	private static final String IMPORTANT = "important";
 	private static final String NOT_IMPORTANT = "not important";
 	private static final String FINISHED = "finished";
@@ -172,8 +175,8 @@ public class Task {
 	}
 	
 	public String toSaveable() {
-		String res = OBJ_SEPERATOR;
-		res += getName() + OBJ_SEPERATOR;
+		String res;
+		res = getName() + OBJ_SEPERATOR;
 		res += getTypeStr() + OBJ_SEPERATOR;
 		res += getStartTimeStr() + OBJ_SEPERATOR;
 		res += getEndTimeStr() + OBJ_SEPERATOR;
@@ -186,7 +189,7 @@ public class Task {
 	}
 	
 	public static Task parseSaveable(String allString) throws ParseException {
-		String[] members = allString.split(OBJ_SEPERATOR);
+		String[] members = allString.split(PATTERN_OBJ_SEPERATOR);
 		String typeStr = members[SAVING_INDEX_TYPE];
 		switch (typeStr){
 			case STR_DEADLINE:
