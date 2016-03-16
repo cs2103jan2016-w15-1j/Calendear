@@ -14,7 +14,6 @@ public class DateParser {
 	throws ParseException {
 		PrettyTimeParser parser = new PrettyTimeParser();
 		List<Date> dates =  parser.parse(timeStr);
-		assert(dates.size() >= 0);
 		if (dates.size() == 0){
 			throw new ParseException("\"" + timeStr +"\"" + "is not a valid date and time description", 0);
 		}

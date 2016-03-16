@@ -9,50 +9,50 @@ import java.text.ParseException;
 
 public class Parser {
 	
-	private static final String CMD_STR_ADD = ".add";
-	private static final String CMD_STR_DISPLAY = ".display";
-	private static final String CMD_STR_UPDATE = ".update";
-	private static final String CMD_STR_DELETE = ".delete";
-	private static final String CMD_STR_SEARCH = ".search";
-	private static final String CMD_STR_SORT = ".sort";
-	private static final String CMD_STR_MARK = ".mark";
-	private static final String CMD_STR_DONE = ".done";
-	private static final String CMD_STR_UNDO = ".undo";
-	private static final String CMD_STR_TAG = ".tag";
-	private static final String CMD_STR_LINK_GOOGLE = ".linkGoogle";
-	private static final String CMD_STR_EXIT = ".exit";
+	private static final String CMD_STR_ADD = "add";
+	private static final String CMD_STR_DISPLAY = "display";
+	private static final String CMD_STR_UPDATE = "update";
+	private static final String CMD_STR_DELETE = "delete";
+	private static final String CMD_STR_SEARCH = "search";
+	private static final String CMD_STR_SORT = "sort";
+	private static final String CMD_STR_MARK = "mark";
+	private static final String CMD_STR_DONE = "done";
+	private static final String CMD_STR_UNDO = "undo";
+	private static final String CMD_STR_TAG = "tag";
+	private static final String CMD_STR_LINK_GOOGLE = "linkGoogle";
+	private static final String CMD_STR_EXIT = "exit";
+	private static final String ESCAPE_CHARACTER = ".";
+	//when using regex and regex-related methods like String.split() and String.replaceAll()
+	//the "." is treated as metacharacter so you have to include the escape character "\\"
+	private static final String PATTERN_ESCAPE_CHARACTER = "\\.";
 	
-	private static final String IMPORTANT = "!";
+	private static final String IMPORTANT = "important";
+	private static final String NAME = "name";
+	private static final String BY = "by";
+	private static final String FROM = "from";
+	private static final String TO = "to";
+	private static final String FLOAT = "float";
+	private static final String AT = "at";
+	private static final String NOTE = "note";
+	private static final String TAG = "tag";
+	private static final String MARK = "mark";
+	private static final String DONE = "done";
 	
-	private static final String NAME = ".name";
-	private static final String BY = ".by";
-	private static final String FROM = ".from";
-	private static final String TO = ".to";
-	private static final String FLOAT = ".float";
-	private static final String AT = ".at";
-	private static final String NOTE = ".note";
-	private static final String TAG = ".tag";
-	private static final String MARK = ".mark";
-	private static final String DONE = ".done";
-	
-//	private static final String PATTERN_DATE_FORMAT = 
-//								"\\b(\\d){1,2}([:\\-/]\\d\\d[:\\-/]||(\\w){3})\\d\\d";
-	private static final String PATTERN_ADD_DEADLINE = "(\\.add) +(.+)(\\.by +)(.+)";
-	private static final String PATTERN_ADD_EVENT = "(\\.add) +(.+)(\\.from +)(.+)(\\.to)(.+)";
-	private static final String PATTERN_ADD_FLOATING = "(\\.add) +(.+)";
-//	private static final String PATTERN_UPDATE_NAME_BY_INDEX = "(\\.update +)(\\d+) +(.+)";
+	private static final String PATTERN_ADD_DEADLINE = "(\\badd) +(.+)(\\bby) +(.+)";
+	private static final String PATTERN_ADD_EVENT = "(\\badd) +(.+)(\\bfrom) +(.+)(\\bto)(.+)";
+	private static final String PATTERN_ADD_FLOATING = "(\\badd) +(.+)";
 	private static final String PATTERN_UPDATE_MULTIPLE_FIELD_BY_INDEX = 
-	"(\\.update) +(\\d+) +"					//represent the groups .update and <taskID>
-	+ "(?:(?:(\\.name) *([^\\.]+)) *"		//represent the groups .name and <newName>
-	+ "|(?:(\\.by) *([^\\.]+)) *"			//represent the groups .by and <dateAndTime>
-	+ "|(?:(\\.from) *([^\\.]+)) *"			//represent the groups .from and <dateAndTime>
-	+ "|(?:(\\.to) *([^\\.]+)) *"			//represent the groups .to and <dateAndTime>
-	+ "|(?:(\\.float) *()) *"				//represent the group .float
-	+ "|(?:(\\.at) *([^\\.]+)) *"			//represent the groups .at and <newLocation>
-	+ "|(?:(\\.note) *([^\\.]+)) *"			//represent the groups .note and <newNote>
-	+ "|(?:(\\.tag) *([^\\.]+)) *"			//represent the groups .tag and <newTag>
-	+ "|(?:(\\.mark) *()) *"				//represent the group .mark
-	+ "|(?:(\\.done) *()) *)+";				//represent the group .done
+	"(\\bupdate) +(\\d+) +"				//represent the groups update and <taskID>
+	+ "(?:(?:(\\bname) *(.+)) *"		//represent the groups name and <newName>
+	+ "|(?:(\\bby) *(.+)) *"			//represent the groups by and <dateAndTime>
+	+ "|(?:(\\bfrom) *(.+)) *"			//represent the groups from and <dateAndTime>
+	+ "|(?:(\\bto) *(.+)) *"			//represent the groups to and <dateAndTime>
+	+ "|(?:(\\bfloat) *()) *"			//represent the group float
+	+ "|(?:(\\bat) *(.+)) *"			//represent the groups at and <newLocation>
+	+ "|(?:(\\bnote) *(.+)) *"			//represent the groups note and <newNote>
+	+ "|(?:(\\btag) *(.+)) *"			//represent the groups tag and <newTag>
+	+ "|(?:(\\bmark) *()) *"			//represent the group mark
+	+ "|(?:(\\bdone) *()) *)+";			//represent the group done
 	private static final int NUM_OF_UPDATE_KEYWORD = 10;
 	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
 	
@@ -350,6 +350,10 @@ public class Parser {
 	
 	private static Command parseInvalidCmd(String[] words, String rawInput){
 		return new CommandInvalid(rawInput);
+	}
+	
+	private static String removeEscapeCharacter(String rawInput){
+		return rawInput.replaceAll(PATTERN_ESCAPE_CHARACTER, rawInput);
 	}
 	
 }
