@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.xml.internal.bind.v2.model.core.ID;
 
@@ -22,6 +24,7 @@ import calendear.storage.DataManager;
  *
  */
 public class Action {
+	private static final Logger log= Logger.getLogger( "Action" );
 	private ArrayList<Task> _data;
 	private Stack<Command> _undoStack;
 	private Stack<Command> _redoStack;
@@ -38,6 +41,7 @@ public class Action {
 	}
 	
 	public Action(String nameOfFile) throws ParseException {
+		log.log(Level.FINE, "");
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
 		_dm = new DataManager(nameOfFile);
@@ -57,6 +61,7 @@ public class Action {
 	 * @return
 	 */
 	public Task exeAdd(CommandAdd c){
+		assertCommandNotNull(c);
 		Task addedTask = c.getTask();
 		_data.add(addedTask);
 		c.setTask(null);
@@ -69,6 +74,7 @@ public class Action {
 	 * @param id
 	 */
 	public Task exeDelete(CommandDelete c){
+		assertCommandNotNull(c);
 		int id = c.getIndex();
 		Task t = _data.get(id);
 		_data.set(id, null);
@@ -80,6 +86,7 @@ public class Action {
 
 
 	public Task exeUpdate(CommandUpdate c){
+		assertCommandNotNull(c);
 		int changeId = c.getIndex();
 		final int NAME_ID = 0;
 		final int TYPE_ID = 1;
@@ -163,6 +170,7 @@ public class Action {
 	 * @return arrayList containing tasks to show, all null elements should not be shown
 	 */
 	public ArrayList<Task> exeDisplay(CommandDisplay c){
+		assertCommandNotNull(c);
 		if(c.isOnlyImportantDisplayed()){
 			//prepares an arraylist where all non important tasks are represented as null
 			ArrayList<Task> imp = new ArrayList<Task>();
@@ -222,7 +230,8 @@ public class Action {
 				//TODO
 				break;
 			default:
-				System.out.println("received wrong command in action.exeUndo");
+				assert(false): "received wrong command in action.exeUndo";
+				log.log(Level.SEVERE, previousCmd.toString(), previousCmd);
 		}
 	}
 	
@@ -257,7 +266,9 @@ public class Action {
 		return toReturn;
 	}
 	
-	
+	private void assertCommandNotNull(Command c){
+		assert(c != null): "Received null command";
+	}
 }
 
 
