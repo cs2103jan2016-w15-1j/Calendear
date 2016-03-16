@@ -40,12 +40,19 @@ public class Parser {
 	private static final String PATTERN_ADD_DEADLINE = "(\\.add) +(.+)(\\.by +)(.+)";
 	private static final String PATTERN_ADD_EVENT = "(\\.add) +(.+)(\\.from +)(.+)(\\.to)(.+)";
 	private static final String PATTERN_ADD_FLOATING = "(\\.add) +(.+)";
-	private static final String PATTERN_UPDATE_NAME_BY_INDEX = "(\\.update +)(\\d+) +(.+)";
+//	private static final String PATTERN_UPDATE_NAME_BY_INDEX = "(\\.update +)(\\d+) +(.+)";
 	private static final String PATTERN_UPDATE_MULTIPLE_FIELD_BY_INDEX = 
-	"(\\.update) +(\\d+) +"
-	+ "(?:(?:(\\.name) *([^\\.]+)) *|(?:(\\.by) *([^\\.]+)) *|(?:(\\.from) *([^\\.]+)) *"
-	+ "|(?:(\\.to) *([^\\.]+)) *|(?:(\\.float) *()) *|(?:(\\.at) *([^\\.]+)) *"
-	+ "|(?:(\\.note) *([^\\.]+)) *|(?:(\\.tag) *([^\\.]+)) *|(?:(\\.mark) *()) *|(?:(\\.done) *()) *)+";
+	"(\\.update) +(\\d+) +"					//represent the groups .update and <taskID>
+	+ "(?:(?:(\\.name) *([^\\.]+)) *"		//represent the groups .name and <newName>
+	+ "|(?:(\\.by) *([^\\.]+)) *"			//represent the groups .by and <dateAndTime>
+	+ "|(?:(\\.from) *([^\\.]+)) *"			//represent the groups .from and <dateAndTime>
+	+ "|(?:(\\.to) *([^\\.]+)) *"			//represent the groups .to and <dateAndTime>
+	+ "|(?:(\\.float) *()) *"				//represent the group .float
+	+ "|(?:(\\.at) *([^\\.]+)) *"			//represent the groups .at and <newLocation>
+	+ "|(?:(\\.note) *([^\\.]+)) *"			//represent the groups .note and <newNote>
+	+ "|(?:(\\.tag) *([^\\.]+)) *"			//represent the groups .tag and <newTag>
+	+ "|(?:(\\.mark) *()) *"				//represent the group .mark
+	+ "|(?:(\\.done) *()) *)+";				//represent the group .done
 	private static final int NUM_OF_UPDATE_KEYWORD = 10;
 	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
 	
@@ -117,7 +124,7 @@ public class Parser {
 		try {
 			time = DateParser.parse(matcher.group(4));
 		} catch (ParseException e) {
-			return new CommandInvalid(rawInput);
+			return new CommandInvalid(e.getMessage());
 		}
 		Task task = new Task (matcher.group(2), time);
 		return new CommandAdd(task);
@@ -130,7 +137,7 @@ public class Parser {
 			startTime = DateParser.parse(matcher.group(4));
 			endTime = DateParser.parse(matcher.group(6));
 		} catch (ParseException e) {
-			return new CommandInvalid(rawInput);
+			return new CommandInvalid(e.getMessage());
 		}
 		Task task = new Task (matcher.group(2), startTime, endTime);
 		return new CommandAdd(task);
