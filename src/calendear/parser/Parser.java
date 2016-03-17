@@ -38,10 +38,38 @@ public class Parser {
 	private static final String MARK = "mark";
 	private static final String DONE = "done";
 	
-	private static final String PATTERN_ADD_DEADLINE = "(\\badd) +(.+)(\\bby) +(.+)";
-	private static final String PATTERN_ADD_EVENT = "(\\badd) +(.+)(\\bfrom) +(.+)(\\bto)(.+)";
-	private static final String PATTERN_ADD_FLOATING = "(\\badd) +(.+)";
-	private static final String PATTERN_UPDATE_MULTIPLE_FIELD_BY_INDEX = 
+	private static final String PATTERN_ADD_DEADLINE = 
+	"(\\badd) +(.+)(\\bby) +(.+)"
+	+ "(?:(?:(\\bat) *(.+)) *"			//represent the groups at and <newLocation>
+	+ "|(?:(\\bnote) *(.+)) *"			//represent the groups note and <newNote>
+	+ "|(?:(\\btag) *(.+)) *"			//represent the groups tag and <newTag>
+	+ "|(?:(\\bmark) *()) *"			//represent the group mark
+	+ "|(?:(\\bdone) *()) *)+";			//represent the group done
+	private static final String PATTERN_ADD_EVENT = 
+	"(\\badd) +(.+)(\\bfrom) +(.+)(\\bto)(.+)"
+	+ "|(?:(\\bat) *(.+)) *"			//represent the groups at and <newLocation>
+	+ "|(?:(\\bnote) *(.+)) *"			//represent the groups note and <newNote>
+	+ "|(?:(\\btag) *(.+)) *"			//represent the groups tag and <newTag>
+	+ "|(?:(\\bmark) *()) *"			//represent the group mark
+	+ "|(?:(\\bdone) *()) *)+";			//represent the group done
+	private static final String PATTERN_ADD_FLOATING = 
+	"(\\badd) +(.+)"
+	+ "|(?:(\\bat) *(.+)) *"			//represent the groups at and <newLocation>
+	+ "|(?:(\\bnote) *(.+)) *"			//represent the groups note and <newNote>
+	+ "|(?:(\\btag) *(.+)) *"			//represent the groups tag and <newTag>
+	+ "|(?:(\\bmark) *()) *"			//represent the group mark
+	+ "|(?:(\\bdone) *()) *)+";			//represent the group done;
+	private static final String PATTERN_ADD = 
+	"(\\badd) +([\\S]+) +"				//represent the groups update and <taskID>
+	+ "(?:(?:(\\bby) *(.+)) *"			//represent the groups by and <dateAndTime>
+	+ "|(?:(\\bfrom) *(.+)) *"			//represent the groups from and <dateAndTime>
+	+ "|(?:(\\bto) *(.+)) *"			//represent the groups to and <dateAndTime>
+	+ "|(?:(\\bfloat) *()) *"			//represent the group float
+	+ "|(?:(\\bat) *(.+)) *"			//represent the groups at and <newLocation>
+	+ "|(?:(\\bnote) *(.+)) *"			//represent the groups note and <newNote>
+	+ "|(?:(\\btag) *(.+)) *"			//represent the groups tag and <newTag>
+	+ "|(?:(\\bmark) *()) *)+";			//represent the group done
+	private static final String PATTERN_UPDATE_BY_INDEX = 
 	"(\\bupdate) +(\\d+) +"				//represent the groups update and <taskID>
 	+ "(?:(?:(\\bname) *(.+)) *"		//represent the groups name and <newName>
 	+ "|(?:(\\bby) *(.+)) *"			//represent the groups by and <dateAndTime>
@@ -53,6 +81,7 @@ public class Parser {
 	+ "|(?:(\\btag) *(.+)) *"			//represent the groups tag and <newTag>
 	+ "|(?:(\\bmark) *()) *"			//represent the group mark
 	+ "|(?:(\\bdone) *()) *)+";			//represent the group done
+	
 	private static final int NUM_OF_UPDATE_KEYWORD = 10;
 	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
 	
@@ -149,6 +178,25 @@ public class Parser {
 		return new CommandAdd(task);
 	}
 	
+	private static Command parseAddCommand2(String[] words, String rawInput){
+		Pattern pattern = Pattern.compile(PATTERN_ADD);
+		Matcher matcher = pattern.matcher(rawInput);
+		if (matcher.find()){
+			try {	
+				String name = matcher.group(2);
+				boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
+				Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
+				makeCheckList(matcher, checkList, newInfo);
+				return new CommandAdd(name, checkList, newInfo);
+			}
+			catch (ParseException e){
+				return new CommandInvalid(rawInput);
+			}
+		}
+		
+		return new CommandInvalid(rawInput);
+	}
+	
 	private static Command parseDisplayCmd(String[] words, String rawInput){
 		if (words.length>1 && words[1].equals(IMPORTANT)){
 			return new CommandDisplay(true);
@@ -159,7 +207,7 @@ public class Parser {
 	
 	// .update <index> <new name>
 	private static Command parseUpdateCmd(String[] words, String rawInput){
-		Pattern pattern = Pattern.compile(PATTERN_UPDATE_MULTIPLE_FIELD_BY_INDEX);
+		Pattern pattern = Pattern.compile(PATTERN_UPDATE_BY_INDEX);
 		Matcher matcher = pattern.matcher(rawInput);
 		if (matcher.find()){
 			try {	
@@ -170,7 +218,7 @@ public class Parser {
 				return new CommandUpdate(index, checkList, newInfo);
 			}
 			catch (NumberFormatException e){
-				return new CommandInvalid(rawInput);
+				return new CommandInvalid(matcher.group(2) + " is not a valid index");
 			}
 			catch (ParseException e){
 				return new CommandInvalid(rawInput);

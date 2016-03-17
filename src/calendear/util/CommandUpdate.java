@@ -48,4 +48,5 @@ public class CommandUpdate extends Command {
 	public Object[] getNewInfo(){
 		return newInfo;
 	}
+	
 }
