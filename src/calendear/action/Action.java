@@ -6,9 +6,6 @@ import java.util.Stack;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sun.xml.internal.bind.v2.model.core.ID;
-
 import calendear.util.Command;
 import calendear.util.CommandAdd;
 import calendear.util.CommandDelete;
@@ -41,13 +38,13 @@ public class Action {
 	}
 	
 	public Action(String nameOfFile) throws ParseException {
-		log.log(Level.FINE, "");
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
 		_dm = new DataManager(nameOfFile);
 		_data = _dm.buildData();
 	}
 	
+	//not using
 	public Action(ArrayList<Task> tasks, String nameOfFile) {
 		_data = tasks;
 		_undoStack = new Stack<Command>();
@@ -84,9 +81,8 @@ public class Action {
 		return t;
 	}
 
-
-	public Task exeUpdate(CommandUpdate c){
-		assertCommandNotNull(c);
+	//helper class to exchange contents of CommandUpdate and task
+	private void updateInformation(CommandUpdate c, Task toUpdate){
 		int changeId = c.getIndex();
 		final int NAME_ID = 0;
 		final int TYPE_ID = 1;
@@ -98,7 +94,6 @@ public class Action {
 		final int IMP_ID = 7;//important
 		final int COMP_ID = 8;//finished
 		
-		Task toUpdate = _data.get(changeId);
 		try{
 			
 			boolean[] u = c.getChecklist();//refactor to isChanged in the future
@@ -161,6 +156,16 @@ public class Action {
 		}catch (ArrayIndexOutOfBoundsException e){
 			e.printStackTrace();
 		}
+
+	}
+
+	public Task exeUpdate(CommandUpdate c){
+		assertCommandNotNull(c);
+		int changeId = c.getIndex();
+		Task toUpdate = _data.get(changeId);
+		
+		updateInformation(c, toUpdate);
+		this._dm.updateData(getNoNullArr());
 		return toUpdate;
 	}
 	
@@ -197,10 +202,11 @@ public class Action {
 		CMD_TYPE cmdType = previousCmd.getType();
 		switch(cmdType){
 			case ADD: 
-				//TODO
+				//remove the newly added task
+				_data.remove(_data.size()-1);
 				break;
 			case DISPLAY:
-				//TODO
+				//lol what am i doing,commandDisplay is not recorded
 				break;
 			case UPDATE:
 				//TODO
@@ -233,23 +239,29 @@ public class Action {
 				assert(false): "received wrong command in action.exeUndo";
 				log.log(Level.SEVERE, previousCmd.toString(), previousCmd);
 		}
+		_redoStack.push(previousCmd);
+		this._dm.updateData(getNoNullArr());
+		log.log(Level.FINE, "pushed previousCmd to redoStack", previousCmd);
 	}
 	
 	public void exeTag(){
-		
+		this._dm.updateData(getNoNullArr());
 	}
 	
 	public void exeMark(){
-		
+		this._dm.updateData(getNoNullArr());
 	}
 	
 	public void exeSort(){
-		
+		this._dm.updateData(getNoNullArr());
 	}
 	
 	public void exeExit(){
-		
+		this._dm.updateData(getNoNullArr());
 	}
+	
+	//--------------------------------------------------------------------------
+	//helper
 	/**
 	 * returns an array of data with null objects removed
 	 * @return
