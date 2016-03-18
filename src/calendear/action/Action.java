@@ -38,13 +38,13 @@ public class Action {
 	}
 	
 	public Action(String nameOfFile) throws ParseException {
-		log.log(Level.FINE, "");
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
 		_dm = new DataManager(nameOfFile);
 		_data = _dm.buildData();
 	}
 	
+	//not using
 	public Action(ArrayList<Task> tasks, String nameOfFile) {
 		_data = tasks;
 		_undoStack = new Stack<Command>();
@@ -57,19 +57,19 @@ public class Action {
 	 * @param c
 	 * @return
 	 */
-	private Task exeAddWithNullTask(CommandAdd c){
-		//chklst not needed as we know only name is updated
-		boolean[] chklst = c.getChecklist();
-		Object[] newInfo = c.getNewInfo();
-		//since we are only adding name now..
-		Task addedTask = new Task((String)newInfo[CommandUpdate.CODE_UPDATE_NAME]);
-		return addedTask;
+	//---------helper-------------
+	private Task addWithInfo(CommandAdd c){
+		Task toReturn = new Task("");// "" is a stud
+		boolean[] infoList = c.getChecklist();
+		Object[] newData = c.getNewInfo();
+		exchangeInfo(toReturn, infoList, newData);
+		return toReturn;
 	}
+	
 	public Task exeAdd(CommandAdd c){
-		//assertCommandNotNull(c);
 		Task addedTask = c.getTask();
 		if(addedTask == null){
-			addedTask = exeAddWithNullTask(c);
+			addedTask = addWithInfo(c);
 		}
 		_data.add(addedTask);
 		c.setTask(null);
@@ -91,11 +91,8 @@ public class Action {
 		_dm.updateData(getNoNullArr());
 		return t;
 	}
-
-
-	public Task exeUpdate(CommandUpdate c){
-		assertCommandNotNull(c);
-		int changeId = c.getIndex();
+	
+	private void exchangeInfo(Task toUpdate, boolean[] infoList, Object[] newData){
 		final int NAME_ID = 0;
 		final int TYPE_ID = 1;
 		final int STARTT_ID = 2;
@@ -106,61 +103,75 @@ public class Action {
 		final int IMP_ID = 7;//important
 		final int COMP_ID = 8;//finished
 		
-		Task toUpdate = _data.get(changeId);
 		try{
-			
-			boolean[] u = c.getChecklist();//refactor to isChanged in the future
-			Object[] i = c.getNewInfo();
-			
-			if(u[NAME_ID]){
+			if(infoList[NAME_ID]){
 				//name
 				String oldName = toUpdate.getName();
-				toUpdate.setName((String)i[NAME_ID]);
-				i[NAME_ID] = oldName;
+				toUpdate.setName((String)newData[NAME_ID]);
+				newData[NAME_ID] = oldName;
 			}
-			if(u[TYPE_ID]){
+			if(infoList[TYPE_ID]){
 				//type
 				TASK_TYPE oldType = toUpdate.getType();
-				toUpdate.setType((TASK_TYPE)i[TYPE_ID]);
-				i[TYPE_ID] = (Object)oldType;
+				toUpdate.setType((TASK_TYPE)newData[TYPE_ID]);
+				newData[TYPE_ID] = (Object)oldType;
 			}
-			if(u[STARTT_ID]){
+			if(infoList[STARTT_ID]){
 				//start time
 				GregorianCalendar oldStartTime = toUpdate.getStartTime();
-				toUpdate.setStartTime((GregorianCalendar) i[STARTT_ID]);
-				i[STARTT_ID] = (Object)oldStartTime;
+				toUpdate.setStartTime((GregorianCalendar) newData[STARTT_ID]);
+				newData[STARTT_ID] = (Object)oldStartTime;
 			}
-			if(u[ENDT_ID]){
+			if(infoList[ENDT_ID]){
 				//end time
 				GregorianCalendar oldEndTime = toUpdate.getEndTime();
-				toUpdate.setEndTime((GregorianCalendar) i[ENDT_ID]);
-				i[ENDT_ID] = (Object)oldEndTime;
+				toUpdate.setEndTime((GregorianCalendar) newData[ENDT_ID]);
+				newData[ENDT_ID] = (Object)oldEndTime;
 			}
-			if(u[LOCATION_ID]){
-				String newLoc = (String)i[LOCATION_ID];
-				i[LOCATION_ID] = toUpdate.getLocation();
+			if(infoList[LOCATION_ID]){
+				String newLoc = (String)newData[LOCATION_ID];
+				newData[LOCATION_ID] = toUpdate.getLocation();
 				toUpdate.setLocation(newLoc);
 			}
-			if(u[NOTE_ID]){
-				String newNote = (String)i[NOTE_ID];
-				i[LOCATION_ID] = toUpdate.getLocation();
+			if(infoList[NOTE_ID]){
+				String newNote = (String)newData[NOTE_ID];
+				newData[LOCATION_ID] = toUpdate.getLocation();
 				toUpdate.setLocation(newNote);
 			}
-			if(u[TAG_ID]){
+			if(infoList[TAG_ID]){
 				//can be a series of tags, need to specify 
 				// add/delete/replace
 				//TODO
 			}
-			if(u[IMP_ID]){
-				boolean isImportant = (boolean)i[IMP_ID];
-				i[IMP_ID] = Boolean.toString(toUpdate.isImportant());
+			if(infoList[IMP_ID]){
+				boolean isImportant = (boolean)newData[IMP_ID];
+				newData[IMP_ID] = Boolean.toString(toUpdate.isImportant());
 				toUpdate.markImportant(isImportant);
 			}
-			if(u[COMP_ID]){
-				boolean isFinished = (boolean)i[COMP_ID];
-				i[COMP_ID] = Boolean.toString(toUpdate.isFinished());
+			if(infoList[COMP_ID]){
+				boolean isFinished = (boolean)newData[COMP_ID];
+				newData[COMP_ID] = Boolean.toString(toUpdate.isFinished());
 				toUpdate.setIsFinished(isFinished);
 			}
+		}catch (NullPointerException e){
+			e.printStackTrace();
+		}catch (ArrayIndexOutOfBoundsException e){
+			e.printStackTrace();
+		}
+	}
+
+
+	public Task exeUpdate(CommandUpdate c){
+		assertCommandNotNull(c);
+		int changeId = c.getIndex();
+		Task toUpdate = _data.get(changeId);
+		
+		try{
+			
+			boolean[] infoList = c.getChecklist();//refactor to isChanged in the future
+			Object[] newData = c.getNewInfo();
+			
+			exchangeInfo(toUpdate, infoList, newData);
 			
 			_undoStack.add(c);
 			_dm.updateData(getNoNullArr());
@@ -169,6 +180,8 @@ public class Action {
 		}catch (ArrayIndexOutOfBoundsException e){
 			e.printStackTrace();
 		}
+		
+		this._dm.updateData(getNoNullArr());
 		return toUpdate;
 	}
 	
@@ -205,10 +218,11 @@ public class Action {
 		CMD_TYPE cmdType = previousCmd.getType();
 		switch(cmdType){
 			case ADD: 
-				//TODO
+				//remove the newly added task
+				_data.remove(_data.size()-1);
 				break;
 			case DISPLAY:
-				//TODO
+				//lol what am i doing,commandDisplay is not recorded
 				break;
 			case UPDATE:
 				//TODO
@@ -241,23 +255,29 @@ public class Action {
 				assert(false): "received wrong command in action.exeUndo";
 				log.log(Level.SEVERE, previousCmd.toString(), previousCmd);
 		}
+		_redoStack.push(previousCmd);
+		this._dm.updateData(getNoNullArr());
+		log.log(Level.FINE, "pushed previousCmd to redoStack", previousCmd);
 	}
 	
 	public void exeTag(){
-		
+		this._dm.updateData(getNoNullArr());
 	}
 	
 	public void exeMark(){
-		
+		this._dm.updateData(getNoNullArr());
 	}
 	
 	public void exeSort(){
-		
+		this._dm.updateData(getNoNullArr());
 	}
 	
 	public void exeExit(){
-		
+		this._dm.updateData(getNoNullArr());
 	}
+	
+	//--------------------------------------------------------------------------
+	//helper
 	/**
 	 * returns an array of data with null objects removed
 	 * @return
