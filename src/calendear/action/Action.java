@@ -83,7 +83,6 @@ public class Action {
 
 	//helper class to exchange contents of CommandUpdate and task
 	private void updateInformation(CommandUpdate c, Task toUpdate){
-		int changeId = c.getIndex();
 		final int NAME_ID = 0;
 		final int TYPE_ID = 1;
 		final int STARTT_ID = 2;
