@@ -6,9 +6,6 @@ import java.util.Stack;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sun.xml.internal.bind.v2.model.core.ID;
-
 import calendear.util.Command;
 import calendear.util.CommandAdd;
 import calendear.util.CommandDelete;
@@ -60,9 +57,20 @@ public class Action {
 	 * @param c
 	 * @return
 	 */
+	private Task exeAddWithNullTask(CommandAdd c){
+		//chklst not needed as we know only name is updated
+		boolean[] chklst = c.getChecklist();
+		Object[] newInfo = c.getNewInfo();
+		//since we are only adding name now..
+		Task addedTask = new Task((String)newInfo[CommandUpdate.CODE_UPDATE_NAME]);
+		return addedTask;
+	}
 	public Task exeAdd(CommandAdd c){
-		assertCommandNotNull(c);
+		//assertCommandNotNull(c);
 		Task addedTask = c.getTask();
+		if(addedTask == null){
+			addedTask = exeAddWithNullTask(c);
+		}
 		_data.add(addedTask);
 		c.setTask(null);
 		_undoStack.push(c);
