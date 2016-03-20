@@ -262,19 +262,40 @@ public class Action {
 		log.log(Level.FINE, "pushed previousCmd to redoStack", previousCmd);
 	}
 	
-	public void exeTag(){
+	public void exeTag(CommandTag c){
+		//TODO can not save previous tag
+		int toTagIndex = c.getIndex();
+		Task toTag = this._data.get(toTagIndex);
+		toTag.setTag(c.getTagName());
+		this._undoStack.push(c);
 		this._dm.updateData(getNoNullArr());
 	}
 	
-	public void exeMark(){
+	public void exeToggleImportance(CommandMark c){//toggles importance
+		int toMarkIndex = c.getIndex();
+		Task toMark = this._data.get(toMarkIndex);
+		toMark.markImportant(!toMark.isImportant());
+		
+		this._undoStack.push(c);
+		this._dm.updateData(getNoNullArr());
+	}
+	
+	public void exeToggleDone(CommandDone c){
+		int toMarkDoneIndex = c.getIndex();
+		Task toMarkDone = this._data.get(toMarkDoneIndex);
+		toMarkDone.setIsFinished(!toMarkDone.isFinished());
+		
+		this._undoStack.push(c);
 		this._dm.updateData(getNoNullArr());
 	}
 	
 	public void exeSort(){
+		//TODO
 		this._dm.updateData(getNoNullArr());
 	}
 	
 	public void exeExit(){
+		//TODO
 		this._dm.updateData(getNoNullArr());
 	}
 	
