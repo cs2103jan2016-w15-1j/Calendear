@@ -161,6 +161,8 @@ public class Action {
 		}
 
 	}
+	
+
 
 	public Task exeUpdate(CommandUpdate c){
 		assertCommandNotNull(c);
@@ -260,6 +262,10 @@ public class Action {
 		_redoStack.push(previousCmd);
 		this._dm.updateData(getNoNullArr());
 		log.log(Level.FINE, "pushed previousCmd to redoStack", previousCmd);
+	}
+	
+	public void exeRedo(){
+		//TODO
 	}
 	
 	public void exeTag(CommandTag c){
