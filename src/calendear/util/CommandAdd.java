@@ -1,5 +1,7 @@
 package calendear.util;
 
+import java.util.Arrays;
+
 public class CommandAdd extends Command {
 	
 	private Task task;
@@ -34,5 +36,11 @@ public class CommandAdd extends Command {
 	public Object[] getNewInfo(){
 		return newInfo;
 	}
+	
+//	public boolean equals(CommandAdd c){
+//		boolean[] checkList = c.getChecklist();
+//		Object[] newInfo = c.getNewInfo();
+//		return Arrays.equals(checkList, this.addChecklist) && Arrays.equals(newInfo, this.newInfo);
+//	}
 	
 }
