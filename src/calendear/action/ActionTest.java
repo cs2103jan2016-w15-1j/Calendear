@@ -14,17 +14,39 @@ public class ActionTest {
 	@Test
 	public void testUpdate() throws ParseException{
 		Action action1 = new Action("action1.txt");
+		int nextIndex = action1.getAmount();
 		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
 		Task t1 = new Task("task2", originalTime);
 		CommandAdd cA = new CommandAdd(t1);
 		action1.exeAdd(cA);
 		GregorianCalendar newTime = new GregorianCalendar(2, 1, 2001);
-		int index = 0;//must start with new file, since index of t1 maynot be 0 other wise
+		System.out.println(nextIndex);
 		boolean[] chklst = {false, false, false, true, false, false, false, false, false};
 		Object[] objArr = {null, null, null, (Object) newTime, null, null, null, null};
-		CommandUpdate cU = new CommandUpdate(index, chklst, objArr);
+		CommandUpdate cU = new CommandUpdate(nextIndex, chklst, objArr);
 		action1.exeUpdate(cU);
 		assertEquals(t1.getEndTime(), newTime);
 	}
+	
+	@Test
+	public void testUndo() throws ParseException{
+		Action action1 = new Action("action1.txt");
+		int nextIndex = action1.getAmount();
+		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
+		Task t1 = new Task("task2", originalTime);
+		CommandAdd cA = new CommandAdd(t1);
+		action1.exeAdd(cA);
+		GregorianCalendar newTime = new GregorianCalendar(2, 1, 2001);
+		System.out.println(nextIndex);
+		boolean[] chklst = {false, false, false, true, false, false, false, false, false};
+		Object[] objArr = {null, null, null, (Object) newTime, null, null, null, null};
+		CommandUpdate cU = new CommandUpdate(nextIndex, chklst, objArr);
+		action1.exeUpdate(cU);
+		assertEquals(t1.getEndTime(), newTime);
+		
+		action1.exeUndo();
+		assertEquals(t1.getEndTime(), originalTime);
+	}
+
 
 }

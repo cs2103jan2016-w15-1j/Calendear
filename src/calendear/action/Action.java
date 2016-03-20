@@ -63,8 +63,8 @@ public class Action {
 	public Task exeAdd(CommandAdd c){
 		assertCommandNotNull(c);
 		Task addedTask = addWithoutSave(c);
-		_undoStack.push(c);
-		_dm.updateData(getNoNullArr());
+		this._undoStack.push(c);
+		this._dm.updateData(getNoNullArr());
 		return addedTask;
 	}
 
@@ -74,7 +74,7 @@ public class Action {
 			addedTask = addWithInfo(c);
 			assert(addedTask != null) : "task to add is null";
 		}
-		_data.add(addedTask);
+		this._data.add(addedTask);
 		c.setTask(null);
 		return addedTask;
 	}
@@ -147,6 +147,8 @@ public class Action {
 				//can be a series of tags, need to specify 
 				// add/delete/replace
 				//TODO
+				String newTag = (String) newData[TAG_ID];
+				toUpdate.setTag(newTag);
 			}
 			if(infoList[IMP_ID]){
 				boolean isImportant = (boolean)newData[IMP_ID];
@@ -211,6 +213,16 @@ public class Action {
 		//TODO
 	}
 	
+	/**
+	 * ADD: removed last task in arraylist and store in cmdAdd
+	 * UPDATE: exchanged data with data stored in cmdUpdate
+	 * DELETE: replaced null at index with stored task
+	 * SORT: -
+	 * MARK: toggle importance of task
+	 * DONE: toggle done-tag of task
+	 * TAG: -
+	 */
+	
 	public void exeUndo(){
 		Command previousCmd = _undoStack.pop();
 		CMD_TYPE cmdType = previousCmd.getType();
@@ -273,6 +285,9 @@ public class Action {
 		log.log(Level.FINE, "pushed previousCmd to redoStack", previousCmd);
 	}
 	
+	/**
+	 * execute each command for the user.
+	 */
 	public void exeRedo(){
 		Command redoCmd = this._redoStack.pop();
 		CMD_TYPE redoType = redoCmd.getType();
@@ -374,6 +389,10 @@ public class Action {
 	
 	private void assertCommandNotNull(Command c){
 		assert(c != null): "Received null command";
+	}
+	
+	public int getAmount(){
+		return this._data.size();
 	}
 }
 
