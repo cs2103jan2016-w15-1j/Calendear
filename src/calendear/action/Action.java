@@ -6,14 +6,7 @@ import java.util.Stack;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import calendear.util.Command;
-import calendear.util.CommandAdd;
-import calendear.util.CommandDelete;
-import calendear.util.CommandDisplay;
-import calendear.util.CommandUpdate;
-import calendear.util.CMD_TYPE;
-import calendear.util.Task;
-import calendear.util.TASK_TYPE;
+import calendear.util.*;
 import calendear.storage.DataManager;
 /**
  * 
@@ -80,7 +73,10 @@ public class Action {
 		_dm.updateData(getNoNullArr());
 		return t;
 	}
-
+	/**[0:name][1:type][2:starttime]
+		[3:endtime][4:location][5:note]
+		[6:tag][7:important][8:finished]
+	*/
 	//helper class to exchange contents of CommandUpdate and task
 	private void updateInformation(CommandUpdate c, Task toUpdate){
 		final int NAME_ID = 0;
@@ -100,26 +96,31 @@ public class Action {
 			
 			if(u[NAME_ID]){
 				//name
+				log.log(Level.FINE, "update name", c);
 				String oldName = toUpdate.getName();
 				toUpdate.setName((String)i[NAME_ID]);
 				i[NAME_ID] = oldName;
 			}
 			if(u[TYPE_ID]){
 				//type
+				log.log(Level.FINE, "update type", c);
 				TASK_TYPE oldType = toUpdate.getType();
 				toUpdate.setType((TASK_TYPE)i[TYPE_ID]);
 				i[TYPE_ID] = (Object)oldType;
 			}
 			if(u[STARTT_ID]){
 				//start time
+				log.log(Level.FINE, "update starttime", c);
 				GregorianCalendar oldStartTime = toUpdate.getStartTime();
 				toUpdate.setStartTime((GregorianCalendar) i[STARTT_ID]);
 				i[STARTT_ID] = (Object)oldStartTime;
 			}
 			if(u[ENDT_ID]){
 				//end time
+				log.log(Level.FINE, "update endtime", c);
 				GregorianCalendar oldEndTime = toUpdate.getEndTime();
-				toUpdate.setEndTime((GregorianCalendar) i[ENDT_ID]);
+				GregorianCalendar newEndTime = (GregorianCalendar) i[ENDT_ID];
+				toUpdate.setEndTime(newEndTime);
 				i[ENDT_ID] = (Object)oldEndTime;
 			}
 			if(u[LOCATION_ID]){
@@ -135,6 +136,9 @@ public class Action {
 			if(u[TAG_ID]){
 				//can be a series of tags, need to specify 
 				// add/delete/replace
+				String originalTag = toUpdate.getTag();
+				toUpdate.setTag((String)i[TAG_ID]);
+				//can not mutate tag in CommandTag yet
 				//TODO
 			}
 			if(u[IMP_ID]){
@@ -193,50 +197,65 @@ public class Action {
 	}
 	
 	public void exeSearch(String str){
-		
+		//TODO
 	}
 	
 	public void exeUndo(){
 		Command previousCmd = _undoStack.pop();
 		CMD_TYPE cmdType = previousCmd.getType();
 		switch(cmdType){
-			case ADD: 
-				//remove the newly added task
-				_data.remove(_data.size()-1);
-				break;
-			case DISPLAY:
-				//lol what am i doing,commandDisplay is not recorded
+			case ADD:
+				log.log(Level.FINE, "undo add", previousCmd);
+				CommandAdd cmdAdd = (CommandAdd) previousCmd;//type casting, we are sure that cmdType == ADD
+				int lastIndex = _data.size()-1;
+				Task removed = _data.get(lastIndex);
+				_data.remove(lastIndex);//removed from _data ArrayList
+				cmdAdd.setTask(removed);//commandAdd in _redoStack will always contain the task.
+				previousCmd = cmdAdd;//typecast back to be added to _redoStack
+				
 				break;
 			case UPDATE:
-				//TODO
+				log.log(Level.FINE, "undo update", previousCmd);
+				CommandUpdate cmdUpdate = (CommandUpdate) previousCmd;
+				Task toUpdate = this._data.get(cmdUpdate.getIndex());
+				updateInformation(cmdUpdate, toUpdate);
 				break;
 			case DELETE:
-				//TODO
-				break;
-			case SEARCH:
-				//TODO
+				log.log(Level.FINE, "undo delete", previousCmd);
+				CommandDelete cmdDelete = (CommandDelete) previousCmd;
+				int deleteIndex = cmdDelete.getIndex();
+				Task deleted = this._data.get(deleteIndex);
+				cmdDelete.setDeletedTask(deleted);
+				this._data.set(deleteIndex, null);
 				break;
 			case SORT:
-				//TODO
+				//TODO since after sorting the index will change, this should not happen
 				break;
 			case MARK:
-				//TODO
+				log.log(Level.FINE, "undo mark", previousCmd);
+				CommandMark cmdMark = (CommandMark) previousCmd;
+				int markIndex = cmdMark.getIndex();
+				Task toMark = this._data.get(markIndex);
+				toMark.markImportant(!toMark.isImportant());//toggles importance
 				break;
 			case DONE:
-				//TODO
-				break;
-			case UNDO:
-				//TODO
+				log.log(Level.FINE, "undo done", previousCmd);
+				CommandDone cmdDone = (CommandDone) previousCmd;
+				int doneIndex = cmdDone.getIndex();
+				Task done = this._data.get(doneIndex);
+				done.setIsFinished(!done.isFinished());
 				break;
 			case TAG:
-				//TODO
-				break;
-			case LINK_GOOGLE:
-				//TODO
+				//currently tag is a private string
+				log.log(Level.FINE, "undo tag", previousCmd);
+				CommandTag cmdTag = (CommandTag) previousCmd;
+				int tagIndex = cmdTag.getIndex();
+				Task tagged = this._data.get(tagIndex);
+				tagged.setTag(cmdTag.getTagName());
 				break;
 			default:
-				assert(false): "received wrong command in action.exeUndo";
 				log.log(Level.SEVERE, previousCmd.toString(), previousCmd);
+				throw new AssertionError(cmdType);
 		}
 		_redoStack.push(previousCmd);
 		this._dm.updateData(getNoNullArr());

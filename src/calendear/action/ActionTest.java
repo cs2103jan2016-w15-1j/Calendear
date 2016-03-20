@@ -14,12 +14,12 @@ public class ActionTest {
 	@Test
 	public void testUpdate() throws ParseException{
 		Action action1 = new Action("action1.txt");
-		Task t1 = new Task("task1", new GregorianCalendar(1,1,2001));
+		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
+		Task t1 = new Task("task2", originalTime);
 		CommandAdd cA = new CommandAdd(t1);
 		action1.exeAdd(cA);
 		GregorianCalendar newTime = new GregorianCalendar(2, 1, 2001);
-		System.out.println(newTime.toString());
-		int index = 0;
+		int index = 0;//must start with new file, since index of t1 maynot be 0 other wise
 		boolean[] chklst = {false, false, false, true, false, false, false, false, false};
 		Object[] objArr = {null, null, null, (Object) newTime, null, null, null, null};
 		CommandUpdate cU = new CommandUpdate(index, chklst, objArr);
