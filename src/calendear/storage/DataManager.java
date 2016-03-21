@@ -82,7 +82,18 @@ public class DataManager {
 			System.out.println(ex);
 		}	
 	}
-
+	
+	public void loginGoogle() {
+		GoogleIO.login();
+	}
+	
+	public void addTaskToGoogle() {
+		
+	}
+	
+	public void deleteTaskFromGoogle(Task task) {
+		
+	}
 	
 	/**
 	 * DataManager constructor

@@ -364,6 +364,13 @@ public class Action {
 		this._dm.updateData(getNoNullArr());
 	}
 	
+	/**
+	 * @author Phang Chun Rong
+	 */
+	public void exeLinkGoogle() {
+		this._dm.loginGoogle();
+	}
+	
 	public void exeExit(){
 		//TODO
 		this._dm.updateData(getNoNullArr());
