@@ -209,6 +209,55 @@ public class Action {
 		}
 	}
 	
+	public ArrayList<Task> exeDisplaySelectiveHelper(boolean[] toShow, Object[] searchWith){
+		final int NAME_ID = 0;
+		final int TYPE_ID = 1;
+		final int STARTT_ID = 2;
+		final int ENDT_ID = 3;
+		final int LOCATION_ID = 4;
+		final int NOTE_ID = 5;
+		final int TAG_ID = 6;
+		final int IMP_ID = 7;//important
+		final int COMP_ID = 8;//finished
+		
+		ArrayList<Task> show = new ArrayList<Task>();
+		show.addAll(this._data);
+		
+		for(int i = 0; i<show.size(); i++){
+			Task t = show.get(i);
+			try{
+				if(toShow[NAME_ID] && !t.getName().equals((String)searchWith[NAME_ID])){
+					t = null;
+				}
+				if(toShow[TYPE_ID] && !t.getType().equals((TASK_TYPE)searchWith[TYPE_ID])){
+					t = null;
+				}
+				if(toShow[STARTT_ID]){
+				}
+				if(toShow[ENDT_ID]){
+				}
+				if(toShow[LOCATION_ID]){
+				}
+				if(toShow[NOTE_ID]){
+				}
+				if(toShow[TAG_ID]){
+				}
+				if(toShow[IMP_ID] && !(t.isImportant() == (boolean)searchWith[IMP_ID])){
+					t = null;
+				}
+				if(toShow[COMP_ID] && !(t.isFinished() == (boolean)searchWith[COMP_ID])){
+					
+				}
+			}catch (NullPointerException e){
+				e.printStackTrace();
+			}catch (ArrayIndexOutOfBoundsException e){
+				e.printStackTrace();
+			}
+		}
+		
+		return show;
+	}
+	
 	public void exeSearch(String str){
 		//TODO
 	}
