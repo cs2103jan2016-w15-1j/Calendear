@@ -2,18 +2,12 @@ package calendear.action;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.Stack;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import calendear.util.Command;
-import calendear.util.CommandAdd;
-import calendear.util.CommandDelete;
-import calendear.util.CommandDisplay;
-import calendear.util.CommandUpdate;
-import calendear.util.CMD_TYPE;
-import calendear.util.Task;
-import calendear.util.TASK_TYPE;
+import calendear.util.*;
 import calendear.storage.DataManager;
 /**
  * 
@@ -58,6 +52,7 @@ public class Action {
 	 * @return
 	 */
 	//---------helper-------------
+	//helper for add
 	private Task addWithInfo(CommandAdd c){
 		Task toReturn = new Task("");// "" is a stud
 		boolean[] infoList = c.getChecklist();
@@ -67,14 +62,21 @@ public class Action {
 	}
 	
 	public Task exeAdd(CommandAdd c){
+		assertCommandNotNull(c);
+		Task addedTask = addWithoutSave(c);
+		this._undoStack.push(c);
+		this._dm.updateData(getNoNullArr());
+		return addedTask;
+	}
+
+	private Task addWithoutSave(CommandAdd c) {
 		Task addedTask = c.getTask();
 		if(addedTask == null){
 			addedTask = addWithInfo(c);
+			assert(addedTask != null) : "task to add is null";
 		}
-		_data.add(addedTask);
+		this._data.add(addedTask);
 		c.setTask(null);
-		_undoStack.push(c);
-		_dm.updateData(getNoNullArr());
 		return addedTask;
 	}
 	/**
@@ -91,7 +93,12 @@ public class Action {
 		_dm.updateData(getNoNullArr());
 		return t;
 	}
-	
+
+	/**[0:name][1:type][2:starttime]
+		[3:endtime][4:location][5:note]
+		[6:tag][7:important][8:finished]
+	*/
+	//helper class to exchange contents of CommandUpdate and task
 	private void exchangeInfo(Task toUpdate, boolean[] infoList, Object[] newData){
 		final int NAME_ID = 0;
 		final int TYPE_ID = 1;
@@ -142,6 +149,8 @@ public class Action {
 				//can be a series of tags, need to specify 
 				// add/delete/replace
 				//TODO
+				String newTag = (String) newData[TAG_ID];
+				toUpdate.setTag(newTag);
 			}
 			if(infoList[IMP_ID]){
 				boolean isImportant = (boolean)newData[IMP_ID];
@@ -159,28 +168,21 @@ public class Action {
 			e.printStackTrace();
 		}
 	}
+	
+	private void updateInformation(CommandUpdate c, Task toUpdate){
+		boolean[] infoList = c.getChecklist();
+		Object[] newData = c.getNewInfo();
+		exchangeInfo(toUpdate, infoList, newData);
+	}
+	
 
 
 	public Task exeUpdate(CommandUpdate c){
 		assertCommandNotNull(c);
 		int changeId = c.getIndex();
 		Task toUpdate = _data.get(changeId);
-		
-		try{
-			
-			boolean[] infoList = c.getChecklist();//refactor to isChanged in the future
-			Object[] newData = c.getNewInfo();
-			
-			exchangeInfo(toUpdate, infoList, newData);
-			
-			_undoStack.add(c);
-			_dm.updateData(getNoNullArr());
-		}catch (NullPointerException e){
-			e.printStackTrace();
-		}catch (ArrayIndexOutOfBoundsException e){
-			e.printStackTrace();
-		}
-		
+		updateInformation(c, toUpdate);
+		_undoStack.add(c);
 		this._dm.updateData(getNoNullArr());
 		return toUpdate;
 	}
@@ -209,70 +211,230 @@ public class Action {
 		}
 	}
 	
-	public void exeSearch(String str){
+	public ArrayList<Task> exeDisplaySelectiveHelper(boolean[] toShow, Object[] searchWith){
+		final int NAME_ID = 0;
+		final int TYPE_ID = 1;
+		final int STARTT_ID = 2;
+		final int ENDT_ID = 3;
+		final int LOCATION_ID = 4;
+		final int NOTE_ID = 5;
+		final int TAG_ID = 6;
+		final int IMP_ID = 7;//important
+		final int COMP_ID = 8;//finished
 		
+		ArrayList<Task> show = new ArrayList<Task>();
+		show.addAll(this._data);
+		
+		for(int i = 0; i<show.size(); i++){
+			Task t = show.get(i);
+			try{
+				if(toShow[NAME_ID] && !t.getName().equals((String)searchWith[NAME_ID])){
+					t = null;
+				}
+				if(toShow[TYPE_ID] && !t.getType().equals((TASK_TYPE)searchWith[TYPE_ID])){
+					t = null;
+				}
+				if(toShow[STARTT_ID]){
+				}
+				if(toShow[ENDT_ID]){
+				}
+				if(toShow[LOCATION_ID]){
+				}
+				if(toShow[NOTE_ID]){
+				}
+				if(toShow[TAG_ID]){
+				}
+				if(toShow[IMP_ID] && !(t.isImportant() == (boolean)searchWith[IMP_ID])){
+					t = null;
+				}
+				if(toShow[COMP_ID] && !(t.isFinished() == (boolean)searchWith[COMP_ID])){
+					
+				}
+			}catch (NullPointerException e){
+				e.printStackTrace();
+			}catch (ArrayIndexOutOfBoundsException e){
+				e.printStackTrace();
+			}
+		}
+		
+		return show;
 	}
+	
+	public void exeSearch(String str){
+		//TODO
+	}
+	
+	/**
+	 * ADD: removed last task in arraylist and store in cmdAdd
+	 * UPDATE: exchanged data with data stored in cmdUpdate
+	 * DELETE: replaced null at index with stored task
+	 * SORT: -
+	 * MARK: toggle importance of task
+	 * DONE: toggle done-tag of task
+	 * TAG: -
+	 */
 	
 	public void exeUndo(){
-		Command previousCmd = _undoStack.pop();
-		CMD_TYPE cmdType = previousCmd.getType();
-		switch(cmdType){
-			case ADD: 
-				//remove the newly added task
-				_data.remove(_data.size()-1);
-				break;
-			case DISPLAY:
-				//lol what am i doing,commandDisplay is not recorded
-				break;
-			case UPDATE:
-				//TODO
-				break;
-			case DELETE:
-				//TODO
-				break;
-			case SEARCH:
-				//TODO
-				break;
-			case SORT:
-				//TODO
-				break;
-			case MARK:
-				//TODO
-				break;
-			case DONE:
-				//TODO
-				break;
-			case UNDO:
-				//TODO
-				break;
-			case TAG:
-				//TODO
-				break;
-			case LINK_GOOGLE:
-				//TODO
-				break;
-			default:
-				assert(false): "received wrong command in action.exeUndo";
-				log.log(Level.SEVERE, previousCmd.toString(), previousCmd);
+
+		try{
+			Command previousCmd = _undoStack.pop();
+			CMD_TYPE cmdType = previousCmd.getType();
+			switch(cmdType){
+				case ADD:
+					log.log(Level.FINE, "undo add", previousCmd);
+					CommandAdd cmdAdd = (CommandAdd) previousCmd;//type casting, we are sure that cmdType == ADD
+					int lastIndex = _data.size()-1;
+					Task removed = _data.get(lastIndex);
+					_data.remove(lastIndex);//removed from _data ArrayList
+					cmdAdd.setTask(removed);//commandAdd in _redoStack will always contain the task.
+					previousCmd = cmdAdd;//typecast back to be added to _redoStack
+					
+					break;
+				case UPDATE:
+					log.log(Level.FINE, "undo update", previousCmd);
+					CommandUpdate cmdUpdate = (CommandUpdate) previousCmd;
+					Task toUpdate = this._data.get(cmdUpdate.getIndex());
+					updateInformation(cmdUpdate, toUpdate);
+					break;
+				case DELETE:
+					log.log(Level.FINE, "undo delete", previousCmd);
+					CommandDelete cmdDelete = (CommandDelete) previousCmd;
+					int deleteIndex = cmdDelete.getIndex();
+					Task deleted = this._data.get(deleteIndex);
+					cmdDelete.setDeletedTask(deleted);
+					this._data.set(deleteIndex, null);
+					break;
+				case SORT:
+					//TODO since after sorting the index will change, this should not happen
+					break;
+				case MARK:
+					log.log(Level.FINE, "undo mark", previousCmd);
+					CommandMark cmdMark = (CommandMark) previousCmd;
+					int markIndex = cmdMark.getIndex();
+					Task toMark = this._data.get(markIndex);
+					toMark.markImportant(!toMark.isImportant());//toggles importance
+					break;
+				case DONE:
+					log.log(Level.FINE, "undo done", previousCmd);
+					CommandDone cmdDone = (CommandDone) previousCmd;
+					int doneIndex = cmdDone.getIndex();
+					Task done = this._data.get(doneIndex);
+					done.setIsFinished(!done.isFinished());
+					break;
+				case TAG:
+					//currently tag is a private string
+					log.log(Level.FINE, "undo tag", previousCmd);
+					CommandTag cmdTag = (CommandTag) previousCmd;
+					int tagIndex = cmdTag.getIndex();
+					Task tagged = this._data.get(tagIndex);
+					tagged.setTag(cmdTag.getTagName());
+					break;
+				default:
+					log.log(Level.SEVERE, "reached unreachable area in undo", previousCmd);
+					throw new AssertionError(cmdType);
+			}
+			_redoStack.push(previousCmd);
+			this._dm.updateData(getNoNullArr());
+			log.log(Level.FINE, "pushed previousCmd to redoStack", previousCmd);
 		}
-		_redoStack.push(previousCmd);
-		this._dm.updateData(getNoNullArr());
-		log.log(Level.FINE, "pushed previousCmd to redoStack", previousCmd);
+		catch (EmptyStackException e){
+			System.out.println("error: nothing to undo");
+		}
 	}
 	
-	public void exeTag(){
+	/**
+	 * execute each command for the user.
+	 */
+	public void exeRedo(){
+		try{
+		Command redoCmd = this._redoStack.pop();
+		CMD_TYPE redoType = redoCmd.getType();
+		
+		switch (redoType){
+		case ADD:
+			log.log(Level.FINE, "redo add", redoCmd);
+			CommandAdd cmdAdd = (CommandAdd) redoCmd;
+			assert(cmdAdd.getTask() != null);//cmdAdd always contains the task
+			exeAdd(cmdAdd);
+			break;
+		case UPDATE:
+			log.log(Level.FINE, "redo update", redoCmd);
+			CommandUpdate cmdUpdate = (CommandUpdate) redoCmd;
+			exeUpdate(cmdUpdate);
+			break;
+		case DELETE:
+			log.log(Level.FINE, "redo delete", redoCmd);
+			CommandDelete cmdDelete = (CommandDelete) redoCmd;
+			exeDelete(cmdDelete);
+			break;
+		case SORT:
+			//TODO since after sorting the index will change, this should not happen
+			break;
+		case MARK:
+			log.log(Level.FINE, "redo toggle Importance", redoCmd);
+			CommandMark cmdMark = (CommandMark) redoCmd;
+			exeToggleImportance(cmdMark);
+			break;
+		case DONE:
+			log.log(Level.FINE, "redo toggle finished", redoCmd);
+			CommandDone cmdDone = (CommandDone) redoCmd;
+			exeToggleDone(cmdDone);
+			break;
+		case TAG:
+			//TODO
+			break;
+		default:
+			log.log(Level.SEVERE, "reached unreachable area in redo", redoCmd);
+			throw new AssertionError(redoCmd);
+		}
+		this._dm.updateData(getNoNullArr());
+		}
+		catch (EmptyStackException e){
+			System.out.println("error: nothing to redo");
+		}
+	}
+	
+	public void exeTag(CommandTag c){
+		//TODO can not save previous tag
+		int toTagIndex = c.getIndex();
+		Task toTag = this._data.get(toTagIndex);
+		toTag.setTag(c.getTagName());
+		this._undoStack.push(c);
 		this._dm.updateData(getNoNullArr());
 	}
 	
-	public void exeMark(){
+	public void exeToggleImportance(CommandMark c){//toggles importance
+		int toMarkIndex = c.getIndex();
+		Task toMark = this._data.get(toMarkIndex);
+		toMark.markImportant(!toMark.isImportant());
+		
+		this._undoStack.push(c);
+		this._dm.updateData(getNoNullArr());
+	}
+	
+	public void exeToggleDone(CommandDone c){
+		int toMarkDoneIndex = c.getIndex();
+		Task toMarkDone = this._data.get(toMarkDoneIndex);
+		toMarkDone.setIsFinished(!toMarkDone.isFinished());
+		
+		this._undoStack.push(c);
 		this._dm.updateData(getNoNullArr());
 	}
 	
 	public void exeSort(){
+		//TODO
 		this._dm.updateData(getNoNullArr());
 	}
 	
+	/**
+	 * @author Phang Chun Rong
+	 */
+	public void exeLinkGoogle() {
+		this._dm.loginGoogle();
+	}
+	
 	public void exeExit(){
+		//TODO
 		this._dm.updateData(getNoNullArr());
 	}
 	
@@ -296,6 +458,10 @@ public class Action {
 	
 	private void assertCommandNotNull(Command c){
 		assert(c != null): "Received null command";
+	}
+	
+	public int getAmount(){
+		return this._data.size();
 	}
 }
 
