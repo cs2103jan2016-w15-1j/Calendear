@@ -38,29 +38,29 @@ public class Parser {
 	private static final String DONE = "done";
 	
 	private static final String NEGATIVE_LOOKAHEAD_KEYWORDS = 
-			"(?!(by)(from)(to))";
+	"((?:.(?!\\bname\\b|\\bby\\b|\\bfrom\\b|\\bto\\b|\\bfloat\\b|\\bat\\b|\\bnote\\b|\\btag\\b|\\bmark\\b|\\bdone\\b))+)";
 	private static final String PATTERN_ADD = 
 	"(\\badd\\b) +(.+) +"				//represent the groups update and <taskID>
-	+ "(?:(?:(\\bname\\b) *(.+)) *"		//represent the groups name and <newName>
-	+ "|(?:(\\bby\\b) *(.+)) *"			//represent the groups by and <dateAndTime>
-	+ "|(?:(\\bfrom\\b) *(.+)) *"		//represent the groups from and <dateAndTime>
-	+ "|(?:(\\bto\\b) *(.+)) *"			//represent the groups to and <dateAndTime>
+	+ "(?:(?:(\\bname\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
+	+ "|(?:(\\bby\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups by and <dateAndTime>
+	+ "|(?:(\\bfrom\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups from and <dateAndTime>
+	+ "|(?:(\\bto\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups to and <dateAndTime>
 	+ "|(?:(\\bfloat\\b) *()) *"		//represent the group float
-	+ "|(?:(\\bat\\b) *(.+)) *"			//represent the groups at and <newLocation>
-	+ "|(?:(\\bnote\\b) *(.+)) *"		//represent the groups note and <newNote>
-	+ "|(?:(\\btag\\b) *(.+)) *"		//represent the groups tag and <newTag>
+	+ "|(?:(\\bat\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups at and <newLocation>
+	+ "|(?:(\\bnote\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups note and <newNote>
+	+ "|(?:(\\btag\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups tag and <newTag>
 	+ "|(?:(\\bmark\\b) *()) *"			//represent the group mark
 	+ "|(?:(\\bdone\\b) *()) *)+";		//represent the group done
 	private static final String PATTERN_UPDATE_BY_INDEX = 
 	"(\\bupdate\\b) +(\\d+) +"			//represent the groups update and <taskID>
-	+ "(?:(?:(\\bname\\b) *(.+)) *"		//represent the groups name and <newName>
-	+ "|(?:(\\bby\\b) *(.+)) *"			//represent the groups by and <dateAndTime>
-	+ "|(?:(\\bfrom\\b) *(.+)) *"		//represent the groups from and <dateAndTime>
-	+ "|(?:(\\bto\\b) *(.+)) *"			//represent the groups to and <dateAndTime>
+	+ "(?:(?:(\\bname\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
+	+ "|(?:(\\bby\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups by and <dateAndTime>
+	+ "|(?:(\\bfrom\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups from and <dateAndTime>
+	+ "|(?:(\\bto\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups to and <dateAndTime>
 	+ "|(?:(\\bfloat\\b) *()) *"		//represent the group float
-	+ "|(?:(\\bat\\b) *(.+)) *"			//represent the groups at and <newLocation>
-	+ "|(?:(\\bnote\\b) *(.+)) *"		//represent the groups note and <newNote>
-	+ "|(?:(\\btag\\b) *(.+)) *"		//represent the groups tag and <newTag>
+	+ "|(?:(\\bat\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups at and <newLocation>
+	+ "|(?:(\\bnote\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups note and <newNote>
+	+ "|(?:(\\btag\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups tag and <newTag>
 	+ "|(?:(\\bmark\\b) *()) *"			//represent the group mark
 	+ "|(?:(\\bdone\\b) *()) *)+";		//represent the group done
 	

@@ -52,7 +52,7 @@ public class Controller {
 		    				  break;
 		    				  
 	    		case DISPLAY: ArrayList<Task> tasks = _cdLogic.exeDisplay((CommandDisplay) command);
-	    					  View.displayDisplay(tasks);
+	    					  View.displayDisplayInLine(tasks);
 	    					  break;
 	    					  
 	    		case DELETE:  Task deletedTask = _cdLogic.exeDelete((CommandDelete) command);
@@ -60,7 +60,7 @@ public class Controller {
 	    					  break;
 	    		
 	    		case UPDATE:  Task updatedTask = _cdLogic.exeUpdate((CommandUpdate) command);
-	    					  View.displayUpdate(updatedTask);
+	    					  View.displayUpdateInLine(updatedTask);
 	    					  break;
 	    		
 	    		case SEARCH:
