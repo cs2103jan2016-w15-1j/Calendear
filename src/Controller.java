@@ -16,7 +16,6 @@ public class Controller {
 	
 	public static void main(String[] args) {
 		String nameOfFile = args[0];
-		System.out.println("test");
 		Controller controller = new Controller(nameOfFile);
 		controller.startApplication();
 	}

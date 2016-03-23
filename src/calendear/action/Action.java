@@ -14,7 +14,23 @@ import calendear.storage.DataManager;
  * 
  * @author Wu XiaoXiao
  *
+ *methods in Action:
+ *1. exeAdd: functioning
+ *2. exeDelete: functioning
+ *3. exeUpdate: functioning
+ *4. exeDisplay: functioning
+ *5. exeSearch: in progress
+ *6. exeUndo: finished except for undo tag
+ *7. exeRedo: finished except for undo tag
+ *8. exeTag: done, but currently there's no way to save previous tag
+ *9. exeToggleImportance: functioning
+ *10. exeToggleDone: functioning
+ *11. exeSort: has not started
+ *12. exeLinkGoogle:
+ *13. exeExit:
  */
+
+
 public class Action {
 	private static final Logger log= Logger.getLogger( "Action" );
 	private ArrayList<Task> _data;
@@ -302,9 +318,6 @@ public class Action {
 					cmdDelete.setDeletedTask(deleted);
 					this._data.set(deleteIndex, null);
 					break;
-				case SORT:
-					//TODO since after sorting the index will change, this should not happen
-					break;
 				case MARK:
 					log.log(Level.FINE, "undo mark", previousCmd);
 					CommandMark cmdMark = (CommandMark) previousCmd;
@@ -321,6 +334,7 @@ public class Action {
 					break;
 				case TAG:
 					//currently tag is a private string
+					//TODO
 					log.log(Level.FINE, "undo tag", previousCmd);
 					CommandTag cmdTag = (CommandTag) previousCmd;
 					int tagIndex = cmdTag.getIndex();
