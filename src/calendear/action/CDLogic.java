@@ -23,10 +23,12 @@ public class CDLogic {
 	}
 	
 	public Command parseInput(String userInput) {
+		System.out.println("test1");
 		return Parser.parse(userInput);
 	}
 	
 	public Task exeAdd(CommandAdd commandAdd) {
+		System.out.println("Trying to add something");
 		Task addedTask = _action.exeAdd(commandAdd);
 		return addedTask;
 	}

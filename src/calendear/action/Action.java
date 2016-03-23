@@ -2,12 +2,13 @@ package calendear.action;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.Stack;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import calendear.util.*;
-import calendear.util.CMD_TYPE;
 import calendear.storage.DataManager;
 /**
  * 
@@ -273,71 +274,77 @@ public class Action {
 	 */
 	
 	public void exeUndo(){
-		Command previousCmd = _undoStack.pop();
-		CMD_TYPE cmdType = previousCmd.getType();
-		switch(cmdType){
-			case ADD:
-				log.log(Level.FINE, "undo add", previousCmd);
-				CommandAdd cmdAdd = (CommandAdd) previousCmd;//type casting, we are sure that cmdType == ADD
-				int lastIndex = _data.size()-1;
-				Task removed = _data.get(lastIndex);
-				_data.remove(lastIndex);//removed from _data ArrayList
-				cmdAdd.setTask(removed);//commandAdd in _redoStack will always contain the task.
-				previousCmd = cmdAdd;//typecast back to be added to _redoStack
-				
-				break;
-			case UPDATE:
-				log.log(Level.FINE, "undo update", previousCmd);
-				CommandUpdate cmdUpdate = (CommandUpdate) previousCmd;
-				Task toUpdate = this._data.get(cmdUpdate.getIndex());
-				updateInformation(cmdUpdate, toUpdate);
-				break;
-			case DELETE:
-				log.log(Level.FINE, "undo delete", previousCmd);
-				CommandDelete cmdDelete = (CommandDelete) previousCmd;
-				int deleteIndex = cmdDelete.getIndex();
-				Task deleted = this._data.get(deleteIndex);
-				cmdDelete.setDeletedTask(deleted);
-				this._data.set(deleteIndex, null);
-				break;
-			case SORT:
-				//TODO since after sorting the index will change, this should not happen
-				break;
-			case MARK:
-				log.log(Level.FINE, "undo mark", previousCmd);
-				CommandMark cmdMark = (CommandMark) previousCmd;
-				int markIndex = cmdMark.getIndex();
-				Task toMark = this._data.get(markIndex);
-				toMark.markImportant(!toMark.isImportant());//toggles importance
-				break;
-			case DONE:
-				log.log(Level.FINE, "undo done", previousCmd);
-				CommandDone cmdDone = (CommandDone) previousCmd;
-				int doneIndex = cmdDone.getIndex();
-				Task done = this._data.get(doneIndex);
-				done.setIsFinished(!done.isFinished());
-				break;
-			case TAG:
-				//currently tag is a private string
-				log.log(Level.FINE, "undo tag", previousCmd);
-				CommandTag cmdTag = (CommandTag) previousCmd;
-				int tagIndex = cmdTag.getIndex();
-				Task tagged = this._data.get(tagIndex);
-				tagged.setTag(cmdTag.getTagName());
-				break;
-			default:
-				log.log(Level.SEVERE, "reached unreachable area in undo", previousCmd);
-				throw new AssertionError(cmdType);
+		try{
+			Command previousCmd = _undoStack.pop();
+			CMD_TYPE cmdType = previousCmd.getType();
+			switch(cmdType){
+				case ADD:
+					log.log(Level.FINE, "undo add", previousCmd);
+					CommandAdd cmdAdd = (CommandAdd) previousCmd;//type casting, we are sure that cmdType == ADD
+					int lastIndex = _data.size()-1;
+					Task removed = _data.get(lastIndex);
+					_data.remove(lastIndex);//removed from _data ArrayList
+					cmdAdd.setTask(removed);//commandAdd in _redoStack will always contain the task.
+					previousCmd = cmdAdd;//typecast back to be added to _redoStack
+					
+					break;
+				case UPDATE:
+					log.log(Level.FINE, "undo update", previousCmd);
+					CommandUpdate cmdUpdate = (CommandUpdate) previousCmd;
+					Task toUpdate = this._data.get(cmdUpdate.getIndex());
+					updateInformation(cmdUpdate, toUpdate);
+					break;
+				case DELETE:
+					log.log(Level.FINE, "undo delete", previousCmd);
+					CommandDelete cmdDelete = (CommandDelete) previousCmd;
+					int deleteIndex = cmdDelete.getIndex();
+					Task deleted = this._data.get(deleteIndex);
+					cmdDelete.setDeletedTask(deleted);
+					this._data.set(deleteIndex, null);
+					break;
+				case SORT:
+					//TODO since after sorting the index will change, this should not happen
+					break;
+				case MARK:
+					log.log(Level.FINE, "undo mark", previousCmd);
+					CommandMark cmdMark = (CommandMark) previousCmd;
+					int markIndex = cmdMark.getIndex();
+					Task toMark = this._data.get(markIndex);
+					toMark.markImportant(!toMark.isImportant());//toggles importance
+					break;
+				case DONE:
+					log.log(Level.FINE, "undo done", previousCmd);
+					CommandDone cmdDone = (CommandDone) previousCmd;
+					int doneIndex = cmdDone.getIndex();
+					Task done = this._data.get(doneIndex);
+					done.setIsFinished(!done.isFinished());
+					break;
+				case TAG:
+					//currently tag is a private string
+					log.log(Level.FINE, "undo tag", previousCmd);
+					CommandTag cmdTag = (CommandTag) previousCmd;
+					int tagIndex = cmdTag.getIndex();
+					Task tagged = this._data.get(tagIndex);
+					tagged.setTag(cmdTag.getTagName());
+					break;
+				default:
+					log.log(Level.SEVERE, "reached unreachable area in undo", previousCmd);
+					throw new AssertionError(cmdType);
+			}
+			_redoStack.push(previousCmd);
+			this._dm.updateData(getNoNullArr());
+			log.log(Level.FINE, "pushed previousCmd to redoStack", previousCmd);
 		}
-		_redoStack.push(previousCmd);
-		this._dm.updateData(getNoNullArr());
-		log.log(Level.FINE, "pushed previousCmd to redoStack", previousCmd);
+		catch (EmptyStackException e){
+			System.out.println("error: nothing to undo");
+		}
 	}
 	
 	/**
 	 * execute each command for the user.
 	 */
 	public void exeRedo(){
+		try{
 		Command redoCmd = this._redoStack.pop();
 		CMD_TYPE redoType = redoCmd.getType();
 		
@@ -379,6 +386,10 @@ public class Action {
 			throw new AssertionError(redoCmd);
 		}
 		this._dm.updateData(getNoNullArr());
+		}
+		catch (EmptyStackException e){
+			System.out.println("error: nothing to redo");
+		}
 	}
 	
 	public void exeTag(CommandTag c){

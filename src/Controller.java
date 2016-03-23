@@ -16,7 +16,7 @@ public class Controller {
 	
 	public static void main(String[] args) {
 		String nameOfFile = args[0];
-		
+		System.out.println("test");
 		Controller controller = new Controller(nameOfFile);
 		controller.startApplication();
 	}
@@ -37,7 +37,6 @@ public class Controller {
 	
 	private void startApplication() {
 	    _scanner = new Scanner(System.in);
-
 	    while(true) {
 	    	
 	    	View.displayRequestForInput();
