@@ -41,6 +41,7 @@ public class ParserTest {
 	public void setUp() throws Exception {
 		addCaseAddDeadline();
 		addCaseAddDeadlineWithOptions();
+		addCaseAddInvalid();
 		addCaseAddEvent();
 		addCaseAddEventWithOptions();
 		addCaseAddFloat();
@@ -52,8 +53,12 @@ public class ParserTest {
 		addCaseDelete();
 	}
 
-	private void addCaseAddDeadline() {
+	private void addCaseAddInvalid() {
 		// TODO Auto-generated method stub
+		
+	}
+
+	private void addCaseAddDeadline() {
 		caseDescriptions.add("add deadline task with minimum parameter");
 		rawInputs.add("add visit garden .by the bay by 3/21/16 5:30");
 		String name = "visit garden by the bay";
@@ -76,7 +81,22 @@ public class ParserTest {
 
 	private void addCaseAddEvent() {
 		// TODO Auto-generated method stub
-		
+		caseDescriptions.add("add event task with minimum parameter");
+		rawInputs.add("add visit garden .by the bay from 3/21/16 5:30pm to 21 Mar 2016 20:00");
+		String name = "visit garden by the bay";
+		GregorianCalendar startTime = new GregorianCalendar(2016, Calendar.MARCH, 21, 17, 30);
+		GregorianCalendar endTime = new GregorianCalendar(2016, Calendar.MARCH, 21, 20, 0);
+		boolean[] checklist = new boolean[CHECKLIST_SIZE];
+		Object[] newInfo = new Object[CHECKLIST_SIZE];
+		checklist[INDEX_NAME] = true;
+		newInfo[INDEX_NAME] = name ;
+		checklist[INDEX_TYPE] = true;
+		newInfo[INDEX_TYPE] = TASK_TYPE.EVENT;
+		checklist[INDEX_START_TIME] = false;
+		newInfo[INDEX_END_TIME] = startTime;
+		checklist[INDEX_END_TIME] = true;
+		newInfo[INDEX_END_TIME] = endTime;
+		expectedOutputs.add(new CommandAdd("visit garden by the bay from 3/21/16 5:30pm", checklist, newInfo));
 	}
 
 	private void addCaseAddEventWithOptions() {

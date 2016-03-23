@@ -37,30 +37,32 @@ public class Parser {
 	private static final String MARK = "mark";
 	private static final String DONE = "done";
 	
+	private static final String NEGATIVE_LOOKAHEAD_KEYWORDS = 
+			"(?!(by)(from)(to))";
 	private static final String PATTERN_ADD = 
 	"(\\badd\\b) +(.+) +"				//represent the groups update and <taskID>
 	+ "(?:(?:(\\bname\\b) *(.+)) *"		//represent the groups name and <newName>
 	+ "|(?:(\\bby\\b) *(.+)) *"			//represent the groups by and <dateAndTime>
-	+ "|(?:(\\bfrom\\b) *(.+)) *"			//represent the groups from and <dateAndTime>
+	+ "|(?:(\\bfrom\\b) *(.+)) *"		//represent the groups from and <dateAndTime>
 	+ "|(?:(\\bto\\b) *(.+)) *"			//represent the groups to and <dateAndTime>
-	+ "|(?:(\\bfloat\\b) *()) *"			//represent the group float
+	+ "|(?:(\\bfloat\\b) *()) *"		//represent the group float
 	+ "|(?:(\\bat\\b) *(.+)) *"			//represent the groups at and <newLocation>
-	+ "|(?:(\\bnote\\b) *(.+)) *"			//represent the groups note and <newNote>
-	+ "|(?:(\\btag\\b) *(.+)) *"			//represent the groups tag and <newTag>
+	+ "|(?:(\\bnote\\b) *(.+)) *"		//represent the groups note and <newNote>
+	+ "|(?:(\\btag\\b) *(.+)) *"		//represent the groups tag and <newTag>
 	+ "|(?:(\\bmark\\b) *()) *"			//represent the group mark
-	+ "|(?:(\\bdone\\b) *()) *)+";			//represent the group done
+	+ "|(?:(\\bdone\\b) *()) *)+";		//represent the group done
 	private static final String PATTERN_UPDATE_BY_INDEX = 
-	"(\\bupdate\\b) +(\\d+) +"				//represent the groups update and <taskID>
+	"(\\bupdate\\b) +(\\d+) +"			//represent the groups update and <taskID>
 	+ "(?:(?:(\\bname\\b) *(.+)) *"		//represent the groups name and <newName>
 	+ "|(?:(\\bby\\b) *(.+)) *"			//represent the groups by and <dateAndTime>
-	+ "|(?:(\\bfrom\\b) *(.+)) *"			//represent the groups from and <dateAndTime>
+	+ "|(?:(\\bfrom\\b) *(.+)) *"		//represent the groups from and <dateAndTime>
 	+ "|(?:(\\bto\\b) *(.+)) *"			//represent the groups to and <dateAndTime>
-	+ "|(?:(\\bfloat\\b) *()) *"			//represent the group float
+	+ "|(?:(\\bfloat\\b) *()) *"		//represent the group float
 	+ "|(?:(\\bat\\b) *(.+)) *"			//represent the groups at and <newLocation>
-	+ "|(?:(\\bnote\\b) *(.+)) *"			//represent the groups note and <newNote>
-	+ "|(?:(\\btag\\b) *(.+)) *"			//represent the groups tag and <newTag>
+	+ "|(?:(\\bnote\\b) *(.+)) *"		//represent the groups note and <newNote>
+	+ "|(?:(\\btag\\b) *(.+)) *"		//represent the groups tag and <newTag>
 	+ "|(?:(\\bmark\\b) *()) *"			//represent the group mark
-	+ "|(?:(\\bdone\\b) *()) *)+";			//represent the group done
+	+ "|(?:(\\bdone\\b) *()) *)+";		//represent the group done
 	
 	private static final int NUM_OF_UPDATE_KEYWORD = 10;
 	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
@@ -178,6 +180,7 @@ public class Parser {
 						break;
 					case FROM:
 						checkList[CommandUpdate.CODE_UPDATE_TYPE] = true;
+						System.out.println("this case");
 						newInfo[CommandUpdate.CODE_UPDATE_TYPE] = TASK_TYPE.EVENT;
 						checkList[CommandUpdate.CODE_UPDATE_START_TIME] = true;
 						argument = removeEscapeCharacter(matcher.group(4+2*i));
