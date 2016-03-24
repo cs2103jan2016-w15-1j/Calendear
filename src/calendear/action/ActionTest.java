@@ -10,6 +10,12 @@ import org.junit.Test;
 import calendear.util.*;
 
 public class ActionTest {
+	
+	/**[0:name][1:type][2:starttime]
+	[3:endtime][4:location][5:note]
+	[6:tag][7:important][8:finished]
+*/
+
 
 	@Test
 	public void testUpdate() throws ParseException{
@@ -20,9 +26,12 @@ public class ActionTest {
 		CommandAdd cA = new CommandAdd(t1);
 		action1.exeAdd(cA);
 		GregorianCalendar newTime = new GregorianCalendar(2, 1, 2001);
+		String newName = "newName";
+		GregorianCalendar newST = new GregorianCalendar(3, 3, 2003);
+		String newTag = "newTag";
 		//System.out.println(nextIndex);
-		boolean[] chklst = {false, false, false, true, false, false, false, false, false};
-		Object[] objArr = {null, null, null, (Object) newTime, null, null, null, null};
+		boolean[] chklst = {true, false, true, true, false, false, false, false, false};
+		Object[] objArr = {newName, null, null, (Object) newTime, null, null, null, null};
 		CommandUpdate cU = new CommandUpdate(nextIndex, chklst, objArr);
 		action1.exeUpdate(cU);
 		assertEquals(t1.getEndTime(), newTime);
