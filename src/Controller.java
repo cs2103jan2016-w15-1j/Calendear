@@ -8,6 +8,11 @@ import java.util.Scanner;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author Phang Chun Rong
+ * Controller for User Interaction
+ */
 public class Controller {
 	
 	private Scanner _scanner;
@@ -69,9 +74,9 @@ public class Controller {
 	    		case TAG:
 	    				break;
 	    		
-	    		case LINK_GOOGLE: System.out.println("Trying to link");
+	    		case LINK_GOOGLE: _cdLogic.exeLinkGoogle();
 	    						  break;
-	    		
+	    						  	
 	    		case DONE:
 	    				break;
 	    		

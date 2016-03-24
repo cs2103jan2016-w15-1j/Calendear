@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 import org.ocpsoft.prettytime.shade.edu.emory.mathcs.backport.java.util.Arrays;
 
+import com.google.api.services.calendar.model.Event;
+
 import calendear.parser.DateParser;
 
 public class Task {
@@ -188,6 +190,16 @@ public class Task {
 		return res;
 	}
 	
+	/**
+	 * @author Phang Chun Rong
+	 * @return Google Event
+	 */
+	public Event toGoogleEvent() {
+		Event event = new Event();
+		//TODO
+		return event;
+	}
+	
 	public static Task parseSaveable(String allString) throws ParseException {
 		String[] members = allString.split(PATTERN_OBJ_SEPERATOR);
 		String typeStr = members[SAVING_INDEX_TYPE];
@@ -223,5 +235,5 @@ public class Task {
 		String name = members[SAVING_INDEX_NAME];
 		return new Task(name);
 	}
-
+	
 }
