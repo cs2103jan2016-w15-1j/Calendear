@@ -13,7 +13,6 @@ public class Controller {
 	private Scanner _scanner;
 	private CDLogic _cdLogic;
 	
-	
 	public static void main(String[] args) {
 		String nameOfFile = args[0];
 		
@@ -37,7 +36,6 @@ public class Controller {
 	
 	private void startApplication() {
 	    _scanner = new Scanner(System.in);
-
 	    while(true) {
 	    	
 	    	View.displayRequestForInput();
@@ -72,8 +70,8 @@ public class Controller {
 	    		case TAG:
 	    				break;
 	    		
-	    		case LINK_GOOGLE:
-	    				break;
+	    		case LINK_GOOGLE: System.out.println("Trying to link");
+	    						  break;
 	    		
 	    		case DONE:
 	    				break;
@@ -81,7 +79,7 @@ public class Controller {
 	    		case EXIT:  View.displayExit();
 	    					System.exit(0);
 	    					break;
-	    		default:
+	    		default: 
 	    				break;
 	    	}
 	    }

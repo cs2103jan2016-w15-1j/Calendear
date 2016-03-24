@@ -63,6 +63,9 @@ public class GoogleIO {
 	  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	  
 	  private static com.google.api.services.calendar.Calendar client;
+	  
+	  /** Google Calendar ID for Calendear*/
+	  private static String calendarID;
 
 	  /** Authorizes the installed application to access user's protected data. */
 	  private static Credential authorize() throws Exception {
@@ -100,9 +103,8 @@ public class GoogleIO {
 		      client = new com.google.api.services.calendar.Calendar.Builder(
 		          httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
 		      
-		      //Link to default Calendar
-		      //TODO
-		      
+		      //Link to Calendear
+		      calendarID = findOrCreateCalendar();
 
 		    } catch (IOException e) {
 		      System.err.println(e.getMessage());
@@ -111,8 +113,51 @@ public class GoogleIO {
 		    }
 	  }
 	  
-	  public static void addEvent(Task task) {
+		private static void addEvent(Task task) throws IOException {
+			 Event event = newEvent();
+			 Event result = client.events().insert(calendarID, event).execute();
+			 System.out.println(result.getSummary());
+		}
+		
+		private static Event newEvent() {
+			Event event = new Event();
+			event.setSummary("Yet ANother New Event");
+			Date startDate = new Date();
+			Date endDate = new Date(startDate.getTime() + 3600000);
+			DateTime start = new DateTime(startDate, TimeZone.getTimeZone("UTC"));
+			event.setStart(new EventDateTime().setDateTime(start));
+			DateTime end = new DateTime(endDate, TimeZone.getTimeZone("UTC"));
+			event.setEnd(new EventDateTime().setDateTime(end));
+			return event;
+		}
+		
 		  
-	  }
+		private static String findOrCreateCalendar() throws IOException {
+			CalendarList request = client.calendarList().list().execute();
+			Iterator<CalendarListEntry> iter = request.getItems().iterator();
+			while (iter.hasNext()) {
+				CalendarListEntry entry = iter.next();
+				String summary = entry.getSummary();
+				if (summary.equals(APPLICATION_NAME)) {
+					return entry.getId();
+				}
+			}
+			
+			return createCalendar();
+		}
+		
+		private static String createCalendar() {
+			try {
+				Calendar entry = new Calendar();
+				entry.setSummary(APPLICATION_NAME);
+				Calendar result = client.calendars().insert(entry).execute();
+				return result.getId();
+			}
+			catch (IOException ex) {
+				System.out.println("Exception Caught");
+				return null;
+			}
+			
+		}
 	  
 }

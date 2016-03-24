@@ -3,9 +3,7 @@ package calendear.action;
 import calendear.action.Action;
 import calendear.parser.Parser;
 import calendear.util.*;
-import calendear.view.View;
 
-import java.util.Scanner;
 import java.util.ArrayList;
 
 import java.text.ParseException;
@@ -44,6 +42,10 @@ public class CDLogic {
 	public Task exeDelete(CommandDelete commandDelete) {
 		Task task = _action.exeDelete(commandDelete);
 		return task;
+	}
+	
+	public void exeLinkGoogle() {
+		_action.exeLinkGoogle();
 	}
 	
 }
