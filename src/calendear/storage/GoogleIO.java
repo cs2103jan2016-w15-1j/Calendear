@@ -13,7 +13,6 @@ import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.DateTime;
 import com.google.api.client.util.Lists;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
@@ -22,14 +21,10 @@ import com.google.api.services.calendar.model.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
-import com.google.api.services.calendar.model.Events;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
-import java.util.Date;
-import java.util.TimeZone;
 import java.util.Iterator;
 
 import calendear.util.Task;
@@ -45,7 +40,8 @@ public class GoogleIO {
 	   * blank, the application will log a warning. Suggested format is "MyCompany-ProductName/1.0".
 	   */
 	  private static final String APPLICATION_NAME = "Calendear";
-
+	  private static final String MESSAGE_ERROR = "Exception Caught";
+	  
 	  /** Directory to store user credentials. */
 	  private static final java.io.File DATA_STORE_DIR =
 	      new java.io.File(System.getProperty("user.home"), ".store/calendear_credentials");
@@ -113,24 +109,17 @@ public class GoogleIO {
 		    }
 	  }
 	  
-		private static void addEvent(Task task) throws IOException {
-			 Event event = newEvent();
-			 Event result = client.events().insert(calendarID, event).execute();
-			 System.out.println(result.getSummary());
+		public static String addEvent(Task task) {
+			try {
+				Event event = task.toGoogleEvent();
+				Event result = client.events().insert(calendarID, event).execute();
+				return result.getId();
+			}
+			catch (IOException ex) {
+				return MESSAGE_ERROR;
+			}
+			 
 		}
-		
-		private static Event newEvent() {
-			Event event = new Event();
-			event.setSummary("Yet ANother New Event");
-			Date startDate = new Date();
-			Date endDate = new Date(startDate.getTime() + 3600000);
-			DateTime start = new DateTime(startDate, TimeZone.getTimeZone("UTC"));
-			event.setStart(new EventDateTime().setDateTime(start));
-			DateTime end = new DateTime(endDate, TimeZone.getTimeZone("UTC"));
-			event.setEnd(new EventDateTime().setDateTime(end));
-			return event;
-		}
-		
 		  
 		private static String findOrCreateCalendar() throws IOException {
 			CalendarList request = client.calendarList().list().execute();
@@ -154,7 +143,7 @@ public class GoogleIO {
 				return result.getId();
 			}
 			catch (IOException ex) {
-				System.out.println("Exception Caught");
+				System.out.println(MESSAGE_ERROR);
 				return null;
 			}
 			

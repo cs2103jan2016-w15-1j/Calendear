@@ -87,8 +87,8 @@ public class DataManager {
 		GoogleIO.login();
 	}
 	
-	public void addTaskToGoogle() {
-		
+	public String addTaskToGoogle(Task task) {
+		return GoogleIO.addEvent(task);
 	}
 	
 	public void deleteTaskFromGoogle(Task task) {
