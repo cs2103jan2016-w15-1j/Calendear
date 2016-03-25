@@ -18,18 +18,17 @@ public class DataManagerTest {
 	@Before
 	public void setUpNewFile() {
 		_dataManager = new DataManager("test_file.txt");
-		_dataManager.wipeFile();
 		
 		_testTasks = new ArrayList<Task>();
 		_testTasks.add(new Task("first task"));
 		_testTasks.add(new Task("second task"));
 		_testTasks.add(new Task("third task"));
-		_dataManager.updateData(_testTasks);
+		_dataManager.insertDataToFile(_testTasks);
 	}
 	
 	@Test
 	public void testFileRead() throws ParseException {
-		ArrayList<Task> tasksRead = _dataManager.buildData();
+		ArrayList<Task> tasksRead = _dataManager.getDataFromFile();
 		assertEquals(tasksRead.size(), _testTasks.size());
 	}
 

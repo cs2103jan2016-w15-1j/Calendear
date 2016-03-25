@@ -12,85 +12,44 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 /**
- * DataManager class that handles file IO to flat file database
+ * Facade Class to manage IO requirements. Depends on GoogleIO and FileIO.
  * @author Phang Chun Rong A0139060M
  *
  */
 public class DataManager {
-	
-	private String _nameOfFile;
-	private File _file;
 
 	/**
 	 * @return an ArrayList of tasks based on the stored file.
 	 */
-	public ArrayList<Task> buildData() throws ParseException {
-		ArrayList<Task> tasks = new ArrayList<Task>();
-		try {
-			FileReader fileReader = new FileReader(_file);
-
-			BufferedReader bufferedReader = 
-                new BufferedReader(fileReader);
-			
-			String line = null;
-            while((line = bufferedReader.readLine()) != null) {
-                Task newTask = Task.parseSaveable(line);
-                tasks.add(newTask);
-            }   
-			fileReader.close();
-		}
-		catch(IOException ex) {
-	    	System.out.println(ex);
-		}
-		return tasks;
+	public ArrayList<Task> getDataFromFile() throws ParseException {
+		return FileIO.buildData();
 	}
-	
+
 	/**
-	 * Takes in an ArrayList of Tasks and saves it into the database.
+	 * Writes Tasks to File
 	 * @param tasksList
 	 */
-	public void updateData(ArrayList<Task> tasksList) {
-		wipeFile(); // Clears file content first
-		
-		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(_file, true));
-
-			for (int i=0; i < tasksList.size(); i++) {
-				Task currentTask = tasksList.get(i);
-
-				bw.write(currentTask.toSaveable());
-				bw.newLine();
-			}
-
-			bw.close();
-	    }
-	    catch (IOException ex) {
-	    	System.out.println(ex);
-	    }
+	public void insertDataToFile(ArrayList<Task> tasksList) {
+		FileIO.updateData(tasksList);
 	}
-	
+
 	/**
-	 *Clears the database on clear command
+	 * Logs user into Google
 	 */
-	public void wipeFile() {
-		try {
-			FileWriter fileWriter = new FileWriter(_file);
-			fileWriter.write("");
-			fileWriter.close();
-		}
-		catch(IOException ex) {
-			System.out.println(ex);
-		}	
-	}
-	
 	public void loginGoogle() {
 		GoogleIO.login();
 	}
 	
+	/**
+	 * Adds Calendear Tasks to Google using GoogleIO.
+	 * @param task
+	 * @return eventId
+	 */
 	public String addTaskToGoogle(Task task) {
 		return GoogleIO.addEvent(task);
 	}
 	
+	//TODO
 	public void deleteTaskFromGoogle(Task task) {
 		
 	}
@@ -100,14 +59,7 @@ public class DataManager {
 	 * @param fileName
 	 */
 	public DataManager(String fileName) {
-		try {
-			_nameOfFile = fileName;
-			_file = new File(_nameOfFile);
-			_file.createNewFile();
-	    }
-	    catch(IOException ex) {
-	    	System.out.println(ex);
-	    }
+		FileIO.createFile(fileName);
 	}
 
 
