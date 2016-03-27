@@ -7,7 +7,6 @@ import java.util.Stack;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import calendear.util.*;
 import calendear.storage.DataManager;
 /**
@@ -69,6 +68,7 @@ public class Action {
 	 * @param cmd
 	 * @return task to be added
 	 */
+
 	private Task addWithInfo(CommandAdd cmd){
 		Task toReturn = new Task("");// "" is a stud
 		boolean[] infoList = cmd.getChecklist();
@@ -127,6 +127,7 @@ public class Action {
 		_dataManager.insertDataToFile(getNoNullArr());
 		return taskToDelete;
 	}
+
 	/**[0:name][1:type][2:starttime]
 		[3:endtime][4:location][5:note]
 		[6:tag][7:important][8:finished]
@@ -313,6 +314,7 @@ public class Action {
 	 */
 	
 	public void exeUndo(){
+
 		try{
 			Command previousCmd = _undoStack.pop();
 			CMD_TYPE cmdType = previousCmd.getType();

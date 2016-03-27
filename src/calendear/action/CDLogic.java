@@ -48,4 +48,8 @@ public class CDLogic {
 		_action.exeLinkGoogle();
 	}
 	
+	public void exeUndo(){
+		_action.exeUndo();
+	}
+	
 }

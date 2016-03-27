@@ -17,8 +17,7 @@ public class Task {
 	
 	public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy, HH:mm");
 	//private static final String OBJ_SEPERATOR = System.getProperty("line.separator");
-	private static final String TAB = "    ";
-	private static final String NULL = "null";
+	private static final String EMPTY = "";
 	private static final String OBJ_SEPERATOR = ".";
 	private static final String PATTERN_OBJ_SEPERATOR = "\\.";
 	private static final String IMPORTANT = "important";
@@ -101,14 +100,14 @@ public class Task {
 	
 	public String getStartTimeStr() {
 		if (startTime == null) {
-			return NULL;
+			return EMPTY;
 		}
 		return dateFormatter.format(startTime.getTime());
 	}
 	
 	public String getEndTimeStr() {
 		if (endTime == null) {
-			return NULL;
+			return EMPTY;
 		}
 		return dateFormatter.format(endTime.getTime());
 	}
