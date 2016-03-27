@@ -30,7 +30,7 @@ public class Table {
 	private static final String HEADER_IMPORTANCE = "important:";
 	private static final String HEADER_FINISHED = "finished:";
 	private static final String[] HEADERS_ARR_N = {HEADER_IMPORTANCE,HEADER_FINISHED,HEADER_NAME, 
-			HEADER_TAG, HEADER_STARTTIME,HEADER_ENDTIME,HEADER_LOCATION,HEADER_NOTE};
+			HEADER_TAG, HEADER_STARTTIME,HEADER_ENDTIME/*,HEADER_LOCATION,HEADER_NOTE*/};
 
 	private static final String MSG_WELCOME = ANSI_PURPLE+"welcome to calendear!"+ANSI_RESET;
 	private static final String MSG_COMMAND = ANSI_PURPLE+"command:"+ANSI_RESET;
@@ -49,9 +49,9 @@ public class Table {
 	private static final int LEN_LOCA = 16;
 	private static final int LEN_NOTE = 16;
 	private static final int NOT_ARR_LIST = -1;
-	private static final int NUM_OF_TITLE_BAR = NUM_OF_ATTRI+2;
+	private static final int NUM_OF_TITLE_BAR = 8;
 	private static final int LEN_TOTAL = LEN_ID+LEN_IMPO+LEN_FINI+
-						LEN_NAME+LEN_STIME+LEN_ETIME+LEN_TAG+LEN_LOCA+LEN_NOTE+NUM_OF_TITLE_BAR;
+						LEN_NAME+LEN_STIME+LEN_ETIME+LEN_TAG+/*LEN_LOCA+LEN_NOTE+*/NUM_OF_TITLE_BAR;
 	private static final int[] LEN_TITLE_ARR = {0,1,6,12,1,3,7,11};
 	private static final String BORDER_SIGN = "*";
 	
@@ -62,8 +62,8 @@ public class Table {
 									"|%5$-"+LEN_TAG+"s"+
 									"|%6$-"+LEN_STIME+"s"+
 									"|%7$-"+LEN_ETIME+"s"+
-									"|%8$-"+LEN_NAME+"s"+
-									"|%9$-"+LEN_NOTE+"s"+
+								//	"|%8$-"+LEN_NAME+"s"+
+								//	"|%9$-"+LEN_NOTE+"s"+
 									"|\n";
 	
 	
@@ -107,15 +107,21 @@ public class Table {
  	
 	
 	public static String getMultipleTasks(ArrayList<Task> taskArr){
-		String output = titleLine();
-		output+=borderLine();
+		String output = titleLine()+borderLine();
+		String outputComplete = borderLine();
 		for(int i=0;i<taskArr.size();i++){
 			if(taskArr.get(i)!=null){
-				output+=getSingleTask(taskArr.get(i),i+1);
-				output+=borderLine();
+				if(taskArr.get(i).isFinished()){
+					outputComplete+=getSingleTask(taskArr.get(i),i);
+					outputComplete+=borderLine();
+				}
+				else {
+					output+=getSingleTask(taskArr.get(i),i);
+					output+=borderLine();
+				}
 			}
 		}
-		return output;
+		return output+outputComplete;
 	}
 	
 
@@ -222,17 +228,17 @@ public class Table {
 		if(id == NOT_ARR_LIST){
 			taskInLine += String.format(format,S,arr.get(0).get(0),arr.get(0).get(1)
 				,arr.get(0).get(2),arr.get(0).get(3),arr.get(0).get(4)
-				,arr.get(0).get(5),arr.get(0).get(6),arr.get(0).get(7));
+				,arr.get(0).get(5)/*,arr.get(0).get(6),arr.get(0).get(7)*/);
 		}
 		else{
 			taskInLine += String.format(format,id+".",arr.get(0).get(0),arr.get(0).get(1)
 					,arr.get(0).get(2),arr.get(0).get(3),arr.get(0).get(4)
-					,arr.get(0).get(5),arr.get(0).get(6),arr.get(0).get(7));
+					,arr.get(0).get(5)/*,arr.get(0).get(6),arr.get(0).get(7)*/);
 		}
 		for(int i=1;i<arr.size();i++){
 			taskInLine += String.format(format," ",arr.get(i).get(0),arr.get(i).get(1)
 					,arr.get(i).get(2),arr.get(i).get(3),arr.get(i).get(4)
-					,arr.get(i).get(5),arr.get(i).get(6),arr.get(i).get(7));
+					,arr.get(i).get(5)/*,arr.get(i).get(6),arr.get(i).get(7)*/);
 		}
 		return taskInLine;
 		
