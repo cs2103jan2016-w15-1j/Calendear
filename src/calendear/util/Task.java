@@ -49,6 +49,9 @@ public class Task {
 	private boolean isImportant;
 	private boolean isFinished = false;
 	
+	public Task(){
+		//adding task with infoList and newData
+	}
 	public Task(String name) {
 		type = TASK_TYPE.FLOATING;
 		this.name = name.trim();
