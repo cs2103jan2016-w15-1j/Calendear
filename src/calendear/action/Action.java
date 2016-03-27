@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import calendear.util.*;
 import calendear.storage.DataManager;
-import calendear.storage.GoogleIO;
 /**
  * 
  * @author Wu XiaoXiao
@@ -50,36 +49,26 @@ public class Action {
 	final int COMP_ID = 8;//finished
 	
 	//constructor
+
 	/**
-	 * default constructor, not used.
+	 * constructor, takes in nameOfFile to store data in, nameOfFile should end with .txt
+	 * @param nameOfFile
+	 * @throws ParseException
 	 */
-	/*public Action(){
-		_data = new ArrayList<Task>();
-		_undoStack = new Stack<Command>();
-		_redoStack = new Stack<Command>();
-	}*/
-	
 	public Action(String nameOfFile) throws ParseException {
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
 		_dataManager = new DataManager(nameOfFile);
 		_data = _dataManager.getDataFromFile();
 	}
-	
-	/*//not using
-	public Action(ArrayList<Task> tasks, String nameOfFile) {
-		_data = tasks;
-		_undoStack = new Stack<Command>();
-		_redoStack = new Stack<Command>();
-		_dataManager = new DataManager(nameOfFile);
-	}*/
+
 	/**
+	 * helper,
 	 * returns the task that was added.
 	 * id is arrayList.size() - 1
 	 * @param cmd
 	 * @return task to be added
 	 */
-	//helper for add
 	private Task addWithInfo(CommandAdd cmd){
 		Task toReturn = new Task("");// "" is a stud
 		boolean[] infoList = cmd.getChecklist();
@@ -106,6 +95,7 @@ public class Action {
 		return addedTask;
 	}
 	/**
+	 * helper,
 	 * add to _data, but not storage
 	 * @param cmd
 	 * @return added task
@@ -127,15 +117,15 @@ public class Action {
 	public Task exeDelete(CommandDelete cmd){
 		assertCommandNotNull(cmd);
 		int id = cmd.getIndex();
-		Task t = _data.get(id);
-		if(this._dataManager.isLogined() && t.getEventId() != null){
-			
+		Task taskToDelete = _data.get(id);
+		if(this._dataManager.isLogined() && taskToDelete.getEventId() != null){
+			this._dataManager.deleteTaskFromGoogle(taskToDelete);
 		}
 		_data.set(id, null);
-		cmd.setDeletedTask(t);
+		cmd.setDeletedTask(taskToDelete);
 		_undoStack.push(cmd);
 		_dataManager.insertDataToFile(getNoNullArr());
-		return t;
+		return taskToDelete;
 	}
 	/**[0:name][1:type][2:starttime]
 		[3:endtime][4:location][5:note]
@@ -451,7 +441,9 @@ public class Action {
 		int toMarkIndex = cmd.getIndex();
 		Task toMark = this._data.get(toMarkIndex);
 		toMark.markImportant(!toMark.isImportant());
-		
+		if(this._dataManager.isLogined() && toMark.getEventId() != null){
+			this._dataManager.updateTaskToGoogle(toMark);
+		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
 	}
@@ -460,7 +452,9 @@ public class Action {
 		int toMarkDoneIndex = cmd.getIndex();
 		Task toMarkDone = this._data.get(toMarkDoneIndex);
 		toMarkDone.setIsFinished(!toMarkDone.isFinished());
-		
+		if(this._dataManager.isLogined() && toMarkDone.getEventId() != null){
+			this._dataManager.updateTaskToGoogle(toMarkDone);
+		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
 	}
@@ -470,6 +464,26 @@ public class Action {
 		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
+	public void exeAddAllToGoogle(){
+		assert(this._dataManager.isLogined()): "called exeAddAllToGoogle without logging in\n";
+		//ArrayList<Task> tasksWithoutEventId = new ArrayList<Task>();
+		//ArrayList<Integer> tasksWithoutEventIdIndex = new ArrayList<Integer>();
+		for(int i = 0; i<this._data.size(); i++){
+			Task currentTask = this._data.get(i);
+			if(currentTask.getEventId() == null){
+				//tasksWithoutEventId.add(currentTask);
+				//tasksWithoutEventIdIndex.add(i);
+				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
+				currentTask.setEventId(newEventId);
+			}
+		}
+	}
+	
+	public void exeLoadTasksFromGoogle(){
+		assert(this._dataManager.isLogined()): "calling exeLoadTasksFromGoogle when not logged in\n";
+		//TODO
+	}
+	
 	/**
 	 * @author Phang Chun Rong
 	 */
@@ -477,16 +491,12 @@ public class Action {
 		this._dataManager.loginGoogle();
 	}
 	
-	public void exeExit(){
-		//TODO
-		this._dataManager.insertDataToFile(getNoNullArr());
-	}
 	
 	//--------------------------------------------------------------------------
 	//helper
 	/**
 	 * returns an array of data with null objects removed
-	 * @return
+	 * @return ArrayList<Task>
 	 */
 	private ArrayList<Task> getNoNullArr(){
 		ArrayList<Task> toReturn = new ArrayList<Task>();
@@ -500,10 +510,17 @@ public class Action {
 		return toReturn;
 	}
 	
+	/**
+	 * assert that cmd is not null
+	 * @param cmd
+	 */
 	private void assertCommandNotNull(Command cmd){
 		assert(cmd != null): "Received null command";
 	}
-	
+	/**
+	 * 
+	 * @return the size of _data
+	 */
 	public int getAmount(){
 		return this._data.size();
 	}
