@@ -23,7 +23,8 @@ public class Parser {
 	private static final String EMPTY = "";
 	//when using regex and regex-related methods like String.split() and String.replaceAll()
 	//the "." is treated as metacharacter so you have to include the escape character "\\"
-	private static final String PATTERN_ESCAPE_CHARACTER = "\\.";
+	private static final String INPUT_ESCAPE_CHARACTER = "\\.";
+	private static final String PATTERN_ESCAPE_CHARACTER = "_";
 	
 	private static final String IMPORTANT = "important";
 	private static final String NAME = "name";
@@ -69,8 +70,9 @@ public class Parser {
 	
 	public static Command parse(String rawInput){	
 		String input = rawInput.trim();
+		input = changeEscapeCharacter(input);
 		String[] words = input.split(" ");
-		return parseCommand(words, rawInput);
+		return parseCommand(words, input);
 	}
 	
 	private static Command parseCommand(String[] words, String rawInput){
@@ -110,7 +112,6 @@ public class Parser {
 		Matcher matcher = pattern.matcher(rawInput);
 		if (matcher.find()){
 			try {	
-				System.out.println("match");
 				String name = removeEscapeCharacter(matcher.group(2));
 				boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
 				Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
@@ -181,7 +182,6 @@ public class Parser {
 						break;
 					case FROM:
 						checkList[CommandUpdate.CODE_UPDATE_TYPE] = true;
-						System.out.println("this case");
 						newInfo[CommandUpdate.CODE_UPDATE_TYPE] = TASK_TYPE.EVENT;
 						checkList[CommandUpdate.CODE_UPDATE_START_TIME] = true;
 						argument = removeEscapeCharacter(matcher.group(4+2*i));
@@ -272,9 +272,11 @@ public class Parser {
 	}
 	
 	private static String removeEscapeCharacter(String rawInput){
-		System.out.println(rawInput);
-		System.out.println(rawInput.replaceAll(PATTERN_ESCAPE_CHARACTER, EMPTY));
 		return rawInput.replaceAll(PATTERN_ESCAPE_CHARACTER, EMPTY);
+	}
+	
+	private static String changeEscapeCharacter(String rawInput){
+		return rawInput.replaceAll(INPUT_ESCAPE_CHARACTER, PATTERN_ESCAPE_CHARACTER);
 	}
 	
 }
