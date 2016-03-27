@@ -108,7 +108,16 @@ public class GoogleIO {
 			catch (IOException ex) {
 				return MESSAGE_ERROR;
 			}
-			 
+		}
+		
+		public static void deleteEvent(Task task) {
+			try {
+				String eventId = task.getEventId();
+				client.events().delete(calendarID, eventId).execute();
+			}
+			catch (IOException ex) {
+				System.out.println(ex);
+			}
 		}
 		  
 		private static String findOrCreateCalendar() throws IOException {
