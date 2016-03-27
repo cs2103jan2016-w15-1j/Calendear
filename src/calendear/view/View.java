@@ -37,8 +37,8 @@ public class View {
 	
 	private static final String[] MSG_ARR = addColor(MSG_ARR_N);
 	
-	private static final String MSG_WELCOME = "welcome to calendear!";
-	private static final String MSG_COMMAND = "command:";
+	private static final String MSG_WELCOME = ANSI_PURPLE+"welcome to calendear!"+ANSI_RESET;
+	private static final String MSG_COMMAND = ANSI_PURPLE+"command:"+ANSI_RESET;
 	private static final String MSG_YES = "yes";
 	private static final String MSG_NO = "no";
 	
