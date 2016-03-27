@@ -48,6 +48,8 @@ public class Action {
 	final int IMP_ID = 7;//important
 	final int COMP_ID = 8;//finished
 	
+	final String TAG_SEPARATOR = " # ";
+	
 	//constructor
 
 	/**
@@ -60,6 +62,7 @@ public class Action {
 		_redoStack = new Stack<Command>();
 		_dataManager = new DataManager(nameOfFile);
 		_data = _dataManager.getDataFromFile();
+		this._data.add(null);
 	}
 
 	/**
@@ -179,11 +182,8 @@ public class Action {
 				toUpdate.setLocation(newNote);
 			}
 			if(infoList[TAG_ID]){
-				//can be a series of tags, need to specify 
-				// add/delete/replace
-				//TODO
 				String newTag = (String) newData[TAG_ID];
-				toUpdate.setTag(newTag);
+				toUpdate.setTag(toUpdate.getTag() + TAG_SEPARATOR + newTag);
 			}
 			if(infoList[IMP_ID]){
 				boolean isImportant = (boolean)newData[IMP_ID];
@@ -232,27 +232,19 @@ public class Action {
 	}
 	
 	/**
+	 * only display tasks which are not finished
 	 * arrayList containing tasks to show, all null elements should not be shown
 	 * @param cmd
 	 * @return ArrayList<Task>
 	 */
 	public ArrayList<Task> exeDisplay(CommandDisplay cmd){
 		assertCommandNotNull(cmd);
+		ArrayList<Task> arrWithOnlyUndoneTasks = exeDisplayDone();
 		if(cmd.isOnlyImportantDisplayed()){
-			//prepares an arraylist where all non important tasks are represented as null
-			ArrayList<Task> imp = new ArrayList<Task>();
-			for(int i = 0; i< _data.size(); i++){
-				Task temp = _data.get(i);
-				if(temp != null && temp.isImportant()){
-					imp.add(temp);
-				}else{
-					imp.add(null);
-				}
-			}
-			return imp;
-		}else{
-			return _data;
+			arrWithOnlyUndoneTasks = filterWithImportance(true, arrWithOnlyUndoneTasks);
 		}
+		return arrWithOnlyUndoneTasks;
+		
 	}
 	/**
 	 * filters _data for tasks to be displayed according to toShow and searchWith
@@ -291,7 +283,15 @@ public class Action {
 				if(toShow[NOTE_ID]){
 				}
 				if(toShow[TAG_ID]){
-					if(!task.getTag().equalsIgnoreCase((String) searchWith[TAG_ID])){
+					String[] tagList = task.getTag().split(TAG_SEPARATOR);
+					boolean isTagged = false;
+					for(int j = 0; j<tagList.length ;j++ ){
+						if(tagList[i].equalsIgnoreCase((String) searchWith[TAG_ID])){
+							isTagged = true;
+							break;
+						}
+					}
+					if(!isTagged){
 						task = null;
 					}
 				}
@@ -311,6 +311,25 @@ public class Action {
 		return show;
 	}
 	
+	private ArrayList<Task> filterWithImportance(boolean isImportant, ArrayList<Task> dataToFilter){
+		ArrayList<Task> toDisplay = new ArrayList<Task>();
+		toDisplay.addAll(dataToFilter);
+		for(int i = 0; i<toDisplay.size(); i++){
+			if(toDisplay.get(i).isImportant() != isImportant){
+				toDisplay.set(i, null);
+			}
+		}
+		return toDisplay;
+	}
+	
+	public ArrayList<Task> exeDisplayImportant(){
+		return filterWithImportance(true, this._data);
+	}
+	
+	public ArrayList<Task> exeDisplayNotImportant(){
+		return filterWithImportance(false, this._data);
+	}
+	
 	public ArrayList<Task> exeSearch(CommandSearch cmd){
 		assertCommandNotNull(cmd);
 		boolean[] toShow = cmd.getArrToShow();
@@ -318,6 +337,24 @@ public class Action {
 		return displaySelectiveHelper(toShow, searchWith);
 	}
 	
+	private ArrayList<Task> filterWithCompleteness(boolean isDone, ArrayList<Task> dataToFilter){
+		ArrayList<Task> toDisplay = new ArrayList<Task>();
+		toDisplay.addAll(dataToFilter);
+		for(int i = 0; i<toDisplay.size(); i++){
+			if(toDisplay.get(i).isFinished() != isDone){
+				toDisplay.set(i, null);
+			}
+		}
+		return toDisplay;
+	}
+	
+	public ArrayList<Task> exeDisplayNotDone(){
+		return filterWithCompleteness(false, this._data);
+	}	
+	
+	public ArrayList<Task> exeDisplayDone(){
+		return filterWithCompleteness(true, this._data);
+	}
 	/**
 	 * ADD: removed last task in arraylist and store in cmdAdd
 	 * UPDATE: exchanged data with data stored in cmdUpdate
@@ -372,13 +409,11 @@ public class Action {
 					done.setIsFinished(!done.isFinished());
 					break;
 				case TAG:
-					//currently tag is a private string
-					//TODO
 					log.log(Level.FINE, "undo tag", previousCmd);
 					CommandTag cmdTag = (CommandTag) previousCmd;
 					int tagIndex = cmdTag.getIndex();
 					Task tagged = this._data.get(tagIndex);
-					tagged.setTag(cmdTag.getTagName());
+					removeLastTag(tagged);
 					break;
 				default:
 					log.log(Level.SEVERE, "reached unreachable area in undo", previousCmd);
@@ -418,21 +453,20 @@ public class Action {
 			CommandDelete cmdDelete = (CommandDelete) redoCmd;
 			exeDelete(cmdDelete);
 			break;
-		case SORT:
-			//TODO since after sorting the index will change, this should not happen
-			break;
 		case MARK:
 			log.log(Level.FINE, "redo toggle Importance", redoCmd);
 			CommandMark cmdMark = (CommandMark) redoCmd;
-			exeToggleImportance(cmdMark);
+			exeImportance(cmdMark);
 			break;
 		case DONE:
 			log.log(Level.FINE, "redo toggle finished", redoCmd);
 			CommandDone cmdDone = (CommandDone) redoCmd;
-			exeToggleDone(cmdDone);
+			exeDone(cmdDone);
 			break;
 		case TAG:
-			//TODO
+			log.log(Level.FINE, "redo tag finished", redoCmd);
+			CommandTag cmdTag = (CommandTag) redoCmd;
+			exeTag(cmdTag);
 			break;
 		default:
 			log.log(Level.SEVERE, "reached unreachable area in redo", redoCmd);
@@ -446,18 +480,17 @@ public class Action {
 	}
 	
 	public void exeTag(CommandTag cmd){
-		//TODO can not save previous tag
 		int toTagIndex = cmd.getIndex();
 		Task toTag = this._data.get(toTagIndex);
-		toTag.setTag(cmd.getTagName());
+		toTag.setTag(toTag.getTag() + " # " + cmd.getTagName());
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
-	public void exeToggleImportance(CommandMark cmd){//toggles importance
+	public void exeImportance(CommandMark cmd){//toggles importance
 		int toMarkIndex = cmd.getIndex();
 		Task toMark = this._data.get(toMarkIndex);
-		toMark.markImportant(!toMark.isImportant());
+		toMark.markImportant(cmd.isImportant());
 		if(this._dataManager.isLogined() && toMark.getEventId() != null){
 			this._dataManager.updateTaskToGoogle(toMark);
 		}
@@ -465,10 +498,10 @@ public class Action {
 		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
-	public void exeToggleDone(CommandDone cmd){
+	public void exeDone(CommandDone cmd){
 		int toMarkDoneIndex = cmd.getIndex();
 		Task toMarkDone = this._data.get(toMarkDoneIndex);
-		toMarkDone.setIsFinished(!toMarkDone.isFinished());
+		toMarkDone.setIsFinished(cmd.isDone());
 		if(this._dataManager.isLogined() && toMarkDone.getEventId() != null){
 			this._dataManager.updateTaskToGoogle(toMarkDone);
 		}
@@ -536,6 +569,16 @@ public class Action {
 	 */
 	public int getAmount(){
 		return this._data.size();
+	}
+	
+	private void removeLastTag(Task taggedTask){
+		String[] tags = taggedTask.getTag().split(TAG_SEPARATOR);
+		String newTag = new String();
+		for(int i = 0; i<tags.length-2; i++){
+			newTag += tags[i] + TAG_SEPARATOR;
+		}
+		newTag += tags[tags.length-2];
+		taggedTask.setTag(newTag);
 	}
 }
 
