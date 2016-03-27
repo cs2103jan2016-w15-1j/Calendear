@@ -52,6 +52,7 @@ public class Parser {
 	+ "|(?:(\\btag\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups tag and <newTag>
 	+ "|(?:(\\bmark\\b) *()) *"			//represent the group mark
 	+ "|(?:(\\bdone\\b) *()) *)+";		//represent the group done
+	private static final String PATTERN_ADD_FLOAT = "(\\badd\\b) +(.+)";
 	private static final String PATTERN_UPDATE_BY_INDEX = 
 	"(\\bupdate\\b) +(\\d+) +"			//represent the groups update and <taskID>
 	+ "(?:(?:(\\bname\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
@@ -69,10 +70,10 @@ public class Parser {
 	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
 	
 	public static Command parse(String rawInput){	
-		String input = rawInput.trim();
-		input = changeEscapeCharacter(input);
-		String[] words = input.split(" ");
-		return parseCommand(words, input);
+		rawInput = rawInput.trim();
+		rawInput = changeEscapeCharacter(rawInput);
+		String[] words = rawInput.split(" ");
+		return parseCommand(words, rawInput);
 	}
 	
 	private static Command parseCommand(String[] words, String rawInput){
@@ -123,6 +124,17 @@ public class Parser {
 			}
 		}
 		
+		pattern = Pattern.compile(PATTERN_ADD_FLOAT);
+		matcher = pattern.matcher(rawInput);
+		if (matcher.find()){
+			System.out.println("match");
+			String name = removeEscapeCharacter(matcher.group(2));
+			boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
+			Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
+			checkList[CommandUpdate.CODE_UPDATE_NAME] = true;
+			newInfo[CommandUpdate.CODE_UPDATE_NAME] = name;
+			return new CommandAdd(name, checkList, newInfo);
+		}
 		return new CommandInvalid(rawInput);
 	}
 	

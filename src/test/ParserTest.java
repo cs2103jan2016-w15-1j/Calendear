@@ -92,11 +92,11 @@ public class ParserTest {
 		newInfo[INDEX_NAME] = name ;
 		checklist[INDEX_TYPE] = true;
 		newInfo[INDEX_TYPE] = TASK_TYPE.EVENT;
-		checklist[INDEX_START_TIME] = false;
-		newInfo[INDEX_END_TIME] = startTime;
+		checklist[INDEX_START_TIME] = true;
+		newInfo[INDEX_START_TIME] = startTime;
 		checklist[INDEX_END_TIME] = true;
 		newInfo[INDEX_END_TIME] = endTime;
-		expectedOutputs.add(new CommandAdd("visit garden by the bay from 3/21/16 5:30pm", checklist, newInfo));
+		expectedOutputs.add(new CommandAdd("visit garden by the bay", checklist, newInfo));
 	}
 
 	private void addCaseAddEventWithOptions() {
