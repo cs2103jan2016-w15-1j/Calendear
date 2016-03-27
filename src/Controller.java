@@ -68,7 +68,7 @@ public class Controller {
 	    		case SEARCH:
 	    				break;
 	    		
-	    		case MARK:
+	    		case MARK:	
 	    				break;
 	    		
 	    		case TAG:

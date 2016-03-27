@@ -1,25 +1,27 @@
 package calendear.util;
 
+
+
 public class CommandTag extends Command {
 	
 	private int index;
-	private String tagName;
+	private String newTag;
 	
-	public CommandTag(int index, String tagName){
+	public CommandTag(int index, String newTag){
 		type = CMD_TYPE.TAG;
 		this.index = index;
-		this.tagName = tagName;
+		this.newTag = newTag;
 	}
 	
 	public int getIndex(){
 		return index;
 	}
 	
-	public String getTagName(){
-		return tagName;
+	public  String getTagName(){
+		return newTag;
 	}
 	
 	public void setTag(String newTag){
-		this.tagName = newTag;
+		this.newTag = newTag;
 	}
 }
