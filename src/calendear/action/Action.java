@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import calendear.util.*;
 import calendear.storage.DataManager;
+import calendear.storage.GoogleIO;
 /**
  * 
  * @author Wu XiaoXiao
@@ -35,78 +36,105 @@ public class Action {
 	private ArrayList<Task> _data;
 	private Stack<Command> _undoStack;
 	private Stack<Command> _redoStack;
-	private DataManager _dm; 
+	private DataManager _dataManager; 
+	
+	final int NAME_ID = 0;
+	final int TYPE_ID = 1;
+	final int STARTT_ID = 2;
+	final int ENDT_ID = 3;
+	final int LOCATION_ID = 4;
+	final int NOTE_ID = 5;
+	final int TAG_ID = 6;
+	final int IMP_ID = 7;//important
+	final int COMP_ID = 8;//finished
 	
 	//constructor
 	/**
 	 * default constructor, not used.
 	 */
-	public Action(){
+	/*public Action(){
 		_data = new ArrayList<Task>();
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
-	}
+	}*/
 	
 	public Action(String nameOfFile) throws ParseException {
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
-		_dm = new DataManager(nameOfFile);
-		_data = _dm.getDataFromFile();
+		_dataManager = new DataManager(nameOfFile);
+		_data = _dataManager.getDataFromFile();
 	}
 	
-	//not using
+	/*//not using
 	public Action(ArrayList<Task> tasks, String nameOfFile) {
 		_data = tasks;
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
-		_dm = new DataManager(nameOfFile);
-	}
+		_dataManager = new DataManager(nameOfFile);
+	}*/
 	/**
 	 * returns the task that was added.
 	 * id is arrayList.size() - 1
-	 * @param c
-	 * @return
+	 * @param cmd
+	 * @return task to be added
 	 */
 	//---------helper-------------
 	//helper for add
-	private Task addWithInfo(CommandAdd c){
+	private Task addWithInfo(CommandAdd cmd){
 		Task toReturn = new Task("");// "" is a stud
-		boolean[] infoList = c.getChecklist();
-		Object[] newData = c.getNewInfo();
+		boolean[] infoList = cmd.getChecklist();
+		Object[] newData = cmd.getNewInfo();
 		exchangeInfo(toReturn, infoList, newData);
 		return toReturn;
 	}
 	
-	public Task exeAdd(CommandAdd c){
-		assertCommandNotNull(c);
-		Task addedTask = addWithoutSave(c);
-		this._undoStack.push(c);
-		this._dm.insertDataToFile(getNoNullArr());
+	/**
+	 * called by CDLogic
+	 * @param cmd
+	 * @return task added to storage
+	 */
+	public Task exeAdd(CommandAdd cmd){
+		assertCommandNotNull(cmd);
+		String eventId; 
+		Task addedTask = addWithoutSave(cmd);
+		if(this._dataManager.isLogined()){
+			eventId = this._dataManager.addTaskToGoogle(addedTask);
+			addedTask.setEventId(eventId);
+		}
+		this._undoStack.push(cmd);
+		this._dataManager.insertDataToFile(getNoNullArr());
 		return addedTask;
 	}
-
-	private Task addWithoutSave(CommandAdd c) {
-		Task addedTask = c.getTask();
+	/**
+	 * add to _data, but not storage
+	 * @param cmd
+	 * @return added task
+	 */
+	private Task addWithoutSave(CommandAdd cmd) {
+		Task addedTask = cmd.getTask();
 		if(addedTask == null){
-			addedTask = addWithInfo(c);
+			addedTask = addWithInfo(cmd);
 			assert(addedTask != null) : "task to add is null";
 		}
 		this._data.add(addedTask);
-		c.setTask(null);
+		cmd.setTask(null);
 		return addedTask;
 	}
 	/**
 	 * remove task with id
 	 * @param id
 	 */
-	public Task exeDelete(CommandDelete c){
-		assertCommandNotNull(c);
-		int id = c.getIndex();
+	public Task exeDelete(CommandDelete cmd){
+		assertCommandNotNull(cmd);
+		int id = cmd.getIndex();
 		Task t = _data.get(id);
+		if(this._dataManager.isLogined() && t.getEventId() != null){
+			
+		}
 		_data.set(id, null);
-		c.setDeletedTask(t);
-		_undoStack.push(c);
-		_dm.insertDataToFile(getNoNullArr());
+		cmd.setDeletedTask(t);
+		_undoStack.push(cmd);
+		_dataManager.insertDataToFile(getNoNullArr());
 		return t;
 	}
 
@@ -114,17 +142,15 @@ public class Action {
 		[3:endtime][4:location][5:note]
 		[6:tag][7:important][8:finished]
 	*/
+	/**
+	 * update contents of toUpdate with infoList and newData
+	 * @param toUpdate
+	 * @param infoList
+	 * @param newData
+	 */
 	//helper class to exchange contents of CommandUpdate and task
 	private void exchangeInfo(Task toUpdate, boolean[] infoList, Object[] newData){
-		final int NAME_ID = 0;
-		final int TYPE_ID = 1;
-		final int STARTT_ID = 2;
-		final int ENDT_ID = 3;
-		final int LOCATION_ID = 4;
-		final int NOTE_ID = 5;
-		final int TAG_ID = 6;
-		final int IMP_ID = 7;//important
-		final int COMP_ID = 8;//finished
+		
 		
 		try{
 			if(infoList[NAME_ID]){
@@ -184,33 +210,44 @@ public class Action {
 			e.printStackTrace();
 		}
 	}
-	
-	private void updateInformation(CommandUpdate c, Task toUpdate){
-		boolean[] infoList = c.getChecklist();
-		Object[] newData = c.getNewInfo();
+	/**
+	 * updates toUpdate with cmd
+	 * @param cmd
+	 * @param toUpdate
+	 */
+	private void updateInformation(CommandUpdate cmd, Task toUpdate){
+		boolean[] infoList = cmd.getChecklist();
+		Object[] newData = cmd.getNewInfo();
 		exchangeInfo(toUpdate, infoList, newData);
 	}
 	
 
-
-	public Task exeUpdate(CommandUpdate c){
-		assertCommandNotNull(c);
-		int changeId = c.getIndex();
+	/**
+	 * executes cmd (a command update)
+	 * @param cmd
+	 * @return
+	 */
+	public Task exeUpdate(CommandUpdate cmd){
+		assertCommandNotNull(cmd);
+		int changeId = cmd.getIndex();
 		Task toUpdate = _data.get(changeId);
-		updateInformation(c, toUpdate);
-		_undoStack.add(c);
-		this._dm.insertDataToFile(getNoNullArr());
+		if(this._dataManager.isLogined() && toUpdate.getEventId() != null){
+			this._dataManager.updateTaskToGoogle(toUpdate);
+		}
+		updateInformation(cmd, toUpdate);
+		_undoStack.add(cmd);
+		this._dataManager.insertDataToFile(getNoNullArr());
 		return toUpdate;
 	}
 	
 	/**
-	 * 
-	 * @param c
-	 * @return arrayList containing tasks to show, all null elements should not be shown
+	 * arrayList containing tasks to show, all null elements should not be shown
+	 * @param cmd
+	 * @return ArrayList<Task>
 	 */
-	public ArrayList<Task> exeDisplay(CommandDisplay c){
-		assertCommandNotNull(c);
-		if(c.isOnlyImportantDisplayed()){
+	public ArrayList<Task> exeDisplay(CommandDisplay cmd){
+		assertCommandNotNull(cmd);
+		if(cmd.isOnlyImportantDisplayed()){
 			//prepares an arraylist where all non important tasks are represented as null
 			ArrayList<Task> imp = new ArrayList<Task>();
 			for(int i = 0; i< _data.size(); i++){
@@ -226,17 +263,13 @@ public class Action {
 			return _data;
 		}
 	}
-	
-	public ArrayList<Task> exeDisplaySelectiveHelper(boolean[] toShow, Object[] searchWith){
-		final int NAME_ID = 0;
-		final int TYPE_ID = 1;
-		final int STARTT_ID = 2;
-		final int ENDT_ID = 3;
-		final int LOCATION_ID = 4;
-		final int NOTE_ID = 5;
-		final int TAG_ID = 6;
-		final int IMP_ID = 7;//important
-		final int COMP_ID = 8;//finished
+	/**
+	 * filters _data for tasks to be displayed according to toShow and searchWith
+	 * @param toShow
+	 * @param searchWith
+	 * @return ArrayList<Task>
+	 */
+	private ArrayList<Task> exeDisplaySelectiveHelper(boolean[] toShow, Object[] searchWith){
 		
 		ArrayList<Task> show = new ArrayList<Task>();
 		show.addAll(this._data);
@@ -276,7 +309,7 @@ public class Action {
 		return show;
 	}
 	
-	public void exeSearch(String str){
+	public void exeSearch(String strToSearch){
 		//TODO
 	}
 	
@@ -316,9 +349,8 @@ public class Action {
 					log.log(Level.FINE, "undo delete", previousCmd);
 					CommandDelete cmdDelete = (CommandDelete) previousCmd;
 					int deleteIndex = cmdDelete.getIndex();
-					Task deleted = this._data.get(deleteIndex);
-					cmdDelete.setDeletedTask(deleted);
-					this._data.set(deleteIndex, null);
+					Task toAddBack = cmdDelete.getDeletedTask();
+					this._data.set(deleteIndex, toAddBack);
 					break;
 				case MARK:
 					log.log(Level.FINE, "undo mark", previousCmd);
@@ -348,7 +380,7 @@ public class Action {
 					throw new AssertionError(cmdType);
 			}
 			_redoStack.push(previousCmd);
-			this._dm.insertDataToFile(getNoNullArr());
+			this._dataManager.insertDataToFile(getNoNullArr());
 			log.log(Level.FINE, "pushed previousCmd to redoStack", previousCmd);
 		}
 		catch (EmptyStackException e){
@@ -401,55 +433,55 @@ public class Action {
 			log.log(Level.SEVERE, "reached unreachable area in redo", redoCmd);
 			throw new AssertionError(redoCmd);
 		}
-		this._dm.insertDataToFile(getNoNullArr());
+		this._dataManager.insertDataToFile(getNoNullArr());
 		}
 		catch (EmptyStackException e){
 			System.out.println("error: nothing to redo");
 		}
 	}
 	
-	public void exeTag(CommandTag c){
+	public void exeTag(CommandTag cmd){
 		//TODO can not save previous tag
-		int toTagIndex = c.getIndex();
+		int toTagIndex = cmd.getIndex();
 		Task toTag = this._data.get(toTagIndex);
-		toTag.setTag(c.getTagName());
-		this._undoStack.push(c);
-		this._dm.insertDataToFile(getNoNullArr());
+		toTag.setTag(cmd.getTagName());
+		this._undoStack.push(cmd);
+		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
-	public void exeToggleImportance(CommandMark c){//toggles importance
-		int toMarkIndex = c.getIndex();
+	public void exeToggleImportance(CommandMark cmd){//toggles importance
+		int toMarkIndex = cmd.getIndex();
 		Task toMark = this._data.get(toMarkIndex);
 		toMark.markImportant(!toMark.isImportant());
 		
-		this._undoStack.push(c);
-		this._dm.insertDataToFile(getNoNullArr());
+		this._undoStack.push(cmd);
+		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
-	public void exeToggleDone(CommandDone c){
-		int toMarkDoneIndex = c.getIndex();
+	public void exeToggleDone(CommandDone cmd){
+		int toMarkDoneIndex = cmd.getIndex();
 		Task toMarkDone = this._data.get(toMarkDoneIndex);
 		toMarkDone.setIsFinished(!toMarkDone.isFinished());
 		
-		this._undoStack.push(c);
-		this._dm.insertDataToFile(getNoNullArr());
+		this._undoStack.push(cmd);
+		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
 	public void exeSort(){
 		//TODO
-		this._dm.insertDataToFile(getNoNullArr());
+		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
 	/**
 	 * @author Phang Chun Rong
 	 */
 	public void exeLinkGoogle() {
-		this._dm.loginGoogle();
+		this._dataManager.loginGoogle();
 	}
 	
 	public void exeExit(){
 		//TODO
-		this._dm.insertDataToFile(getNoNullArr());
+		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
 	//--------------------------------------------------------------------------
@@ -470,8 +502,8 @@ public class Action {
 		return toReturn;
 	}
 	
-	private void assertCommandNotNull(Command c){
-		assert(c != null): "Received null command";
+	private void assertCommandNotNull(Command cmd){
+		assert(cmd != null): "Received null command";
 	}
 	
 	public int getAmount(){
