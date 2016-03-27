@@ -7,6 +7,7 @@ import java.util.Stack;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import calendear.util.*;
 import calendear.storage.DataManager;
 /**
@@ -265,24 +266,24 @@ public class Action {
 		show.addAll(this._data);
 		
 		for(int i = 0; i<show.size(); i++){
-			Task t = show.get(i);
+			Task task = show.get(i);
 			try{
-				if(toShow[NAME_ID] && !t.getName().equals((String)searchWith[NAME_ID])){
-					t = null;
+				if(toShow[NAME_ID] && !task.getName().contains((String)searchWith[NAME_ID])){
+					task = null;
 				}
-				if(toShow[TYPE_ID] && !t.getType().equals((TASK_TYPE)searchWith[TYPE_ID])){
-					t = null;
+				if(toShow[TYPE_ID] && !task.getType().equals((TASK_TYPE)searchWith[TYPE_ID])){
+					task = null;
 				}
 				if(toShow[STARTT_ID]){//show after start id
 					GregorianCalendar comparingWith = (GregorianCalendar)searchWith[STARTT_ID];
-					if(t.getStartTime().compareTo(comparingWith) > 0){
-						t = null;
+					if(task.getStartTime().compareTo(comparingWith) > 0){
+						task = null;
 					}
 				}
 				if(toShow[ENDT_ID]){//show before end id
 					GregorianCalendar comparingWith = (GregorianCalendar)searchWith[STARTT_ID];
-					if(t.getStartTime().compareTo(comparingWith) < 0){
-						t = null;
+					if(task.getStartTime().compareTo(comparingWith) < 0){
+						task = null;
 					}
 				}
 				if(toShow[LOCATION_ID]){
@@ -290,11 +291,14 @@ public class Action {
 				if(toShow[NOTE_ID]){
 				}
 				if(toShow[TAG_ID]){
+					if(!task.getTag().equalsIgnoreCase((String) searchWith[TAG_ID])){
+						task = null;
+					}
 				}
-				if(toShow[IMP_ID] && !(t.isImportant() == (boolean)searchWith[IMP_ID])){
-					t = null;
+				if(toShow[IMP_ID] && !(task.isImportant() == (boolean)searchWith[IMP_ID])){
+					task = null;
 				}
-				if(toShow[COMP_ID] && !(t.isFinished() == (boolean)searchWith[COMP_ID])){
+				if(toShow[COMP_ID] && !(task.isFinished() == (boolean)searchWith[COMP_ID])){
 					
 				}
 			}catch (NullPointerException e){
