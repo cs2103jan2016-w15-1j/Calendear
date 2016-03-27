@@ -56,6 +56,21 @@ public class ActionTest {
 		action1.exeUndo();
 		assertEquals(t1.getEndTime(), originalTime);
 	}
+	
+	@Test
+	public void testUndoDelete() throws ParseException{
+		Action action1 = new Action("action2.txt");
+		int nextIndex = action1.getAmount();
+		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
+		Task t1 = new Task("task2", originalTime);
+		CommandAdd cA = new CommandAdd(t1);
+		action1.exeAdd(cA);
+		int nextNextIndex = action1.getAmount(); 
+		System.out.println(nextIndex + " ");
+		
+		action1.exeUndo();
+		assertEquals(t1.getEndTime(), originalTime);
+	}
 
 	@Test
 	public void testRedo() throws ParseException{
