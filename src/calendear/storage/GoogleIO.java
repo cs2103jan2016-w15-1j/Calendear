@@ -35,22 +35,10 @@ import calendear.util.Task;
  *
  */
 public class GoogleIO {
-	/**
-	   * Be sure to specify the name of your application. If the application name is {@code null} or
-	   * blank, the application will log a warning. Suggested format is "MyCompany-ProductName/1.0".
-	   */
+
 	  private static final String APPLICATION_NAME = "Calendear";
 	  private static final String MESSAGE_ERROR = "Exception Caught";
 	  
-	  /** Directory to store user credentials. */
-	  private static final java.io.File DATA_STORE_DIR =
-	      new java.io.File(System.getProperty("user.home"), ".store/calendear_credentials");
-
-	  /**
-	   * Global instance of the {@link DataStoreFactory}. The best practice is to make it a single
-	   * globally shared instance across your application.
-	   */
-	  private static FileDataStoreFactory dataStoreFactory;
 	  
 	  /** Global instance of the HTTP transport. */
 	  private static HttpTransport httpTransport;
@@ -78,7 +66,7 @@ public class GoogleIO {
 	    // set up authorization code flow
 	    GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
 	        httpTransport, JSON_FACTORY, clientSecrets,
-	        Collections.singleton(CalendarScopes.CALENDAR)).setDataStoreFactory(dataStoreFactory)
+	        Collections.singleton(CalendarScopes.CALENDAR))
 	        .build();
 	    // authorize
 	    return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
@@ -88,9 +76,6 @@ public class GoogleIO {
 		  try {
 		      // initialize the transport
 		      httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-
-		      // initialize the data store factory
-		      dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
 
 		      // authorization
 		      Credential credential = authorize();
@@ -105,10 +90,10 @@ public class GoogleIO {
 		      return true;
 
 		    } catch (IOException e) {
-		      System.err.println(e.getMessage());
+//		      System.err.println(e.getMessage());
 		      return false;
 		    } catch (Throwable t) {
-		      t.printStackTrace();
+//		      t.printStackTrace();
 		      return false;
 		    }
 		  
