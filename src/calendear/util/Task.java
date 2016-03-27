@@ -3,8 +3,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
+import java.util.Date;
 
 import org.ocpsoft.prettytime.shade.edu.emory.mathcs.backport.java.util.Arrays;
+
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.client.util.DateTime;
 
 import calendear.parser.DateParser;
 
@@ -34,6 +39,7 @@ public class Task {
 	private static final int SAVING_INDEX_FINISHED = 8;
 	
 	private String name;
+	private String googleEventId;
 	private TASK_TYPE type;
 	private GregorianCalendar startTime;
 	private GregorianCalendar endTime;
@@ -63,6 +69,10 @@ public class Task {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public String getEventId() {
+		return googleEventId;
 	}
 	
 	public TASK_TYPE getType() {
@@ -141,6 +151,10 @@ public class Task {
 		this.name = name;
 	}
 	
+	public void setEventId(String eventId) {
+		this.googleEventId = eventId;
+	}
+	
 	public void setStartTime(GregorianCalendar time) {
 		this.startTime = time;
 	}
@@ -187,6 +201,46 @@ public class Task {
 		return res;
 	}
 	
+	/**
+	 * @author Phang Chun Rong
+	 * @return Google Event
+	 */
+	public Event toGoogleEvent() {
+		Event event = new Event();
+		//TODO
+		DateTime start;
+		DateTime end;
+		event.setSummary(name);
+		if (location != null)
+			event.setLocation(location);
+		switch(type) {
+			case EVENT:
+				start = new DateTime(startTime.getTime(), startTime.getTimeZone());
+				end = new DateTime(endTime.getTime(), endTime.getTimeZone());
+				event.setStart(new EventDateTime().setDateTime(start));
+				event.setEnd(new EventDateTime().setDateTime(end));
+				break;
+			case DEADLINE:
+				end = new DateTime(endTime.getTime(), endTime.getTimeZone());
+				event.setStart(new EventDateTime().setDateTime(end));
+				event.setEnd(new EventDateTime().setDateTime(end));
+				//If start and end time are required, set start time to be equal to end time or 1 second more.
+				break;
+			case FLOATING:
+				//Set Start Time to be the time at this instance
+				Date now = new Date();
+				start = new DateTime(now.getTime());
+				event.setStart(new EventDateTime().setDateTime(start));
+				event.setEnd(new EventDateTime().setDateTime(start));				
+				break;
+			case RECURRING:
+				break;
+			default:
+				break;
+		}
+		return event;
+	}
+	
 	public static Task parseSaveable(String allString) throws ParseException {
 		String[] members = allString.split(PATTERN_OBJ_SEPERATOR);
 		String typeStr = members[SAVING_INDEX_TYPE];
@@ -222,5 +276,5 @@ public class Task {
 		String name = members[SAVING_INDEX_NAME];
 		return new Task(name);
 	}
-
+	
 }

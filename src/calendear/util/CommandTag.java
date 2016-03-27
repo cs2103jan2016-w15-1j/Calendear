@@ -19,4 +19,7 @@ public class CommandTag extends Command {
 		return tagName;
 	}
 	
+	public void setTag(String newTag){
+		this.tagName = newTag;
+	}
 }

@@ -8,11 +8,15 @@ import java.util.Scanner;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author Phang Chun Rong
+ * Controller for User Interaction
+ */
 public class Controller {
 	
 	private Scanner _scanner;
 	private CDLogic _cdLogic;
-	
 	
 	public static void main(String[] args) {
 		String nameOfFile = args[0];
@@ -70,16 +74,16 @@ public class Controller {
 	    		case TAG:
 	    				break;
 	    		
-	    		case LINK_GOOGLE:
-	    				break;
-	    		
+	    		case LINK_GOOGLE: _cdLogic.exeLinkGoogle();
+	    						  break;
+	    						  	
 	    		case DONE:
 	    				break;
 	    		
 	    		case EXIT:  View.displayExit();
 	    					System.exit(0);
 	    					break;
-	    		default:
+	    		default: 
 	    				break;
 	    	}
 	    }

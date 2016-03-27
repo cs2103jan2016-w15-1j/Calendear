@@ -13,7 +13,23 @@ import calendear.storage.DataManager;
  * 
  * @author Wu XiaoXiao
  *
+ *methods in Action:
+ *1. exeAdd: functioning
+ *2. exeDelete: functioning
+ *3. exeUpdate: functioning
+ *4. exeDisplay: functioning
+ *5. exeSearch: in progress
+ *6. exeUndo: finished except for undo tag
+ *7. exeRedo: finished except for undo tag
+ *8. exeTag: done, but currently there's no way to save previous tag
+ *9. exeToggleImportance: functioning
+ *10. exeToggleDone: functioning
+ *11. exeSort: has not started
+ *12. exeLinkGoogle:
+ *13. exeExit:
  */
+
+
 public class Action {
 	private static final Logger log= Logger.getLogger( "Action" );
 	private ArrayList<Task> _data;
@@ -35,7 +51,7 @@ public class Action {
 		_undoStack = new Stack<Command>();
 		_redoStack = new Stack<Command>();
 		_dm = new DataManager(nameOfFile);
-		_data = _dm.buildData();
+		_data = _dm.getDataFromFile();
 	}
 	
 	//not using
@@ -65,7 +81,7 @@ public class Action {
 		assertCommandNotNull(c);
 		Task addedTask = addWithoutSave(c);
 		this._undoStack.push(c);
-		this._dm.updateData(getNoNullArr());
+		this._dm.insertDataToFile(getNoNullArr());
 		return addedTask;
 	}
 
@@ -90,7 +106,7 @@ public class Action {
 		_data.set(id, null);
 		c.setDeletedTask(t);
 		_undoStack.push(c);
-		_dm.updateData(getNoNullArr());
+		_dm.insertDataToFile(getNoNullArr());
 		return t;
 	}
 
@@ -183,7 +199,7 @@ public class Action {
 		Task toUpdate = _data.get(changeId);
 		updateInformation(c, toUpdate);
 		_undoStack.add(c);
-		this._dm.updateData(getNoNullArr());
+		this._dm.insertDataToFile(getNoNullArr());
 		return toUpdate;
 	}
 	
@@ -304,9 +320,6 @@ public class Action {
 					cmdDelete.setDeletedTask(deleted);
 					this._data.set(deleteIndex, null);
 					break;
-				case SORT:
-					//TODO since after sorting the index will change, this should not happen
-					break;
 				case MARK:
 					log.log(Level.FINE, "undo mark", previousCmd);
 					CommandMark cmdMark = (CommandMark) previousCmd;
@@ -323,6 +336,7 @@ public class Action {
 					break;
 				case TAG:
 					//currently tag is a private string
+					//TODO
 					log.log(Level.FINE, "undo tag", previousCmd);
 					CommandTag cmdTag = (CommandTag) previousCmd;
 					int tagIndex = cmdTag.getIndex();
@@ -334,7 +348,7 @@ public class Action {
 					throw new AssertionError(cmdType);
 			}
 			_redoStack.push(previousCmd);
-			this._dm.updateData(getNoNullArr());
+			this._dm.insertDataToFile(getNoNullArr());
 			log.log(Level.FINE, "pushed previousCmd to redoStack", previousCmd);
 		}
 		catch (EmptyStackException e){
@@ -387,7 +401,7 @@ public class Action {
 			log.log(Level.SEVERE, "reached unreachable area in redo", redoCmd);
 			throw new AssertionError(redoCmd);
 		}
-		this._dm.updateData(getNoNullArr());
+		this._dm.insertDataToFile(getNoNullArr());
 		}
 		catch (EmptyStackException e){
 			System.out.println("error: nothing to redo");
@@ -400,7 +414,7 @@ public class Action {
 		Task toTag = this._data.get(toTagIndex);
 		toTag.setTag(c.getTagName());
 		this._undoStack.push(c);
-		this._dm.updateData(getNoNullArr());
+		this._dm.insertDataToFile(getNoNullArr());
 	}
 	
 	public void exeToggleImportance(CommandMark c){//toggles importance
@@ -409,7 +423,7 @@ public class Action {
 		toMark.markImportant(!toMark.isImportant());
 		
 		this._undoStack.push(c);
-		this._dm.updateData(getNoNullArr());
+		this._dm.insertDataToFile(getNoNullArr());
 	}
 	
 	public void exeToggleDone(CommandDone c){
@@ -418,12 +432,12 @@ public class Action {
 		toMarkDone.setIsFinished(!toMarkDone.isFinished());
 		
 		this._undoStack.push(c);
-		this._dm.updateData(getNoNullArr());
+		this._dm.insertDataToFile(getNoNullArr());
 	}
 	
 	public void exeSort(){
 		//TODO
-		this._dm.updateData(getNoNullArr());
+		this._dm.insertDataToFile(getNoNullArr());
 	}
 	
 	/**
@@ -435,7 +449,7 @@ public class Action {
 	
 	public void exeExit(){
 		//TODO
-		this._dm.updateData(getNoNullArr());
+		this._dm.insertDataToFile(getNoNullArr());
 	}
 	
 	//--------------------------------------------------------------------------
