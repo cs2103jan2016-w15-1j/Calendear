@@ -79,6 +79,10 @@ public class Controller {
 	    						  	
 	    		case DONE:
 	    				break;
+	    				
+	    		case UNDO: _cdLogic.exeUndo();
+	    				   break;
+	    				
 	    		
 	    		case EXIT:  View.displayExit();
 	    					System.exit(0);
