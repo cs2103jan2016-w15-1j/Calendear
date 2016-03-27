@@ -5,6 +5,18 @@ import calendear.util.Task;
 
 public class View {
 	
+	public static final String ANSI_RESET = "\u001B[0m";
+	public static final String ANSI_BLACK = "\u001B[30m";
+	public static final String ANSI_RED = "\u001B[31m";
+	public static final String ANSI_GREEN = "\u001B[32m";
+	public static final String ANSI_YELLOW = "\u001B[33m";
+	public static final String ANSI_BLUE = "\u001B[34m";
+	public static final String ANSI_PURPLE = "\u001B[35m";
+	public static final String ANSI_CYAN = "\u001B[36m";
+	public static final String ANSI_WHITE = "\u001B[37m";
+	
+	private static String formatRed = ANSI_RED+"%s"+ANSI_RESET;
+	
 	private static final String MSG_ADD = "added task:\n";
 	private static final String MSG_DELETE = "deleted task:\n";
 	private static final String MSG_DISPLAY = "display tasks:\n";
@@ -18,14 +30,27 @@ public class View {
 	private static final String MSG_LINKGOOGLE ="linked to google";
 	private static final String MSG_EXIT ="exited";
 	private static final String MSG_INVALID ="invalid command";
-
-	private static final String MSG_WELCOME = "welcome to calendear!";
-	private static final String MSG_COMMAND = "command:";
+	
+	private static final String[] MSG_ARR_N = {MSG_ADD,MSG_DELETE,MSG_UPDATE,MSG_MARK,MSG_TAG,MSG_DONE,
+		MSG_UNDO,MSG_DISPLAY,MSG_SORT,MSG_SEARCH,
+			MSG_LINKGOOGLE,MSG_EXIT,MSG_INVALID};
+	
+	private static final String[] MSG_ARR = addColor(MSG_ARR_N);
+	
+	private static final String MSG_WELCOME = ANSI_PURPLE+"welcome to calendear!"+ANSI_RESET;
+	private static final String MSG_COMMAND = ANSI_PURPLE+"command:"+ANSI_RESET;
 	private static final String MSG_YES = "yes";
 	private static final String MSG_NO = "no";
 	
 	private static final int NOT_ARR_LIST = -1;
 	
+	private static String[] addColor(String[] arr){
+		String[] colorArr= new String[arr.length];
+		for(int i=0;i<arr.length;i++){
+			colorArr[i] = String.format(formatRed,arr[i]);
+		}
+		return colorArr;
+	}
 	
 	public static void displayWelcome(){
 		System.out.println(MSG_WELCOME);
@@ -36,96 +61,96 @@ public class View {
 	}
 	
 	public static void displayAdd(Task task){
-		System.out.println(MSG_ADD+ Full.getTask(task));
+		System.out.println(MSG_ARR[0]+ Full.getTask(task));
 	}
 	
 	public static void displayAddInLine(Task task){
-		System.out.println(MSG_ADD+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[0]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayDelete(Task task){
-		System.out.println(MSG_DELETE+ Full.getTask(task));
+		System.out.println(MSG_ARR[1]+ Full.getTask(task));
 	}
 	
 	public static void displayDeleteInLine(Task task){
-		System.out.println(MSG_DELETE+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[1]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayUpdate(Task task){
-		System.out.println(MSG_UPDATE+ Full.getTask(task));
+		System.out.println(MSG_ARR[2]+ Full.getTask(task));
 	}
 	
 	public static void displayUpdateInLine(Task task){
-		System.out.println(MSG_UPDATE+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[2]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayMark(Task task){
-		System.out.println(MSG_MARK+ Full.getTask(task));
+		System.out.println(MSG_ARR[3]+ Full.getTask(task));
 	}
 	
 	public static void displayMarkInLine(Task task){
-		System.out.println(MSG_MARK+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[3]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayTag(Task task){
-		System.out.println(MSG_TAG+ Full.getTask(task));
+		System.out.println(MSG_ARR[4]+ Full.getTask(task));
 	}
 	
 	public static void displayTagInLine(Task task){
-		System.out.println(MSG_TAG+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[4]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayDone(Task task){
-		System.out.println(MSG_DONE+ Full.getTask(task));
+		System.out.println(MSG_ARR[5]+ Full.getTask(task));
 	}
 	
 	public static void displayDoneInLine(Task task){
-		System.out.println(MSG_DONE+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[5]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayUndo(Task task){
-		System.out.println(MSG_UNDO+ Full.getTask(task));
+		System.out.println(MSG_ARR[6]+ Full.getTask(task));
 	}
 	
 	public static void displayUndoInLine(Task task){
-		System.out.println(MSG_UNDO+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[6]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayDisplay(ArrayList<Task> taskArr){
-		System.out.println(MSG_DISPLAY+ Full.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[7]+ Full.getMultipleTasks(taskArr));
 	}
 	
 	public static void displayDisplayInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_DISPLAY+ Table.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[7]+ Table.getMultipleTasks(taskArr));
 	}
 	
 	public static void displaySort(ArrayList<Task> taskArr){
-		System.out.println(MSG_SORT+ Full.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[8]+ Full.getMultipleTasks(taskArr));
 	}
 	
 	public static void displaySortInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_SORT+ Table.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[8]+ Table.getMultipleTasks(taskArr));
 	}
 	
 	public static void displaySearch(ArrayList<Task> taskArr){
-		System.out.println(MSG_SEARCH+ Full.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[9]+ Full.getMultipleTasks(taskArr));
 	}
 	
 	public static void displaySearchInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_SEARCH+ Table.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[9]+ Table.getMultipleTasks(taskArr));
 	}
 	
 	
 	public static void displayLinkGoogle(){
-		System.out.println(MSG_LINKGOOGLE);
+		System.out.println(MSG_ARR[10]);
 	}
 	
 	public static void displayExit(){
-		System.out.println(MSG_EXIT);
+		System.out.println(MSG_ARR[11]);
 	}
 	
 	public static void displayInvalid(){
-		System.out.println(MSG_INVALID);
+		System.out.println(MSG_ARR[12]);
 	}
 	
 

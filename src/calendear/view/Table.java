@@ -3,7 +3,22 @@ import java.util.ArrayList;
 
 import calendear.util.Task;
 
+
 public class Table {
+	
+	public static final String ANSI_RESET = "\u001B[0m";
+	public static final String ANSI_BLACK = "\u001B[30m";
+	public static final String ANSI_RED = "\u001B[31m";
+	public static final String ANSI_GREEN = "\u001B[32m";
+	public static final String ANSI_YELLOW = "\u001B[33m";
+	public static final String ANSI_BLUE = "\u001B[34m";
+	public static final String ANSI_PURPLE = "\u001B[35m";
+	public static final String ANSI_CYAN = "\u001B[36m";
+	public static final String ANSI_WHITE = "\u001B[37m";
+	
+	private static String formatCyan = ANSI_CYAN+"%s"+ANSI_RESET;
+	private static String formatGreen = ANSI_GREEN+"%s"+ANSI_RESET;
+	
 	private static final String HEADER_NAME = "task name:";
 	private static final String HEADER_TAG = "tag:";
 	private static final String HEADER_STARTTIME = "start time:";
@@ -14,11 +29,11 @@ public class Table {
 	private static final String HEADER_NOTE = "note:";
 	private static final String HEADER_IMPORTANCE = "important:";
 	private static final String HEADER_FINISHED = "finished:";
-	private static final String[] HEADERS = {HEADER_IMPORTANCE,HEADER_FINISHED,HEADER_NAME, 
+	private static final String[] HEADERS_ARR_N = {HEADER_IMPORTANCE,HEADER_FINISHED,HEADER_NAME, 
 			HEADER_TAG, HEADER_STARTTIME,HEADER_ENDTIME,HEADER_LOCATION,HEADER_NOTE};
 
-	private static final String MSG_WELCOME = "welcome to calendear!";
-	private static final String MSG_COMMAND = "command:";
+	private static final String MSG_WELCOME = ANSI_PURPLE+"welcome to calendear!"+ANSI_RESET;
+	private static final String MSG_COMMAND = ANSI_PURPLE+"command:"+ANSI_RESET;
 	private static final String MSG_YES = "yes";
 	private static final String MSG_NO = "no";
 	
@@ -37,6 +52,7 @@ public class Table {
 	private static final int NUM_OF_TITLE_BAR = NUM_OF_ATTRI+2;
 	private static final int LEN_TOTAL = LEN_ID+LEN_IMPO+LEN_FINI+
 						LEN_NAME+LEN_STIME+LEN_ETIME+LEN_TAG+LEN_LOCA+LEN_NOTE+NUM_OF_TITLE_BAR;
+	private static final int[] LEN_TITLE_ARR = {0,1,6,12,1,3,7,11};
 	private static final String BORDER_SIGN = "*";
 	
 	private static String format = "|%1$-"+LEN_ID+"s"+
@@ -50,6 +66,23 @@ public class Table {
 									"|%9$-"+LEN_NOTE+"s"+
 									"|\n";
 	
+	
+	private static String getHeaderString(String[] arr){
+		String headerString= "|  ";
+		for(int i=0;i<arr.length;i++){
+			headerString += ("|"+ANSI_CYAN+arr[i]+ANSI_RESET+addSpace(LEN_TITLE_ARR[i]));
+		}
+		headerString+="|\n";
+		return headerString;
+	}
+	
+	private static String addSpace(int n){
+		String space="";
+		for(int i=0;i<n;i++){
+			space +=" ";
+		}
+		return space;
+	}
 	
 	public static ArrayList<String> getDetailsArr(Task task){
 		ArrayList<String> details= new ArrayList<String>();
@@ -78,7 +111,7 @@ public class Table {
 		output+=borderLine();
 		for(int i=0;i<taskArr.size();i++){
 			if(taskArr.get(i)!=null){
-				output+=getSingleTask(taskArr.get(i),i);
+				output+=getSingleTask(taskArr.get(i),i+1);
 				output+=borderLine();
 			}
 		}
@@ -131,8 +164,14 @@ public class Table {
 			int begin = 0;
 			int end =len;
 			while(end<text.length()){
+				int count =0;
 				while(!(text.charAt(end)==' ')){
 					end--;
+					count++;
+					if(count==len){
+						end+=len;
+						break;
+					}
 				}
 				attriArr.add(text.substring(begin, end));
 				begin = end;
@@ -201,8 +240,9 @@ public class Table {
 	
 	private static String titleLine(){
 		String titleLine = borderLine();
-		titleLine+= String.format(format," ",HEADER_IMPORTANCE,HEADER_FINISHED,HEADER_NAME, 
-				HEADER_TAG, HEADER_STARTTIME,HEADER_ENDTIME,HEADER_LOCATION,HEADER_NOTE);
+		titleLine+= getHeaderString(HEADERS_ARR_N);
+				/*String.format(format," ",HEADERS_ARR[0],HEADERS_ARR[1],HEADERS_ARR[2], 
+				HEADERS_ARR[3], HEADERS_ARR[4],HEADERS_ARR[5],HEADERS_ARR[6],HEADERS_ARR[7]);*/
 		return titleLine;
 	}
 	
@@ -212,6 +252,7 @@ public class Table {
 			border+= BORDER_SIGN;
 		}
 		border+="\n";
-		return border;
+		String nborder = String.format(formatGreen, border);
+		return nborder;
 	}
 }
