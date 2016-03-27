@@ -259,7 +259,7 @@ public class Action {
 	 * @param searchWith
 	 * @return ArrayList<Task>
 	 */
-	private ArrayList<Task> exeDisplaySelectiveHelper(boolean[] toShow, Object[] searchWith){
+	private ArrayList<Task> displaySelectiveHelper(boolean[] toShow, Object[] searchWith){
 		
 		ArrayList<Task> show = new ArrayList<Task>();
 		show.addAll(this._data);
@@ -273,9 +273,17 @@ public class Action {
 				if(toShow[TYPE_ID] && !t.getType().equals((TASK_TYPE)searchWith[TYPE_ID])){
 					t = null;
 				}
-				if(toShow[STARTT_ID]){
+				if(toShow[STARTT_ID]){//show after start id
+					GregorianCalendar comparingWith = (GregorianCalendar)searchWith[STARTT_ID];
+					if(t.getStartTime().compareTo(comparingWith) > 0){
+						t = null;
+					}
 				}
-				if(toShow[ENDT_ID]){
+				if(toShow[ENDT_ID]){//show before end id
+					GregorianCalendar comparingWith = (GregorianCalendar)searchWith[STARTT_ID];
+					if(t.getStartTime().compareTo(comparingWith) < 0){
+						t = null;
+					}
 				}
 				if(toShow[LOCATION_ID]){
 				}
@@ -299,8 +307,11 @@ public class Action {
 		return show;
 	}
 	
-	public void exeSearch(String strToSearch){
-		//TODO
+	public ArrayList<Task> exeSearch(CommandSearch cmd){
+		assertCommandNotNull(cmd);
+		boolean[] toShow = cmd.getArrToShow();
+		Object[] searchWith = cmd.getArrSearchWith();
+		return displaySelectiveHelper(toShow, searchWith);
 	}
 	
 	/**
@@ -461,10 +472,6 @@ public class Action {
 		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
-	public void exeSort(){
-		//TODO
-		this._dataManager.insertDataToFile(getNoNullArr());
-	}
 	
 	public void exeAddAllToGoogle(){
 		assert(this._dataManager.isLogined()): "called exeAddAllToGoogle without logging in\n";
