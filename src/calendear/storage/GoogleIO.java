@@ -55,7 +55,7 @@ public class GoogleIO {
 	  private static Credential authorize() throws Exception {
 	    // load client secrets
 	    GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-	        new InputStreamReader(GoogleIO.class.getResourceAsStream("/libs/client_secrets.json")));
+	        new InputStreamReader(GoogleIO.class.getResourceAsStream("../../libs/client_secrets.json")));
 	    if (clientSecrets.getDetails().getClientId().startsWith("Enter")
 	        || clientSecrets.getDetails().getClientSecret().startsWith("Enter ")) {
 	      System.out.println(
@@ -90,10 +90,10 @@ public class GoogleIO {
 		      return true;
 
 		    } catch (IOException e) {
-//		      System.err.println(e.getMessage());
+		      System.err.println(e.getMessage());
 		      return false;
 		    } catch (Throwable t) {
-//		      t.printStackTrace();
+		      t.printStackTrace();
 		      return false;
 		    }
 		  
