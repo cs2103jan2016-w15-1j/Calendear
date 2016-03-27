@@ -40,6 +40,7 @@ public class Task {
 	private static final int SAVING_INDEX_FINISHED = 8;
 	
 	private String name;
+	private String googleEventId;
 	private TASK_TYPE type;
 	private GregorianCalendar startTime;
 	private GregorianCalendar endTime;
@@ -69,6 +70,10 @@ public class Task {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public String getEventId() {
+		return googleEventId;
 	}
 	
 	public TASK_TYPE getType() {
@@ -145,6 +150,10 @@ public class Task {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public void setEventId(String eventId) {
+		this.googleEventId = eventId;
 	}
 	
 	public void setStartTime(GregorianCalendar time) {

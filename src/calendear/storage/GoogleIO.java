@@ -84,7 +84,7 @@ public class GoogleIO {
 	    return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
 	  }
 	
-	  public static void login() {
+	  public static boolean login() {
 		  try {
 		      // initialize the transport
 		      httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -101,12 +101,17 @@ public class GoogleIO {
 		      
 		      //Link to Calendear
 		      calendarID = findOrCreateCalendar();
+		      
+		      return true;
 
 		    } catch (IOException e) {
 		      System.err.println(e.getMessage());
+		      return false;
 		    } catch (Throwable t) {
 		      t.printStackTrace();
+		      return false;
 		    }
+		  
 	  }
 	  
 		public static String addEvent(Task task) {

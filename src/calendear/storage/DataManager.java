@@ -17,7 +17,9 @@ import java.util.ArrayList;
  *
  */
 public class DataManager {
-
+	
+	private boolean _isLogined;
+	
 	/**
 	 * @return an ArrayList of tasks based on the stored file.
 	 */
@@ -37,7 +39,11 @@ public class DataManager {
 	 * Logs user into Google
 	 */
 	public void loginGoogle() {
-		GoogleIO.login();
+		_isLogined = GoogleIO.login();
+	}
+	
+	public boolean isLogined() {
+		return _isLogined;
 	}
 	
 	/**
@@ -49,7 +55,18 @@ public class DataManager {
 		return GoogleIO.addEvent(task);
 	}
 	
-	//TODO
+	/**
+	 * Update Calendear Task to Google using GoogleIO.
+	 * @param task
+	 */
+	public void updateTaskToGoogle(Task task) {
+		
+	}
+	
+	/**
+	 * Delete Calendear Task to Google using GoogleIO.
+	 * @param task
+	 */
 	public void deleteTaskFromGoogle(Task task) {
 		
 	}
