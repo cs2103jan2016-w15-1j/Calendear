@@ -1,4 +1,3 @@
 /bin/
 *.txt
 /target/
-/src/libs/client_secrets.json
