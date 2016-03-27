@@ -40,7 +40,7 @@ public class Parser {
 	private static final String NEGATIVE_LOOKAHEAD_KEYWORDS = 
 	"((?:.(?!\\bname\\b|\\bby\\b|\\bfrom\\b|\\bto\\b|\\bfloat\\b|\\bat\\b|\\bnote\\b|\\btag\\b|\\bmark\\b|\\bdone\\b))+)";
 	private static final String PATTERN_ADD = 
-	"(\\badd\\b) +(.+) +"				//represent the groups update and <taskID>
+	"(\\badd\\b) +" + NEGATIVE_LOOKAHEAD_KEYWORDS + " +"				//represent the groups update and <taskID>
 	+ "(?:(?:(\\bname\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
 	+ "|(?:(\\bby\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups by and <dateAndTime>
 	+ "|(?:(\\bfrom\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups from and <dateAndTime>
@@ -110,6 +110,7 @@ public class Parser {
 		Matcher matcher = pattern.matcher(rawInput);
 		if (matcher.find()){
 			try {	
+				System.out.println("match");
 				String name = removeEscapeCharacter(matcher.group(2));
 				boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
 				Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
@@ -271,6 +272,8 @@ public class Parser {
 	}
 	
 	private static String removeEscapeCharacter(String rawInput){
+		System.out.println(rawInput);
+		System.out.println(rawInput.replaceAll(PATTERN_ESCAPE_CHARACTER, EMPTY));
 		return rawInput.replaceAll(PATTERN_ESCAPE_CHARACTER, EMPTY);
 	}
 	
