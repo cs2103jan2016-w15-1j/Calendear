@@ -90,10 +90,10 @@ public class GoogleIO {
 		      return true;
 
 		    } catch (IOException e) {
-		      System.err.println(e.getMessage());
+//		      System.err.println(e.getMessage());
 		      return false;
 		    } catch (Throwable t) {
-		      t.printStackTrace();
+//		      t.printStackTrace();
 		      return false;
 		    }
 		  
