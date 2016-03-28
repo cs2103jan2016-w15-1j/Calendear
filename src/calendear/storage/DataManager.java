@@ -68,7 +68,17 @@ public class DataManager {
 	 * @param task
 	 */
 	public void deleteTaskFromGoogle(Task task) {
+		GoogleIO.deleteEvent(task);
+	}
+	
+	/**
+	 * Get Tasks that are saved in Google
+	 * @return Tasks
+	 */
+	public ArrayList<Task> getTasksFromGoogle() {
+		ArrayList<Task> tasks = new ArrayList<Task>();
 		
+		return tasks;
 	}
 	
 	/**
