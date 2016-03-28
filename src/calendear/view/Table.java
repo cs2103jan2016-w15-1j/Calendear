@@ -59,9 +59,12 @@ public class Table {
 	private static final int[] LEN_TITLE_ARR = {0/*,1*/,6,12,1,3,7,11};
 	private static final String BORDER_SIGN = "*";
 	private static final String BORDER_INCOMPLETE = "Incomplete";
-	private static final String BORDER_COMPLETE = "Complete";
+	private static final String BORDER_COMPLETE = "Completed";
 	private static final String BORDER_SIGN2 = ">";
 	private static final String BORDER_SIGN3 = "<";
+	private static final String MSG_NO_INCOMPLETE = "You do not have any incomplete task\n";
+	private static final String MSG_NO_COMPLETE = "You do not have any completed task\n";
+	
 	
 	private static String format = "|%1$-"+LEN_ID+"s"+
 									"|%2$-"+LEN_IMPO+"s"+
@@ -132,10 +135,10 @@ public class Table {
 			}
 		}
 		if (outputIncomplete.equals("")){
-			outputIncomplete+="You do not have incompleted task\n"+borderLine();
+			outputIncomplete+=MSG_NO_INCOMPLETE+borderLine();
 		}
 		if (outputComplete.equals("")){
-			outputComplete+="You do not have completed task\n"+borderLine();
+			outputComplete+=MSG_NO_COMPLETE+borderLine();
 		}
 		return outputUpper+outputIncomplete+outputLower+outputComplete;
 	}
