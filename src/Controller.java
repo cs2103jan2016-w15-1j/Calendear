@@ -88,6 +88,8 @@ public class Controller {
 	    		case EXIT:  View.displayExit();
 	    					System.exit(0);
 	    					break;
+	    					
+	    		case REDO: _cdLogic.exeRedo();
 	    		default: 
 	    				break;
 	    	}

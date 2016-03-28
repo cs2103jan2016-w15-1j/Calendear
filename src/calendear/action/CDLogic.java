@@ -52,4 +52,7 @@ public class CDLogic {
 		_action.exeUndo();
 	}
 	
+	public void exeRedo(){
+		_action.exeRedo();
+	}
 }

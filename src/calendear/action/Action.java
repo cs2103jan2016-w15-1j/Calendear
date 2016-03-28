@@ -191,7 +191,6 @@ public class Action {
 				toUpdate.markImportant(isImportant);
 			}
 			if(infoList[COMP_ID]){
-				System.out.println(newData[COMP_ID].toString());
 				boolean isFinished = (boolean)newData[COMP_ID];
 				newData[COMP_ID] = toUpdate.isFinished();
 				toUpdate.setIsFinished(isFinished);
@@ -240,7 +239,6 @@ public class Action {
 	 */
 	public ArrayList<Task> exeDisplay(CommandDisplay cmd){
 		assertCommandNotNull(cmd);
-		showData();
 		ArrayList<Task> arr = exeDisplayNotDone();
 		if(cmd.isOnlyImportantDisplayed()){
 			return filterWithImportance(true, arr);
@@ -456,12 +454,12 @@ public class Action {
 			exeDelete(cmdDelete);
 			break;
 		case MARK:
-			log.log(Level.FINE, "redo toggle Importance", redoCmd);
+			log.log(Level.FINE, "redo Importance", redoCmd);
 			CommandMark cmdMark = (CommandMark) redoCmd;
 			exeImportance(cmdMark);
 			break;
 		case DONE:
-			log.log(Level.FINE, "redo toggle finished", redoCmd);
+			log.log(Level.FINE, "redo finished", redoCmd);
 			CommandDone cmdDone = (CommandDone) redoCmd;
 			exeDone(cmdDone);
 			break;
