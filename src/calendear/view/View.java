@@ -17,19 +17,19 @@ public class View {
 	
 	private static String formatRed = ANSI_RED+"%s"+ANSI_RESET;
 	
-	private static final String MSG_ADD = "added task:\n";
-	private static final String MSG_DELETE = "deleted task:\n";
-	private static final String MSG_DISPLAY = "display tasks:\n";
-	private static final String MSG_SORT = "sort results:\n";
-	private static final String MSG_SEARCH ="search results:\n";
-	private static final String MSG_UPDATE ="updated task:\n";
-	private static final String MSG_MARK ="marked task:\n";
-	private static final String MSG_DONE = "finished task:\n";
-	private static final String MSG_TAG ="tagged task:\n";
-	private static final String MSG_UNDO ="undo task:\n";
-	private static final String MSG_LINKGOOGLE ="linked to google";
-	private static final String MSG_EXIT ="exited";
-	private static final String MSG_INVALID ="invalid command";
+	private static final String MSG_ADD = "Added task:\n";
+	private static final String MSG_DELETE = "Deleted task:\n";
+	private static final String MSG_DISPLAY = "Display tasks:\n";
+	private static final String MSG_SORT = "Sort results:\n";
+	private static final String MSG_SEARCH ="Search results:\n";
+	private static final String MSG_UPDATE ="Updated task:\n";
+	private static final String MSG_MARK ="Marked task:\n";
+	private static final String MSG_DONE = "Finished task:\n";
+	private static final String MSG_TAG ="Tagged task:\n";
+	private static final String MSG_UNDO ="Undo task:\n";
+	private static final String MSG_LINKGOOGLE ="Linked to google";
+	private static final String MSG_EXIT ="Exited";
+	private static final String MSG_INVALID ="Invalid command";
 	
 	private static final String[] MSG_ARR_N = {MSG_ADD,MSG_DELETE,MSG_UPDATE,MSG_MARK,MSG_TAG,MSG_DONE,
 		MSG_UNDO,MSG_DISPLAY,MSG_SORT,MSG_SEARCH,
@@ -37,10 +37,10 @@ public class View {
 	
 	private static final String[] MSG_ARR = addColor(MSG_ARR_N);
 	
-	private static final String MSG_WELCOME = ANSI_PURPLE+"welcome to calendear!"+ANSI_RESET;
-	private static final String MSG_COMMAND = ANSI_PURPLE+"command:"+ANSI_RESET;
-	private static final String MSG_YES = "yes";
-	private static final String MSG_NO = "no";
+	private static final String MSG_WELCOME = ANSI_PURPLE+"Welcome to calendear!"+ANSI_RESET;
+	private static final String MSG_COMMAND = ANSI_PURPLE+"Please enter command:"+ANSI_RESET;
+	private static final String MSG_YES = "Yes";
+	private static final String MSG_NO = "No";
 	
 	private static final int NOT_ARR_LIST = -1;
 	
@@ -53,7 +53,7 @@ public class View {
 	}
 	
 	public static void displayWelcome(){
-		System.out.println(MSG_WELCOME);
+		System.out.println(Table.MSG_WELCOME);
 	}
 	
 	public static void displayRequestForInput(){

@@ -23,23 +23,23 @@ public class Table {
 	private static String formatCyan = ANSI_CYAN+"%s"+ANSI_RESET;
 	private static String formatGreen = ANSI_GREEN+"%s"+ANSI_RESET;
 	
-	private static final String HEADER_NAME = "task name:";
-	private static final String HEADER_TAG = "tag:";
-	private static final String HEADER_STARTTIME = "start time:";
-	private static final String HEADER_ENDTIME = "end time:";
-	private static final String HEADER_DUETIME = "due time:";
-	private static final String HEADER_RECURRING_ENDTIME = "next due time:";
-	private static final String HEADER_LOCATION = "location:";
-	private static final String HEADER_NOTE = "note:";
-	private static final String HEADER_IMPORTANCE = "important:";
-	private static final String HEADER_FINISHED = "finished:";
+	private static final String HEADER_NAME = "Task name:";
+	private static final String HEADER_TAG = "Tag:";
+	private static final String HEADER_STARTTIME = "Start time:";
+	private static final String HEADER_ENDTIME = "End time:";
+	private static final String HEADER_DUETIME = "Due time:";
+	private static final String HEADER_RECURRING_ENDTIME = "Next due time:";
+	private static final String HEADER_LOCATION = "Location:";
+	private static final String HEADER_NOTE = "Note:";
+	private static final String HEADER_IMPORTANCE = "Important:";
+	private static final String HEADER_FINISHED = "Finished:";
 	private static final String[] HEADERS_ARR_N = {HEADER_IMPORTANCE/*,HEADER_FINISHED*/,HEADER_NAME, 
 			HEADER_TAG, HEADER_STARTTIME,HEADER_ENDTIME/*,HEADER_LOCATION,HEADER_NOTE*/};
 
-	private static final String MSG_WELCOME = ANSI_PURPLE+"welcome to calendear!"+ANSI_RESET;
-	private static final String MSG_COMMAND = ANSI_PURPLE+"command:"+ANSI_RESET;
-	private static final String MSG_YES = "yes";
-	private static final String MSG_NO = "no";
+	public static final String MSG_WELCOME = ANSI_PURPLE+welcomeString("Welcome to calendear!")+ANSI_RESET;
+	private static final String MSG_COMMAND = ANSI_PURPLE+"Please enter command:"+ANSI_RESET;
+	private static final String MSG_YES = "Yes";
+	private static final String MSG_NO = "No";
 	
 	private static final String S = " ";
 	private static final int NUM_OF_ATTRI = 8;
@@ -60,6 +60,8 @@ public class Table {
 	private static final String BORDER_SIGN = "*";
 	private static final String BORDER_INCOMPLETE = "Incomplete";
 	private static final String BORDER_COMPLETE = "Complete";
+	private static final String BORDER_SIGN2 = ">";
+	private static final String BORDER_SIGN3 = "<";
 	
 	private static String format = "|%1$-"+LEN_ID+"s"+
 									"|%2$-"+LEN_IMPO+"s"+
@@ -288,6 +290,24 @@ public class Table {
 		line+=s;
 		for(int i=0;i<segment2;i++){
 			line+= BORDER_SIGN;
+		}
+		line+="\n";
+		String nLine = String.format(formatRed, line);
+		return nLine;
+	}
+	
+	private static String welcomeString(String s){
+		int sLen = s.length();
+		int lineLen = LEN_TOTAL -sLen;
+		int segment1 = lineLen/2;
+		int segment2 = lineLen -segment1;
+		String line="";
+		for(int i=0;i<segment1;i++){
+			line+= BORDER_SIGN2;
+		}
+		line+=s;
+		for(int i=0;i<segment2;i++){
+			line+= BORDER_SIGN3;
 		}
 		line+="\n";
 		String nLine = String.format(formatRed, line);
