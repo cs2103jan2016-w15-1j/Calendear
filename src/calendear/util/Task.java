@@ -174,7 +174,7 @@ public class Task {
 		this.location = location;
 	}
 	
-	public void writeNote(String note){
+	public void setNote(String note){
 		this.note = note;
 	}
 	
@@ -182,7 +182,7 @@ public class Task {
 		this.tag = tag;
 	}
 	
-	public void markImportant(boolean isImportant){
+	public void setIsImportant(boolean isImportant){
 		this.isImportant = isImportant;
 	}
 	
@@ -247,18 +247,38 @@ public class Task {
 	public static Task parseSaveable(String allString) throws ParseException {
 		String[] members = allString.split(PATTERN_OBJ_SEPERATOR);
 		String typeStr = members[SAVING_INDEX_TYPE];
+		Task res;
 		switch (typeStr){
 			case STR_DEADLINE:
-				return parseDeadline(members);
+				res = parseDeadline(members);
+				break;
 			case STR_EVENT:
-				return parseEvent(members);
+				res = parseEvent(members);
+				break;
 			case STR_FLOATING:
-				return parseFloat(members);
+				res = parseFloat(members);
+				break;
 			default:
 				throw new ParseException("type name not defined", 0);
 		}
+		parseOptionalAttribute(res, members);
+		return res;
 	}
 
+	private static void parseOptionalAttribute(Task res, String[] members) {
+		res.setLocation(members[SAVING_INDEX_LOCATION]);
+		res.setNote(members[SAVING_INDEX_NOTE]);
+		if (members[SAVING_INDEX_IMPORTANT].equals(IMPORTANT)){
+			res.setIsFinished(true);
+		} else {
+			res.setIsImportant(false);
+		}
+		if (members[SAVING_INDEX_FINISHED].equals(FINISHED)){
+			res.setIsFinished(true);
+		} else {
+			res.setIsFinished(false);
+		}
+	}
 	private static Task parseDeadline(String[] members) throws ParseException {
 		String name = members[SAVING_INDEX_NAME];
 		String endTimeStr = members[SAVING_INDEX_END_TIME];

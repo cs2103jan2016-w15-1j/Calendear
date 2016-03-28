@@ -188,7 +188,7 @@ public class Action {
 			if(infoList[IMP_ID]){
 				boolean isImportant = (boolean)newData[IMP_ID];
 				newData[IMP_ID] = toUpdate.isImportant();
-				toUpdate.markImportant(isImportant);
+				toUpdate.setIsImportant(isImportant);
 			}
 			if(infoList[COMP_ID]){
 				boolean isFinished = (boolean)newData[COMP_ID];
@@ -423,7 +423,7 @@ public class Action {
 					boolean isImportantBefore = cmdMark.isImportant();
 					boolean isCurrentlyImportant = toUndoMark.isImportant();
 					
-					toUndoMark.markImportant(isImportantBefore);//toggles importance
+					toUndoMark.setIsImportant(isImportantBefore);//toggles importance
 					cmdMark.setIsImportant(isCurrentlyImportant);
 					
 					previousCmd = cmdMark;
@@ -536,7 +536,7 @@ public class Action {
 		int toMarkIndex = cmd.getIndex();
 		Task toMark = this._data.get(toMarkIndex);
 		boolean originalImportance = toMark.isImportant();
-		toMark.markImportant(cmd.isImportant());
+		toMark.setIsImportant(cmd.isImportant());
 		cmd.setIsImportant(originalImportance);
 		if(this._dataManager.isLogined() && toMark.getEventId() != null){
 			this._dataManager.updateTaskToGoogle(toMark);
