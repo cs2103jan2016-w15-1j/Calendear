@@ -62,7 +62,7 @@ public class Action {
 		_redoStack = new Stack<Command>();
 		_dataManager = new DataManager(nameOfFile);
 		_data = _dataManager.getDataFromFile();
-		this._data.add(null);
+		_data.add(0, null);
 	}
 
 	/**
@@ -239,12 +239,13 @@ public class Action {
 	 */
 	public ArrayList<Task> exeDisplay(CommandDisplay cmd){
 		assertCommandNotNull(cmd);
-		ArrayList<Task> arrWithOnlyUndoneTasks = exeDisplayDone();
+		showData();
+		ArrayList<Task> arr = exeDisplayNotDone();
 		if(cmd.isOnlyImportantDisplayed()){
-			arrWithOnlyUndoneTasks = filterWithImportance(true, arrWithOnlyUndoneTasks);
+			return filterWithImportance(true, arr);
+		}else{
+			return arr;
 		}
-		return arrWithOnlyUndoneTasks;
-		
 	}
 	/**
 	 * filters _data for tasks to be displayed according to toShow and searchWith
@@ -579,6 +580,16 @@ public class Action {
 		}
 		newTag += tags[tags.length-2];
 		taggedTask.setTag(newTag);
+	}
+	
+	public void showData(){
+		for(int i = 0; i< this._data.size(); i++){
+			if(this._data.get(i) == null){
+				System.out.println("null");
+			}else{
+				System.out.println(this._data.get(i).getName());
+			}
+		}
 	}
 }
 
