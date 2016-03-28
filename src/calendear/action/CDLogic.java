@@ -44,12 +44,20 @@ public class CDLogic {
 		return task;
 	}
 	
+	public Task exeDone(CommandDone commandDone) {
+		return _action.exeDone(commandDone);
+	}
+	
 	public void exeLinkGoogle() {
 		_action.exeLinkGoogle();
 	}
 	
 	public void exeUndo(){
 		_action.exeUndo();
+	}
+	
+	public void exeRedo(){
+		_action.exeRedo();
 	}
 	
 }

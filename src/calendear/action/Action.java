@@ -62,7 +62,7 @@ public class Action {
 		_redoStack = new Stack<Command>();
 		_dataManager = new DataManager(nameOfFile);
 		_data = _dataManager.getDataFromFile();
-		this._data.add(null);
+		_data.add(0, null);
 	}
 
 	/**
@@ -187,12 +187,12 @@ public class Action {
 			}
 			if(infoList[IMP_ID]){
 				boolean isImportant = (boolean)newData[IMP_ID];
-				newData[IMP_ID] = Boolean.toString(toUpdate.isImportant());
+				newData[IMP_ID] = toUpdate.isImportant();
 				toUpdate.markImportant(isImportant);
 			}
 			if(infoList[COMP_ID]){
 				boolean isFinished = (boolean)newData[COMP_ID];
-				newData[COMP_ID] = Boolean.toString(toUpdate.isFinished());
+				newData[COMP_ID] = toUpdate.isFinished();
 				toUpdate.setIsFinished(isFinished);
 			}
 		}catch (NullPointerException e){
@@ -222,10 +222,10 @@ public class Action {
 		assertCommandNotNull(cmd);
 		int changeId = cmd.getIndex();
 		Task toUpdate = _data.get(changeId);
+		updateInformation(cmd, toUpdate);
 		if(this._dataManager.isLogined() && toUpdate.getEventId() != null){
 			this._dataManager.updateTaskToGoogle(toUpdate);
 		}
-		updateInformation(cmd, toUpdate);
 		_undoStack.add(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
 		return toUpdate;
@@ -239,12 +239,12 @@ public class Action {
 	 */
 	public ArrayList<Task> exeDisplay(CommandDisplay cmd){
 		assertCommandNotNull(cmd);
-		ArrayList<Task> arrWithOnlyUndoneTasks = exeDisplayDone();
+		ArrayList<Task> arr = exeDisplayNotDone();
 		if(cmd.isOnlyImportantDisplayed()){
-			arrWithOnlyUndoneTasks = filterWithImportance(true, arrWithOnlyUndoneTasks);
+			return filterWithImportance(true, arr);
+		}else{
+			return arr;
 		}
-		return arrWithOnlyUndoneTasks;
-		
 	}
 	/**
 	 * filters _data for tasks to be displayed according to toShow and searchWith
@@ -315,7 +315,7 @@ public class Action {
 		ArrayList<Task> toDisplay = new ArrayList<Task>();
 		toDisplay.addAll(dataToFilter);
 		for(int i = 0; i<toDisplay.size(); i++){
-			if(toDisplay.get(i).isImportant() != isImportant){
+			if(toDisplay.get(i) != null && toDisplay.get(i).isImportant() != isImportant){
 				toDisplay.set(i, null);
 			}
 		}
@@ -341,7 +341,7 @@ public class Action {
 		ArrayList<Task> toDisplay = new ArrayList<Task>();
 		toDisplay.addAll(dataToFilter);
 		for(int i = 0; i<toDisplay.size(); i++){
-			if(toDisplay.get(i).isFinished() != isDone){
+			if(toDisplay.get(i) != null && toDisplay.get(i).isFinished() != isDone){
 				toDisplay.set(i, null);
 			}
 		}
@@ -454,12 +454,12 @@ public class Action {
 			exeDelete(cmdDelete);
 			break;
 		case MARK:
-			log.log(Level.FINE, "redo toggle Importance", redoCmd);
+			log.log(Level.FINE, "redo Importance", redoCmd);
 			CommandMark cmdMark = (CommandMark) redoCmd;
 			exeImportance(cmdMark);
 			break;
 		case DONE:
-			log.log(Level.FINE, "redo toggle finished", redoCmd);
+			log.log(Level.FINE, "redo finished", redoCmd);
 			CommandDone cmdDone = (CommandDone) redoCmd;
 			exeDone(cmdDone);
 			break;
@@ -498,7 +498,7 @@ public class Action {
 		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
-	public void exeDone(CommandDone cmd){
+	public Task exeDone(CommandDone cmd){
 		int toMarkDoneIndex = cmd.getIndex();
 		Task toMarkDone = this._data.get(toMarkDoneIndex);
 		toMarkDone.setIsFinished(cmd.isDone());
@@ -507,6 +507,8 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		
+		return toMarkDone;
 	}
 	
 	
@@ -579,6 +581,16 @@ public class Action {
 		}
 		newTag += tags[tags.length-2];
 		taggedTask.setTag(newTag);
+	}
+	
+	public void showData(){
+		for(int i = 0; i< this._data.size(); i++){
+			if(this._data.get(i) == null){
+				System.out.println("null");
+			}else{
+				System.out.println(this._data.get(i).getName());
+			}
+		}
 	}
 }
 
