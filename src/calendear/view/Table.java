@@ -1,7 +1,10 @@
 package calendear.view;
+
 import java.util.ArrayList;
 
 import calendear.util.Task;
+
+//import calendear.util.Task;
 
 
 public class Table {
@@ -16,6 +19,7 @@ public class Table {
 	public static final String ANSI_CYAN = "\u001B[36m";
 	public static final String ANSI_WHITE = "\u001B[37m";
 	
+	private static String formatRed = ANSI_RED+"%s"+ANSI_RESET;
 	private static String formatCyan = ANSI_CYAN+"%s"+ANSI_RESET;
 	private static String formatGreen = ANSI_GREEN+"%s"+ANSI_RESET;
 	
@@ -29,7 +33,7 @@ public class Table {
 	private static final String HEADER_NOTE = "note:";
 	private static final String HEADER_IMPORTANCE = "important:";
 	private static final String HEADER_FINISHED = "finished:";
-	private static final String[] HEADERS_ARR_N = {HEADER_IMPORTANCE,HEADER_FINISHED,HEADER_NAME, 
+	private static final String[] HEADERS_ARR_N = {HEADER_IMPORTANCE/*,HEADER_FINISHED*/,HEADER_NAME, 
 			HEADER_TAG, HEADER_STARTTIME,HEADER_ENDTIME/*,HEADER_LOCATION,HEADER_NOTE*/};
 
 	private static final String MSG_WELCOME = ANSI_PURPLE+"welcome to calendear!"+ANSI_RESET;
@@ -49,19 +53,21 @@ public class Table {
 	private static final int LEN_LOCA = 16;
 	private static final int LEN_NOTE = 16;
 	private static final int NOT_ARR_LIST = -1;
-	private static final int NUM_OF_TITLE_BAR = 8;
-	private static final int LEN_TOTAL = LEN_ID+LEN_IMPO+LEN_FINI+
+	private static final int NUM_OF_TITLE_BAR = 7;
+	private static final int LEN_TOTAL = LEN_ID+LEN_IMPO/*+LEN_FINI*/+
 						LEN_NAME+LEN_STIME+LEN_ETIME+LEN_TAG+/*LEN_LOCA+LEN_NOTE+*/NUM_OF_TITLE_BAR;
-	private static final int[] LEN_TITLE_ARR = {0,1,6,12,1,3,7,11};
+	private static final int[] LEN_TITLE_ARR = {0/*,1*/,6,12,1,3,7,11};
 	private static final String BORDER_SIGN = "*";
+	private static final String BORDER_INCOMPLETE = "Incomplete";
+	private static final String BORDER_COMPLETE = "Complete";
 	
 	private static String format = "|%1$-"+LEN_ID+"s"+
 									"|%2$-"+LEN_IMPO+"s"+
-									"|%3$-"+LEN_FINI+"s"+
-									"|%4$-"+LEN_NAME+"s"+
-									"|%5$-"+LEN_TAG+"s"+
-									"|%6$-"+LEN_STIME+"s"+
-									"|%7$-"+LEN_ETIME+"s"+
+								//	"|%3$-"+LEN_FINI+"s"+//
+									"|%3$-"+LEN_NAME+"s"+
+									"|%4$-"+LEN_TAG+"s"+
+									"|%5$-"+LEN_STIME+"s"+
+									"|%6$-"+LEN_ETIME+"s"+
 								//	"|%8$-"+LEN_NAME+"s"+
 								//	"|%9$-"+LEN_NOTE+"s"+
 									"|\n";
@@ -107,8 +113,8 @@ public class Table {
  	
 	
 	public static String getMultipleTasks(ArrayList<Task> taskArr){
-		String output = titleLine()+borderLine();
-		String outputComplete = borderLine();
+		String output = titleLine()+borderLine()+borderLineWithWords(BORDER_INCOMPLETE);
+		String outputComplete =borderLineWithWords(BORDER_COMPLETE);
 		for(int i=0;i<taskArr.size();i++){
 			if(taskArr.get(i)!=null){
 				if(taskArr.get(i).isFinished()){
@@ -226,17 +232,17 @@ public class Table {
 		formLineString(ArrayList<ArrayList<String>> arr,int id){
 		String taskInLine ="";
 		if(id == NOT_ARR_LIST){
-			taskInLine += String.format(format,S,arr.get(0).get(0),arr.get(0).get(1)
+			taskInLine += String.format(format,S,arr.get(0).get(0)/*,arr.get(0).get(1)*/
 				,arr.get(0).get(2),arr.get(0).get(3),arr.get(0).get(4)
 				,arr.get(0).get(5)/*,arr.get(0).get(6),arr.get(0).get(7)*/);
 		}
 		else{
-			taskInLine += String.format(format,id+".",arr.get(0).get(0),arr.get(0).get(1)
+			taskInLine += String.format(format,id+".",arr.get(0).get(0)/*,arr.get(0).get(1)*/
 					,arr.get(0).get(2),arr.get(0).get(3),arr.get(0).get(4)
 					,arr.get(0).get(5)/*,arr.get(0).get(6),arr.get(0).get(7)*/);
 		}
 		for(int i=1;i<arr.size();i++){
-			taskInLine += String.format(format," ",arr.get(i).get(0),arr.get(i).get(1)
+			taskInLine += String.format(format," ",arr.get(i).get(0)/*,arr.get(i).get(1)*/
 					,arr.get(i).get(2),arr.get(i).get(3),arr.get(i).get(4)
 					,arr.get(i).get(5)/*,arr.get(i).get(6),arr.get(i).get(7)*/);
 		}
@@ -260,5 +266,23 @@ public class Table {
 		border+="\n";
 		String nborder = String.format(formatGreen, border);
 		return nborder;
+	}
+	
+	private static String borderLineWithWords(String s){
+		int sLen = s.length();
+		int lineLen = LEN_TOTAL -sLen;
+		int segment1 = lineLen/2;
+		int segment2 = lineLen -segment1;
+		String line="";
+		for(int i=0;i<segment1;i++){
+			line+= BORDER_SIGN;
+		}
+		line+=s;
+		for(int i=0;i<segment2;i++){
+			line+= BORDER_SIGN;
+		}
+		line+="\n";
+		String nLine = String.format(formatRed, line);
+		return nLine;
 	}
 }
