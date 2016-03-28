@@ -239,7 +239,8 @@ public class Action {
 	 */
 	public ArrayList<Task> exeDisplay(CommandDisplay cmd){
 		assertCommandNotNull(cmd);
-		ArrayList<Task> arr = exeDisplayNotDone();
+		ArrayList<Task> arr = new ArrayList<Task>();
+		arr.addAll(this._data);
 		if(cmd.isOnlyImportantDisplayed()){
 			return filterWithImportance(true, arr);
 		}else{
@@ -456,12 +457,12 @@ public class Action {
 		case MARK:
 			log.log(Level.FINE, "redo Importance", redoCmd);
 			CommandMark cmdMark = (CommandMark) redoCmd;
-			exeImportance(cmdMark);
+			exeMarkImportance(cmdMark);
 			break;
 		case DONE:
 			log.log(Level.FINE, "redo finished", redoCmd);
 			CommandDone cmdDone = (CommandDone) redoCmd;
-			exeDone(cmdDone);
+			exeMarkDone(cmdDone);
 			break;
 		case TAG:
 			log.log(Level.FINE, "redo tag finished", redoCmd);
@@ -487,7 +488,7 @@ public class Action {
 		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
-	public void exeImportance(CommandMark cmd){//toggles importance
+	public Task exeMarkImportance(CommandMark cmd){//toggles importance
 		int toMarkIndex = cmd.getIndex();
 		Task toMark = this._data.get(toMarkIndex);
 		toMark.markImportant(cmd.isImportant());
@@ -496,9 +497,11 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		return toMark;
 	}
-	
-	public Task exeDone(CommandDone cmd){
+
+	public Task exeMarkDone(CommandDone cmd){
+
 		int toMarkDoneIndex = cmd.getIndex();
 		Task toMarkDone = this._data.get(toMarkDoneIndex);
 		toMarkDone.setIsFinished(cmd.isDone());
@@ -507,7 +510,7 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
-		
+
 		return toMarkDone;
 	}
 	

@@ -68,9 +68,10 @@ public class Controller {
 	    		case SEARCH:
 	    				break;
 	    		
-	    		case MARK:	
+	    		case MARK:	Task markedImportanceTask = _cdLogic.exeMarkImportant((CommandMark) command);
+	    					//TODO 
 	    				break;
-	    		
+
 	    		case TAG:
 	    				break;
 	    		
@@ -78,7 +79,8 @@ public class Controller {
 	    						  _cdLogic.exeLinkGoogle();
 	    						  break;
 	    						  	
-	    		case DONE: Task completedTask = _cdLogic.exeDone((CommandDone) command);
+
+	    		case DONE: Task completedTask = _cdLogic.exeMarkDone((CommandDone) command);
 	    				   View.displayDone(completedTask);
 	    				break;
 	    				

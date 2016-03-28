@@ -44,8 +44,14 @@ public class CDLogic {
 		return task;
 	}
 	
-	public Task exeDone(CommandDone commandDone) {
-		return _action.exeDone(commandDone);
+	public Task exeMarkImportant(CommandMark commandMark){
+		Task task = _action.exeMarkImportance(commandMark);
+		return task;
+	}
+	
+	public Task exeMarkDone(CommandDone commandDone){
+		Task task = _action.exeMarkDone(commandDone);
+		return task;
 	}
 	
 	public void exeLinkGoogle() {
