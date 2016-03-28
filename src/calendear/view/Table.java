@@ -36,7 +36,7 @@ public class Table {
 	private static final String[] HEADERS_ARR_N = {HEADER_IMPORTANCE/*,HEADER_FINISHED*/,HEADER_NAME, 
 			HEADER_TAG, HEADER_STARTTIME,HEADER_ENDTIME/*,HEADER_LOCATION,HEADER_NOTE*/};
 
-	public static final String MSG_WELCOME = ANSI_PURPLE+welcomeString("Welcome to calendear!")+ANSI_RESET;
+	public static final String MSG_WELCOME = ANSI_PURPLE+welcomeString("Welcome to Calendear!")+ANSI_RESET;
 	private static final String MSG_COMMAND = ANSI_PURPLE+"Please enter command:"+ANSI_RESET;
 	private static final String MSG_YES = "Yes";
 	private static final String MSG_NO = "No";
