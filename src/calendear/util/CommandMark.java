@@ -24,4 +24,8 @@ public class CommandMark extends Command {
 	public boolean isImportant(){
 		return this.isImportant;
 	}
+	
+	public void setIsImportant(boolean isImportant){
+		this.isImportant = isImportant;
+	}
 }

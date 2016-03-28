@@ -7,16 +7,16 @@ import calendear.util.Task;
 
 public class Full {
 	
-	private static final String HEADER_NAME = "task name:";
-	private static final String HEADER_TAG = "tag:";
-	private static final String HEADER_STARTTIME = "start time:";
-	private static final String HEADER_ENDTIME = "end time:";
-	private static final String HEADER_DUETIME = "due time:";
-	private static final String HEADER_RECURRING_ENDTIME = "next due time:";
-	private static final String HEADER_LOCATION = "location:";
-	private static final String HEADER_NOTE = "note:";
-	private static final String HEADER_IMPORTANCE = "important:";
-	private static final String HEADER_FINISHED = "finished:";
+	private static final String HEADER_NAME = "Task name:";
+	private static final String HEADER_TAG = "Tag:";
+	private static final String HEADER_STARTTIME = "Start time:";
+	private static final String HEADER_ENDTIME = "End time:";
+	private static final String HEADER_DUETIME = "Due time:";
+	private static final String HEADER_RECURRING_ENDTIME = "Next due time:";
+	private static final String HEADER_LOCATION = "Location:";
+	private static final String HEADER_NOTE = "Note:";
+	private static final String HEADER_IMPORTANCE = "Important:";
+	private static final String HEADER_FINISHED = "Finished:";
 	private static final String[] HEADERS_ARR_N = {HEADER_IMPORTANCE,HEADER_FINISHED,HEADER_NAME, 
 			HEADER_TAG, HEADER_STARTTIME,HEADER_DUETIME,HEADER_ENDTIME,HEADER_LOCATION,HEADER_NOTE};
 	private static final String S = " ";
@@ -29,8 +29,8 @@ public class Full {
 	
 	private static final String[] HEADERS_ARR = addColor(HEADERS_ARR_N);
 	
-	private static final String MSG_YES = "yes";
-	private static final String MSG_NO = "no";
+	private static final String MSG_YES = "Yes";
+	private static final String MSG_NO = "No";
 	
 	
 	private static String[] addColor(String[] arr){
