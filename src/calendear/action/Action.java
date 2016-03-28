@@ -187,12 +187,13 @@ public class Action {
 			}
 			if(infoList[IMP_ID]){
 				boolean isImportant = (boolean)newData[IMP_ID];
-				newData[IMP_ID] = Boolean.toString(toUpdate.isImportant());
+				newData[IMP_ID] = toUpdate.isImportant();
 				toUpdate.markImportant(isImportant);
 			}
 			if(infoList[COMP_ID]){
+				System.out.println(newData[COMP_ID].toString());
 				boolean isFinished = (boolean)newData[COMP_ID];
-				newData[COMP_ID] = Boolean.toString(toUpdate.isFinished());
+				newData[COMP_ID] = toUpdate.isFinished();
 				toUpdate.setIsFinished(isFinished);
 			}
 		}catch (NullPointerException e){
@@ -222,10 +223,10 @@ public class Action {
 		assertCommandNotNull(cmd);
 		int changeId = cmd.getIndex();
 		Task toUpdate = _data.get(changeId);
+		updateInformation(cmd, toUpdate);
 		if(this._dataManager.isLogined() && toUpdate.getEventId() != null){
 			this._dataManager.updateTaskToGoogle(toUpdate);
 		}
-		updateInformation(cmd, toUpdate);
 		_undoStack.add(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
 		return toUpdate;
