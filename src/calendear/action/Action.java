@@ -27,7 +27,6 @@ import calendear.storage.DataManager;
  *10. exeToggleDone: functioning
  *11. exeSort: has not started
  *12. exeLinkGoogle:
- *13. exeExit:
  */
 
 
@@ -74,7 +73,7 @@ public class Action {
 	 */
 
 	private Task addWithInfo(CommandAdd cmd){
-		Task toReturn = new Task("");// "" is a stud
+		Task toReturn = new Task();
 		boolean[] infoList = cmd.getChecklist();
 		Object[] newData = cmd.getNewInfo();
 		exchangeInfo(toReturn, infoList, newData);
@@ -124,6 +123,7 @@ public class Action {
 		Task taskToDelete = _data.get(id);
 		if(this._dataManager.isLogined() && taskToDelete.getEventId() != null){
 			this._dataManager.deleteTaskFromGoogle(taskToDelete);
+			taskToDelete.setEventId(null);
 		}
 		_data.set(id, null);
 		cmd.setDeletedTask(taskToDelete);
@@ -376,45 +376,89 @@ public class Action {
 					log.log(Level.FINE, "undo add", previousCmd);
 					CommandAdd cmdAdd = (CommandAdd) previousCmd;//type casting, we are sure that cmdType == ADD
 					int lastIndex = _data.size()-1;
-					Task removed = _data.get(lastIndex);
+					
+					Task toBeRemoved = _data.get(lastIndex);
 					_data.remove(lastIndex);//removed from _data ArrayList
-					cmdAdd.setTask(removed);//commandAdd in _redoStack will always contain the task.
+					cmdAdd.setTask(toBeRemoved);//commandAdd in _redoStack will always contain the task.
+					
 					previousCmd = cmdAdd;//typecast back to be added to _redoStack
+					
+					if(_dataManager.isLogined() && toBeRemoved.getEventId() != null){
+						_dataManager.deleteTaskFromGoogle(toBeRemoved);
+					}
 					
 					break;
 				case UPDATE:
 					log.log(Level.FINE, "undo update", previousCmd);
 					CommandUpdate cmdUpdate = (CommandUpdate) previousCmd;
-					Task toUpdate = this._data.get(cmdUpdate.getIndex());
-					updateInformation(cmdUpdate, toUpdate);
+					Task toUndoUpdate = this._data.get(cmdUpdate.getIndex());
+					
+					updateInformation(cmdUpdate, toUndoUpdate);
+					
+					previousCmd = cmdUpdate;
+					
+					if(_dataManager.isLogined() && toUndoUpdate.getEventId() != null){
+						_dataManager.updateTaskToGoogle(toUndoUpdate);
+					}
+					
 					break;
 				case DELETE:
 					log.log(Level.FINE, "undo delete", previousCmd);
 					CommandDelete cmdDelete = (CommandDelete) previousCmd;
 					int deleteIndex = cmdDelete.getIndex();
 					Task toAddBack = cmdDelete.getDeletedTask();
+					
 					this._data.set(deleteIndex, toAddBack);
+					
+					if(_dataManager.isLogined() && toAddBack.getEventId() != null){
+						_dataManager.addTaskToGoogle(toAddBack);
+					}
 					break;
 				case MARK:
 					log.log(Level.FINE, "undo mark", previousCmd);
 					CommandMark cmdMark = (CommandMark) previousCmd;
 					int markIndex = cmdMark.getIndex();
-					Task toMark = this._data.get(markIndex);
-					toMark.markImportant(!toMark.isImportant());//toggles importance
+					Task toUndoMark = this._data.get(markIndex);
+					
+					boolean isImportantBefore = cmdMark.isImportant();
+					boolean isCurrentlyImportant = toUndoMark.isImportant();
+					
+					toUndoMark.markImportant(isImportantBefore);//toggles importance
+					cmdMark.setIsImportant(isCurrentlyImportant);
+					
+					previousCmd = cmdMark;
+					
+					if(_dataManager.isLogined() && toUndoMark.getEventId() != null){
+						_dataManager.updateTaskToGoogle(toUndoMark);
+					}
 					break;
 				case DONE:
 					log.log(Level.FINE, "undo done", previousCmd);
 					CommandDone cmdDone = (CommandDone) previousCmd;
 					int doneIndex = cmdDone.getIndex();
-					Task done = this._data.get(doneIndex);
-					done.setIsFinished(!done.isFinished());
+					Task toUndoDone = this._data.get(doneIndex);
+					
+					boolean isOriginallyFinished = cmdDone.isDone();
+					boolean isCurrentlyFinished = toUndoDone.isFinished();
+					
+					toUndoDone.setIsFinished(isOriginallyFinished);
+					cmdDone.setIsDone(isCurrentlyFinished);
+					
+					previousCmd = cmdDone;
+
+					if(_dataManager.isLogined() && toUndoDone.getEventId() != null){
+						_dataManager.updateTaskToGoogle(toUndoDone);
+					}
 					break;
 				case TAG:
 					log.log(Level.FINE, "undo tag", previousCmd);
 					CommandTag cmdTag = (CommandTag) previousCmd;
 					int tagIndex = cmdTag.getIndex();
-					Task tagged = this._data.get(tagIndex);
-					removeLastTag(tagged);
+					Task toUndoTag = this._data.get(tagIndex);
+					
+					removeLastTag(toUndoTag);
+					
+					previousCmd = cmdTag;
 					break;
 				default:
 					log.log(Level.SEVERE, "reached unreachable area in undo", previousCmd);
@@ -491,7 +535,9 @@ public class Action {
 	public Task exeMarkImportance(CommandMark cmd){//toggles importance
 		int toMarkIndex = cmd.getIndex();
 		Task toMark = this._data.get(toMarkIndex);
+		boolean originalImportance = toMark.isImportant();
 		toMark.markImportant(cmd.isImportant());
+		cmd.setIsImportant(originalImportance);
 		if(this._dataManager.isLogined() && toMark.getEventId() != null){
 			this._dataManager.updateTaskToGoogle(toMark);
 		}
@@ -504,7 +550,9 @@ public class Action {
 
 		int toMarkDoneIndex = cmd.getIndex();
 		Task toMarkDone = this._data.get(toMarkDoneIndex);
+		boolean isOriginallyDone = toMarkDone.isFinished();
 		toMarkDone.setIsFinished(cmd.isDone());
+		cmd.setIsDone(isOriginallyDone);
 		if(this._dataManager.isLogined() && toMarkDone.getEventId() != null){
 			this._dataManager.updateTaskToGoogle(toMarkDone);
 		}

@@ -24,4 +24,8 @@ public class CommandDone extends Command {
 	public boolean isDone(){
 		return this.isDone;
 	}
+	
+	public void setIsDone(boolean isDone){
+		this.isDone = isDone;
+	}
 }
