@@ -498,7 +498,7 @@ public class Action {
 		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 	
-	public void exeDone(CommandDone cmd){
+	public Task exeDone(CommandDone cmd){
 		int toMarkDoneIndex = cmd.getIndex();
 		Task toMarkDone = this._data.get(toMarkDoneIndex);
 		toMarkDone.setIsFinished(cmd.isDone());
@@ -507,6 +507,8 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		
+		return toMarkDone;
 	}
 	
 	

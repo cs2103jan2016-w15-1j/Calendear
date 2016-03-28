@@ -78,7 +78,8 @@ public class Controller {
 	    						  _cdLogic.exeLinkGoogle();
 	    						  break;
 	    						  	
-	    		case DONE:
+	    		case DONE: Task completedTask = _cdLogic.exeDone((CommandDone) command);
+	    				   View.displayDone(completedTask);
 	    				break;
 	    				
 	    		case UNDO: _cdLogic.exeUndo();
