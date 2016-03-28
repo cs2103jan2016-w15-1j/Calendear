@@ -127,7 +127,7 @@ public class Table {
 				}
 			}
 		}
-		return output+outputComplete;
+		return output+outputComplete+borderLine();
 	}
 	
 
