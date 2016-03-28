@@ -113,8 +113,10 @@ public class Table {
  	
 	
 	public static String getMultipleTasks(ArrayList<Task> taskArr){
-		String output = titleLine()+borderLine()+borderLineWithWords(BORDER_INCOMPLETE);
-		String outputComplete =borderLineWithWords(BORDER_COMPLETE);
+		String outputUpper = titleLine()+borderLine()+borderLineWithWords(BORDER_INCOMPLETE);
+		String outputLower =borderLineWithWords(BORDER_COMPLETE);
+		String outputComplete="";
+		String outputIncomplete="";
 		for(int i=0;i<taskArr.size();i++){
 			if(taskArr.get(i)!=null){
 				if(taskArr.get(i).isFinished()){
@@ -122,12 +124,18 @@ public class Table {
 					outputComplete+=borderLine();
 				}
 				else {
-					output+=getSingleTask(taskArr.get(i),i);
-					output+=borderLine();
+					outputIncomplete+=getSingleTask(taskArr.get(i),i);
+					outputIncomplete+=borderLine();
 				}
 			}
 		}
-		return output+borderLine()+outputComplete+borderLine();
+		if (outputIncomplete.equals("")){
+			outputIncomplete+="You do not have incompleted task\n"+borderLine();
+		}
+		if (outputComplete.equals("")){
+			outputComplete+="You do not have completed task\n"+borderLine();
+		}
+		return outputUpper+outputIncomplete+outputLower+outputComplete;
 	}
 	
 
