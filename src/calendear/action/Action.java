@@ -315,7 +315,7 @@ public class Action {
 		ArrayList<Task> toDisplay = new ArrayList<Task>();
 		toDisplay.addAll(dataToFilter);
 		for(int i = 0; i<toDisplay.size(); i++){
-			if(toDisplay.get(i).isImportant() != isImportant){
+			if(toDisplay != null && toDisplay.get(i).isImportant() != isImportant){
 				toDisplay.set(i, null);
 			}
 		}
@@ -341,7 +341,7 @@ public class Action {
 		ArrayList<Task> toDisplay = new ArrayList<Task>();
 		toDisplay.addAll(dataToFilter);
 		for(int i = 0; i<toDisplay.size(); i++){
-			if(toDisplay.get(i).isFinished() != isDone){
+			if(toDisplay != null && toDisplay.get(i).isFinished() != isDone){
 				toDisplay.set(i, null);
 			}
 		}
