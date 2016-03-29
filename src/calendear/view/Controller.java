@@ -1,8 +1,7 @@
+package calendear.view;
 import calendear.action.CDLogic;
 
 import calendear.util.*;
-
-import calendear.view.View;
 
 import java.util.Scanner;
 import java.text.ParseException;
