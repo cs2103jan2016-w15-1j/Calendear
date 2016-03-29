@@ -35,11 +35,11 @@ public class Parser {
 	private static final String AT = "at";
 	private static final String NOTE = "note";
 	private static final String TAG = "tag";
-	private static final String MARK = "mark";
+	private static final String MARK = "important";
 	private static final String DONE = "done";
 	
 	private static final String NEGATIVE_LOOKAHEAD_KEYWORDS = 
-	"((?:.(?!\\bname\\b|\\bby\\b|\\bfrom\\b|\\bto\\b|\\bfloat\\b|\\bat\\b|\\bnote\\b|\\btag\\b|\\bmark\\b|\\bdone\\b))+)";
+	"((?:.(?!\\bname\\b|\\bby\\b|\\bfrom\\b|\\bto\\b|\\bfloat\\b|\\bat\\b|\\bnote\\b|\\btag\\b|\\bimportant\\b|\\bdone\\b))+)";
 	private static final String PATTERN_ADD = 
 	"(\\badd\\b) +" + NEGATIVE_LOOKAHEAD_KEYWORDS + " +"				//represent the groups update and <taskID>
 	+ "(?:(?:(\\bname\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
@@ -50,7 +50,7 @@ public class Parser {
 	+ "|(?:(\\bat\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups at and <newLocation>
 	+ "|(?:(\\bnote\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups note and <newNote>
 	+ "|(?:(\\btag\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups tag and <newTag>
-	+ "|(?:(\\bmark\\b) *()) *"			//represent the group mark
+	+ "|(?:(\\bimportant\\b) *()) *"			//represent the group mark
 	+ "|(?:(\\bdone\\b) *()) *)+";		//represent the group done
 	private static final String PATTERN_ADD_FLOAT = "(\\badd\\b) +(.+)";
 	private static final String PATTERN_UPDATE_BY_INDEX = 
@@ -63,7 +63,7 @@ public class Parser {
 	+ "|(?:(\\bat\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups at and <newLocation>
 	+ "|(?:(\\bnote\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups note and <newNote>
 	+ "|(?:(\\btag\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups tag and <newTag>
-	+ "|(?:(\\bmark\\b) *()) *"			//represent the group mark
+	+ "|(?:(\\bimportant\\b) *()) *"			//represent the group mark
 	+ "|(?:(\\bdone\\b) *()) *)+";		//represent the group done
 	
 	private static final int NUM_OF_UPDATE_KEYWORD = 10;
@@ -127,12 +127,13 @@ public class Parser {
 		pattern = Pattern.compile(PATTERN_ADD_FLOAT);
 		matcher = pattern.matcher(rawInput);
 		if (matcher.find()){
-			System.out.println("match");
 			String name = removeEscapeCharacter(matcher.group(2));
 			boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
 			Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
 			checkList[CommandUpdate.CODE_UPDATE_NAME] = true;
 			newInfo[CommandUpdate.CODE_UPDATE_NAME] = name;
+			checkList[CommandUpdate.CODE_UPDATE_TYPE] = true;
+			newInfo[CommandUpdate.CODE_UPDATE_TYPE] = TASK_TYPE.FLOATING;
 			return new CommandAdd(name, checkList, newInfo);
 		}
 		return new CommandInvalid(rawInput);
