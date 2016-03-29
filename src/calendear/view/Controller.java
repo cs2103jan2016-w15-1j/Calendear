@@ -74,8 +74,7 @@ public class Controller {
 	    		case TAG:
 	    				break;
 	    		
-	    		case LINK_GOOGLE: System.out.println("Trying to link");
-	    						  _cdLogic.exeLinkGoogle();
+	    		case LINK_GOOGLE: _cdLogic.exeLinkGoogle();
 	    						  break;
 	    						  	
 
