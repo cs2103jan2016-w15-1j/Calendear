@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class DataManager {
 	
-	private boolean _isLogined;
+	private boolean _isLogined = false;
 	
 	/**
 	 * @return an ArrayList of tasks based on the stored file.
@@ -55,7 +55,7 @@ public class DataManager {
 	 * @param task
 	 */
 	public void updateTaskToGoogle(Task task) {
-		
+		GoogleIO.updateEvent(task);
 	}
 	
 	/**

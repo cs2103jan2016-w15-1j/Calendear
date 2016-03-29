@@ -112,6 +112,17 @@ public class GoogleIO {
 			}
 		}
 		
+		public static void updateEvent(Task task) {
+			try {
+				String eventId = task.getEventId();
+				Event event = task.toGoogleEvent();
+				client.events().update(calendarID, eventId, event).execute();
+			}
+			catch (IOException ex) {
+				System.out.println(ex);
+			}
+		}
+		
 		public static void deleteEvent(Task task) {
 			try {
 				String eventId = task.getEventId();
