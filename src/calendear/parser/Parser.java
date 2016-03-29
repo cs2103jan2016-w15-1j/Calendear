@@ -72,7 +72,7 @@ public class Parser {
 	public static Command parse(String rawInput){	
 		rawInput = rawInput.trim();
 		rawInput = changeEscapeCharacter(rawInput);
-		String[] words = rawInput.split(" ");
+		String[] words = rawInput.split(" +");
 		return parseCommand(words, rawInput);
 	}
 	
