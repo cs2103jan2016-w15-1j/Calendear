@@ -76,7 +76,25 @@ public class ParserTest {
 
 	private void addCaseAddDeadlineWithOptions() {
 		// TODO Auto-generated method stub
-		
+		caseDescriptions.add("add deadline task with options");
+		rawInputs.add("add visit friends at garden .by the bay by 3/21/16 5:30 important note bring cakes");
+		String name = "visit friends";
+		GregorianCalendar deadline = new GregorianCalendar(2016, Calendar.MARCH, 21, 5, 30);
+		boolean[] checklist = new boolean[CHECKLIST_SIZE];
+		Object[] newInfo = new Object[CHECKLIST_SIZE];
+		checklist[INDEX_NAME] = true;
+		newInfo[INDEX_NAME] = name;
+		checklist[INDEX_TYPE] = true;
+		newInfo[INDEX_TYPE] = TASK_TYPE.DEADLINE;
+		checklist[INDEX_END_TIME] = true;
+		newInfo[INDEX_END_TIME] = deadline;
+		checklist[INDEX_IMPORTANT] = true;
+		newInfo[INDEX_IMPORTANT] = true;
+		checklist[INDEX_LOCATION] = true;
+		newInfo[INDEX_LOCATION] = "garden by the bay";
+		checklist[INDEX_NOTE] = true;
+		newInfo[INDEX_NOTE] = "bring cakes";
+		expectedOutputs.add(new CommandAdd(name, checklist, newInfo));
 	}
 
 	private void addCaseAddEvent() {
@@ -106,7 +124,16 @@ public class ParserTest {
 
 	private void addCaseAddFloat() {
 		// TODO Auto-generated method stub
-		
+		caseDescriptions.add("add floating task with minimum parameter");
+		rawInputs.add("add read the lord of the ring");
+		String name = "read the lord of the ring";
+		boolean[] checklist = new boolean[CHECKLIST_SIZE];
+		Object[] newInfo = new Object[CHECKLIST_SIZE];
+		checklist[INDEX_NAME] = true;
+		newInfo[INDEX_NAME] = name;
+		checklist[INDEX_TYPE] = true;
+		newInfo[INDEX_TYPE] = TASK_TYPE.FLOATING;
+		expectedOutputs.add(new CommandAdd(name, checklist, newInfo));
 	}
 
 	private void addCaseAddFloatwithOption() {
