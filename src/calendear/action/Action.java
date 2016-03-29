@@ -587,7 +587,9 @@ public class Action {
 	 * @author Phang Chun Rong
 	 */
 	public void exeLinkGoogle() {
-		this._dataManager.loginGoogle();
+		if (!this._dataManager.isLogined()) {
+			this._dataManager.loginGoogle();
+		}
 	}
 	
 	

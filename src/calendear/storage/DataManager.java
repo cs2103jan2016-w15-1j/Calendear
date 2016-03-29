@@ -2,12 +2,7 @@ package calendear.storage;
 
 import calendear.util.Task;
 
-import java.io.BufferedWriter;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 
@@ -18,7 +13,7 @@ import java.util.ArrayList;
  */
 public class DataManager {
 	
-	private boolean _isLogined;
+	private boolean _isLogined = false;
 	
 	/**
 	 * @return an ArrayList of tasks based on the stored file.
@@ -60,7 +55,7 @@ public class DataManager {
 	 * @param task
 	 */
 	public void updateTaskToGoogle(Task task) {
-		
+		GoogleIO.updateEvent(task);
 	}
 	
 	/**
