@@ -71,9 +71,7 @@ public class DataManager {
 	 * @return Tasks
 	 */
 	public ArrayList<Task> getTasksFromGoogle() {
-		ArrayList<Task> tasks = new ArrayList<Task>();
-		
-		return tasks;
+		return GoogleIO.loadTasksFromGoogle();
 	}
 	
 	/**
