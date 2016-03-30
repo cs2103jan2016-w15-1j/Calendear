@@ -20,6 +20,7 @@ public class Parser {
 	private static final String CMD_STR_TAG = "tag";
 	private static final String CMD_STR_LINK_GOOGLE = "linkGoogle";
 	private static final String CMD_STR_EXIT = "exit";
+	private static final String CMD_STR_REDO = "redo";
 	private static final String EMPTY = "";
 	//when using regex and regex-related methods like String.split() and String.replaceAll()
 	//the "." is treated as metacharacter so you have to include the escape character "\\"
@@ -97,6 +98,8 @@ public class Parser {
 				return parseDoneCmd(words, rawInput);
 			case CMD_STR_UNDO:
 				return parseUndoCmd(words, rawInput);
+			case CMD_STR_REDO:
+				return parseRedoCmd(words, rawInput);
 			case CMD_STR_TAG:
 				return parseTagCmd(words, rawInput);
 			case CMD_STR_LINK_GOOGLE:
@@ -264,6 +267,10 @@ public class Parser {
 	
 	private static Command parseUndoCmd(String[] words, String rawInput){
 		return new CommandUndo();
+	}
+	
+	private static Command parseRedoCmd(String[] words, String rawInput){
+		return new CommandRedo();
 	}
 	
 	private static Command parseTagCmd(String[] words, String rawInput){
