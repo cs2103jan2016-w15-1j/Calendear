@@ -610,7 +610,8 @@ public class Action {
 		System.out.println(this._data.size());
 		for(int i = 1; i<this._data.size(); i++){
 			Task currentTask = this._data.get(i);
-			if(currentTask != null && currentTask.getEventId() == null){
+			System.out.println(currentTask.getEventId());
+			if(currentTask != null && currentTask.getEventId().equals("null")){
 				//tasksWithoutEventId.add(currentTask);
 				//tasksWithoutEventIdIndex.add(i);
 				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
