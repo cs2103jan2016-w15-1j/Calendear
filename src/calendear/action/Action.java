@@ -636,9 +636,9 @@ public class Action {
 			this._dataManager.loginGoogle();
 		}
 		
-//		if (this._dataManager.isLogined()) {
-//			exeAddAllToGoogle();
-//		}
+		if (this._dataManager.isLogined()) {
+			exeAddAllToGoogle();
+		}
 	}
 	
 	

@@ -27,6 +27,7 @@ public class Controller {
 		try {
 			instantiateLogic(nameOfFile);
 		} catch (ParseException e) {
+			System.out.println(e);
 			System.out.println("file reading failed");
 		}
 		

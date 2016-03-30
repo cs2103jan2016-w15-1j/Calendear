@@ -216,27 +216,35 @@ public class Task {
 		DateTime start;
 		DateTime end;
 		event.setSummary(name);
-		if (location != null)
-			event.setLocation(location);
+		event.setEtag(tag);
+		event.setLocation(location);
+		if (isFinished) {
+			event.setStatus(FINISHED);
+		}
+		else {
+			event.setStatus(NOT_FINISHED);
+		}
 		switch(type) {
 			case EVENT:
 				start = new DateTime(startTime.getTime(), startTime.getTimeZone());
 				end = new DateTime(endTime.getTime(), endTime.getTimeZone());
 				event.setStart(new EventDateTime().setDateTime(start));
 				event.setEnd(new EventDateTime().setDateTime(end));
+				event.setDescription(STR_EVENT);
 				break;
 			case DEADLINE:
 				end = new DateTime(endTime.getTime(), endTime.getTimeZone());
 				event.setStart(new EventDateTime().setDateTime(end));
 				event.setEnd(new EventDateTime().setDateTime(end));
-				//If start and end time are required, set start time to be equal to end time or 1 second more.
+				event.setDescription(STR_DEADLINE);
 				break;
 			case FLOATING:
 				//Set Start Time to be the time at this instance
 				Date now = new Date();
 				start = new DateTime(now.getTime());
 				event.setStart(new EventDateTime().setDateTime(start));
-				event.setEnd(new EventDateTime().setDateTime(start));				
+				event.setEnd(new EventDateTime().setDateTime(start));
+				event.setDescription(STR_FLOATING);
 				break;
 			case RECURRING:
 				break;
