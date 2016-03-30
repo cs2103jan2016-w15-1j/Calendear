@@ -43,7 +43,7 @@ public class Table {
 	
 	private static final String S = " ";
 	private static final int NUM_OF_ATTRI = 8;
-	private static final int LEN_ID = 2;
+	private static final int LEN_ID = 4;
 	private static final int LEN_IMPO = 10;
 	private static final int LEN_FINI = 10;
 	private static final int LEN_NAME = 16;
@@ -79,7 +79,7 @@ public class Table {
 	
 	
 	private static String getHeaderString(String[] arr){
-		String headerString= "|  ";
+		String headerString= "|    ";
 		for(int i=0;i<arr.length;i++){
 			headerString += ("|"+ANSI_CYAN+arr[i]+ANSI_RESET+addSpace(LEN_TITLE_ARR[i]));
 		}
