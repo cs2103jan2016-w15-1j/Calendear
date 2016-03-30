@@ -244,6 +244,14 @@ public class Task {
 		return event;
 	}
 	
+	public static Task parseGoogleEvent(Event googleEvent) {
+		Task task = new Task();
+		
+		
+		
+		return task;
+	}
+	
 	public static Task parseSaveable(String allString) throws ParseException {
 		String[] members = allString.split(PATTERN_OBJ_SEPERATOR);
 		String typeStr = members[SAVING_INDEX_TYPE];

@@ -577,7 +577,7 @@ public class Action {
 	}
 	
 	
-	public void exeAddAllToGoogle(){
+	private void exeAddAllToGoogle(){
 		assert(this._dataManager.isLogined()): "called exeAddAllToGoogle without logging in\n";
 		//ArrayList<Task> tasksWithoutEventId = new ArrayList<Task>();
 		//ArrayList<Integer> tasksWithoutEventIdIndex = new ArrayList<Integer>();
@@ -588,8 +588,6 @@ public class Action {
 				//tasksWithoutEventIdIndex.add(i);
 				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
 				currentTask.setEventId(newEventId);
-			}else{
-				this._dataManager.updateTaskToGoogle(currentTask);
 			}
 		}
 	}
@@ -611,6 +609,10 @@ public class Action {
 		if (!this._dataManager.isLogined()) {
 			this._dataManager.loginGoogle();
 		}
+		
+//		if (this._dataManager.isLogined()) {
+//			exeAddAllToGoogle();
+//		}
 	}
 	
 	
