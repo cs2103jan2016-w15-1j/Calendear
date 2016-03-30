@@ -30,13 +30,14 @@ public class Task {
 	
 	private static final int SAVING_INDEX_NAME = 0;
 	private static final int SAVING_INDEX_TYPE = 1;
-	private static final int SAVING_INDEX_START_TIME = 2;
-	private static final int SAVING_INDEX_END_TIME = 3;
-	private static final int SAVING_INDEX_LOCATION = 4;
-	private static final int SAVING_INDEX_NOTE = 5;
-	private static final int SAVING_INDEX_TAG = 6;
-	private static final int SAVING_INDEX_IMPORTANT = 7;
-	private static final int SAVING_INDEX_FINISHED = 8;
+	private static final int SAVING_INDEX_GOOGLE_ID = 2;
+	private static final int SAVING_INDEX_START_TIME = 3;
+	private static final int SAVING_INDEX_END_TIME = 4;
+	private static final int SAVING_INDEX_LOCATION = 5;
+	private static final int SAVING_INDEX_NOTE = 6;
+	private static final int SAVING_INDEX_TAG = 7;
+	private static final int SAVING_INDEX_IMPORTANT = 8;
+	private static final int SAVING_INDEX_FINISHED = 9;
 	
 	private String name;
 	private String googleEventId;
@@ -192,12 +193,13 @@ public class Task {
 	
 	public String toSaveable() {
 		String res;
-		res = getName() + OBJ_SEPERATOR;
+		res = name + OBJ_SEPERATOR;
+		res += googleEventId + OBJ_SEPERATOR;
 		res += getTypeStr() + OBJ_SEPERATOR;
 		res += getStartTimeStr() + OBJ_SEPERATOR;
 		res += getEndTimeStr() + OBJ_SEPERATOR;
-		res += getLocation() + OBJ_SEPERATOR;
-		res += getNote() + OBJ_SEPERATOR;
+		res += location + OBJ_SEPERATOR;
+		res += note + OBJ_SEPERATOR;
 		res += getTag() + OBJ_SEPERATOR;
 		res += getImportantStr() + OBJ_SEPERATOR;
 		res += getFinishedStr() + OBJ_SEPERATOR;
@@ -274,6 +276,7 @@ public class Task {
 	}
 
 	private static void parseOptionalAttribute(Task res, String[] members) {
+		res.setEventId(members[SAVING_INDEX_GOOGLE_ID]);
 		res.setLocation(members[SAVING_INDEX_LOCATION]);
 		res.setNote(members[SAVING_INDEX_NOTE]);
 		if (members[SAVING_INDEX_IMPORTANT].equals(IMPORTANT)){

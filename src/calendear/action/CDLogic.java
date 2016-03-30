@@ -5,7 +5,6 @@ import calendear.parser.Parser;
 import calendear.util.*;
 
 import java.util.ArrayList;
-
 import java.text.ParseException;
 
 /**
@@ -73,5 +72,6 @@ public class CDLogic {
 	public ArrayList<Task> exeSearch(CommandSearch commandSearch){
 		return _action.exeSearch(commandSearch);
 	}
+	
 	
 }

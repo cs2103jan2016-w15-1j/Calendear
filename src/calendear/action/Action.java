@@ -268,16 +268,22 @@ public class Action {
 					task = null;
 				}
 				if(toShow[STARTT_ID]){//show after start id
-					GregorianCalendar comparingWith = (GregorianCalendar)searchWith[STARTT_ID];
+					/*GregorianCalendar comparingWith = (GregorianCalendar)searchWith[STARTT_ID];
 					if(task.getStartTime() != null && task.getStartTime().compareTo(comparingWith) > 0){
 						task = null;
-					}
+					}*/
+					GregorianCalendar[] comparingWith = (GregorianCalendar[])searchWith[STARTT_ID];
+					assert(comparingWith.length == 2): "length of startTime comparision not 2\n";
+					filterWithStartTime(task, comparingWith[0], comparingWith[1]);
 				}
 				if(toShow[ENDT_ID]){//show before end id
-					GregorianCalendar comparingWith = (GregorianCalendar)searchWith[STARTT_ID];
+					/*GregorianCalendar comparingWith = (GregorianCalendar)searchWith[STARTT_ID];
 					if(task.getEndTime() != null && task.getStartTime().compareTo(comparingWith) < 0){
 						task = null;
-					}
+					}*/
+					GregorianCalendar[] comparingWith = (GregorianCalendar[])searchWith[ENDT_ID];
+					assert(comparingWith.length == 2): "length of startTime comparision not 2\n";
+					filterWithEndTime(task, comparingWith[0], comparingWith[1]);
 				}
 				if(toShow[LOCATION_ID] &&!(task.getLocation().contains((String) searchWith[LOCATION_ID]))){
 					task = null;
@@ -315,6 +321,26 @@ public class Action {
 		return show;
 	}
 	
+	private boolean filterWithStartTime(Task currentTask, GregorianCalendar start, GregorianCalendar end){
+		if(currentTask != null 
+				&& currentTask.getStartTime().compareTo(start) <= 0//before start
+				&& currentTask.getStartTime().compareTo(end) >= 0){//after end
+			currentTask = null;
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean filterWithEndTime(Task currentTask, GregorianCalendar start, GregorianCalendar end){
+			if(currentTask != null 
+					&& currentTask.getEndTime().compareTo(start) <= 0//before start
+					&& currentTask.getEndTime().compareTo(end) >= 0){//after end
+				currentTask = null;
+				return false;
+			}
+		return true;
+	}
+	
 	private ArrayList<Task> filterWithImportance(boolean isImportant, ArrayList<Task> dataToFilter){
 		ArrayList<Task> toDisplay = new ArrayList<Task>();
 		toDisplay.addAll(dataToFilter);
@@ -333,7 +359,7 @@ public class Action {
 	public ArrayList<Task> exeDisplayNotImportant(){
 		return filterWithImportance(false, this._data);
 	}
-	
+
 	public ArrayList<Task> exeSearch(CommandSearch cmd){
 		assertCommandNotNull(cmd);
 		boolean[] toShow = cmd.getArrToShow();
