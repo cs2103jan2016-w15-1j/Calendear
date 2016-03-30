@@ -605,25 +605,35 @@ public class Action {
 	
 	public void exeAddAllToGoogle(){
 		assert(this._dataManager.isLogined()): "called exeAddAllToGoogle without logging in\n";
-		//ArrayList<Task> tasksWithoutEventId = new ArrayList<Task>();
-		//ArrayList<Integer> tasksWithoutEventIdIndex = new ArrayList<Integer>();
 		for(int i = 0; i<this._data.size(); i++){
 			Task currentTask = this._data.get(i);
 			if(currentTask.getEventId() == null){
-				//tasksWithoutEventId.add(currentTask);
-				//tasksWithoutEventIdIndex.add(i);
 				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
 				currentTask.setEventId(newEventId);
-			}else{
-				this._dataManager.updateTaskToGoogle(currentTask);
 			}
 		}
 	}
-	
+	/**
+	 * currently no way to undo
+	 */
 	public void exeLoadTasksFromGoogle(){
 		assert(this._dataManager.isLogined()): "calling exeLoadTasksFromGoogle when not logged in\n";
 		ArrayList<Task> loadedTasks = this._dataManager.getTasksFromGoogle();
-		//TODO
+		for(int i = 0; i< this._data.size(); i++){
+			Task currentTask = this._data.get(i);
+			for(int j = 0; j< loadedTasks.size(); j++){
+				Task taskFromGoogle = loadedTasks.get(j);
+				if(currentTask != null && currentTask.getEventId().equals(taskFromGoogle.getEventId())){
+					currentTask.setName(taskFromGoogle.getName());
+					currentTask.setStartTime(taskFromGoogle.getStartTime());
+					currentTask.setEndTime(taskFromGoogle.getEndTime());
+					loadedTasks.remove(j);
+					j--;
+					break;
+				}
+			}
+		}
+		this._data.addAll(loadedTasks);
 	}
 	
 	private void filterExistingTasks(ArrayList<Task> tasks){
