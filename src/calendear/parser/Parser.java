@@ -8,19 +8,19 @@ import java.text.ParseException;
 
 public class Parser {
 	
-	private static final String CMD_STR_ADD = "add";
-	private static final String CMD_STR_DISPLAY = "display";
-	private static final String CMD_STR_UPDATE = "update";
-	private static final String CMD_STR_DELETE = "delete";
-	private static final String CMD_STR_SEARCH = "search";
-	private static final String CMD_STR_SORT = "sort";
+	private static final String ADD = "add";
+	private static final String DISPLAY = "display";
+	private static final String UPDATE = "update";
+	private static final String DELETE = "delete";
+	private static final String SEARCH = "search";
+	private static final String SORT = "sort";
 	private static final String CMD_STR_MARK = "mark";
 	private static final String CMD_STR_DONE = "done";
-	private static final String CMD_STR_UNDO = "undo";
+	private static final String UNDO = "undo";
 	private static final String CMD_STR_TAG = "tag";
-	private static final String CMD_STR_LINK_GOOGLE = "linkGoogle";
-	private static final String CMD_STR_EXIT = "exit";
-	private static final String CMD_STR_REDO = "redo";
+	private static final String LINK_GOOGLE = "linkGoogle";
+	private static final String EXIT = "exit";
+	private static final String REDO = "redo";
 	private static final String EMPTY = "";
 	//when using regex and regex-related methods like String.split() and String.replaceAll()
 	//the "." is treated as metacharacter so you have to include the escape character "\\"
@@ -66,6 +66,18 @@ public class Parser {
 	+ "|(?:(\\btag\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups tag and <newTag>
 	+ "|(?:(\\bimportant\\b) *()) *"			//represent the group mark
 	+ "|(?:(\\bdone\\b) *()) *)+";		//represent the group done
+	private static final String PATTERN_SEARCH = 
+	"(\\badd\\b) +"				//represent the groups update and <taskID>
+	+ "(?:(?:(\\bname\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
+	+ "|(?:(\\bby\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups by and <dateAndTime>
+	+ "|(?:(\\bfrom\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups from and <dateAndTime>
+	+ "|(?:(\\bto\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups to and <dateAndTime>
+	+ "|(?:(\\bfloat\\b) *()) *"		//represent the group float
+	+ "|(?:(\\bat\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups at and <newLocation>
+	+ "|(?:(\\bnote\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups note and <newNote>
+	+ "|(?:(\\btag\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups tag and <newTag>
+	+ "|(?:(\\bimportant\\b) *()) *"			//represent the group mark
+	+ "|(?:(\\bdone\\b) *()) *)+";		//represent the group done
 	
 	private static final int NUM_OF_UPDATE_KEYWORD = 10;
 	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
@@ -80,31 +92,31 @@ public class Parser {
 	private static Command parseCommand(String[] words, String rawInput){
 		
 		switch (words[0]){
-			case CMD_STR_ADD:
+			case ADD:
 				return parseAddCmd(words, rawInput);
-			case CMD_STR_DISPLAY:
+			case DISPLAY:
 				return parseDisplayCmd(words, rawInput);
-			case CMD_STR_UPDATE:
+			case UPDATE:
 				return parseUpdateCmd(words, rawInput);
-			case CMD_STR_DELETE:
+			case DELETE:
 				return parseDeleteCmd(words, rawInput);
-			case CMD_STR_SEARCH:
+			case SEARCH:
 				return parseSearchCmd(words, rawInput);
-			case CMD_STR_SORT:
+			case SORT:
 				return parseSortCmd(words, rawInput);
 			case CMD_STR_MARK:
 				return parseMarkCmd(words, rawInput);
 			case CMD_STR_DONE:
 				return parseDoneCmd(words, rawInput);
-			case CMD_STR_UNDO:
+			case UNDO:
 				return parseUndoCmd(words, rawInput);
-			case CMD_STR_REDO:
+			case REDO:
 				return parseRedoCmd(words, rawInput);
 			case CMD_STR_TAG:
 				return parseTagCmd(words, rawInput);
-			case CMD_STR_LINK_GOOGLE:
+			case LINK_GOOGLE:
 				return parseLinkGoogleCmd(words, rawInput);
-			case CMD_STR_EXIT:
+			case EXIT:
 				return parseExitCmd(words, rawInput);
 			default:
 				return parseInvalidCmd(words, rawInput);
@@ -248,7 +260,21 @@ public class Parser {
 	}
 	
 	private static Command parseSearchCmd(String[] words, String rawInput){
-		return null;
+		Pattern pattern = Pattern.compile(PATTERN_SEARCH);
+		Matcher matcher = pattern.matcher(rawInput);
+		if (matcher.find()){
+			try {	
+				boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
+				Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
+				makeCheckList(matcher, checkList, newInfo);
+				return new CommandSearch(checkList, newInfo);
+			}
+			catch (ParseException e){
+				return new CommandInvalid(rawInput);
+			}
+		}
+		
+		return new CommandInvalid(rawInput);
 	}
 	
 	private static Command parseSortCmd(String[] words, String rawInput){
