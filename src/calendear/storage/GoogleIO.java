@@ -109,6 +109,7 @@ public class GoogleIO {
 			  return result.getId();
 			}
 		  catch (IOException ex) {
+			  System.out.println(ex);
 			  return MESSAGE_ERROR;
 		  }
 		}
