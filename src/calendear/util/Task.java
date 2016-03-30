@@ -76,6 +76,9 @@ public class Task {
 	}
 	
 	public String getEventId() {
+		if (googleEventId == null) {
+			return EMPTY;
+		}
 		return googleEventId;
 	}
 	
@@ -194,8 +197,8 @@ public class Task {
 	public String toSaveable() {
 		String res;
 		res = name + OBJ_SEPERATOR;
-		res += googleEventId + OBJ_SEPERATOR;
 		res += getTypeStr() + OBJ_SEPERATOR;
+		res += googleEventId + OBJ_SEPERATOR;
 		res += getStartTimeStr() + OBJ_SEPERATOR;
 		res += getEndTimeStr() + OBJ_SEPERATOR;
 		res += location + OBJ_SEPERATOR;
