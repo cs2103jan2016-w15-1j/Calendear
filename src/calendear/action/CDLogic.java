@@ -58,12 +58,20 @@ public class CDLogic {
 		_action.exeLinkGoogle();
 	}
 	
-	public void exeUndo(){
-		_action.exeUndo();
+	public boolean exeUndo(){
+		return _action.exeUndo();
 	}
 	
-	public void exeRedo(){
-		_action.exeRedo();
+	public boolean exeRedo(){
+		return _action.exeRedo();
+	}
+	
+	public Task exeTag(CommandTag commandTag){
+		return _action.exeTag(commandTag);
+	}
+	
+	public ArrayList<Task> exeSearch(CommandSearch commandSearch){
+		return _action.exeSearch(commandSearch);
 	}
 	
 }
