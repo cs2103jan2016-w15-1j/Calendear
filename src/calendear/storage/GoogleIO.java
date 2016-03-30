@@ -87,8 +87,6 @@ public class GoogleIO {
 		      //Link to Calendear
 		      calendarID = findOrCreateCalendar();
 		      
-		      
-		      
 		      return true;
 
 		    } catch (IOException e) {
