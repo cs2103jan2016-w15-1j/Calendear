@@ -1,5 +1,19 @@
 package calendear.util;
 
+/**
+ * searchWith should be:
+ * [string, 
+	TASK_TYPE, 
+	[GregorianCalendar, GregorianCalendar],
+	[GregorianCalendar, GregorianCalendar],
+	String,
+	String,
+	String,
+	boolean,
+	boolean]
+ * @author 
+ *
+ */
 public class CommandSearch extends Command {
 	
 	private String searchKey;
@@ -28,5 +42,4 @@ public class CommandSearch extends Command {
 	public String getSearchKey(){
 		return searchKey;
 	}
-	
 }

@@ -64,14 +64,16 @@ public class Controller {
 	    					  View.displayUpdateInLine(updatedTask);
 	    					  break;
 	    		
-	    		case SEARCH:
+	    		case SEARCH:	ArrayList<Task> foundTasks = _cdLogic.exeSearch((CommandSearch) command);
+	    						View.displaySearchInLine(foundTasks);
 	    				break;
 	    		
 	    		case MARK:	Task markedImportanceTask = _cdLogic.exeMarkImportant((CommandMark) command);
-	    					//TODO
+	    					View.displayMark(markedImportanceTask);
 	    				break;
 
-	    		case TAG:
+	    		case TAG:	Task taggedTag = _cdLogic.exeTag((CommandTag) command);
+	    					View.displayTag(taggedTag);
 	    				break;
 	    		
 	    		case LINK_GOOGLE: _cdLogic.exeLinkGoogle();
@@ -83,14 +85,14 @@ public class Controller {
 	    				break;
 	    				
 	    		case UNDO: _cdLogic.exeUndo();
-	    				   break;
-	    				
-	    		
+	    				break;
+	    				   
 	    		case EXIT:  View.displayExit();
 	    					System.exit(0);
-	    					break;
+	    				break;
 	    					
 	    		case REDO: _cdLogic.exeRedo();
+	    				break;
 	    		default: 
 	    				break;
 	    	}
