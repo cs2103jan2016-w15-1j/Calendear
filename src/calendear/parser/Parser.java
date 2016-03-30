@@ -21,6 +21,7 @@ public class Parser {
 	private static final String LINK_GOOGLE = "linkGoogle";
 	private static final String EXIT = "exit";
 	private static final String REDO = "redo";
+	private static final String LOAD_TO_GOOGLE = "loadToGoogle";
 	private static final String EMPTY = "";
 	//when using regex and regex-related methods like String.split() and String.replaceAll()
 	//the "." is treated as metacharacter so you have to include the escape character "\\"
@@ -116,6 +117,8 @@ public class Parser {
 				return parseTagCmd(words, rawInput);
 			case LINK_GOOGLE:
 				return parseLinkGoogleCmd(words, rawInput);
+			case LOAD_TO_GOOGLE:
+				return parseLoadToGoogleCmd(words, rawInput);
 			case EXIT:
 				return parseExitCmd(words, rawInput);
 			default:
@@ -307,6 +310,10 @@ public class Parser {
 	
 	private static Command parseLinkGoogleCmd(String[] words, String rawInput){
 		return new CommandLinkGoogle();
+	}
+	
+	private static Command parseLoadToGoogleCmd(String[] words, String rawInput){
+		return new CommandLoadToGoogle();
 	}
 	
 	private static Command parseExitCmd(String[] words, String rawInput){
