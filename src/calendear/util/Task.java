@@ -30,13 +30,14 @@ public class Task {
 	
 	private static final int SAVING_INDEX_NAME = 0;
 	private static final int SAVING_INDEX_TYPE = 1;
-	private static final int SAVING_INDEX_START_TIME = 2;
-	private static final int SAVING_INDEX_END_TIME = 3;
-	private static final int SAVING_INDEX_LOCATION = 4;
-	private static final int SAVING_INDEX_NOTE = 5;
-	private static final int SAVING_INDEX_TAG = 6;
-	private static final int SAVING_INDEX_IMPORTANT = 7;
-	private static final int SAVING_INDEX_FINISHED = 8;
+	private static final int SAVING_INDEX_GOOGLE_ID = 2;
+	private static final int SAVING_INDEX_START_TIME = 3;
+	private static final int SAVING_INDEX_END_TIME = 4;
+	private static final int SAVING_INDEX_LOCATION = 5;
+	private static final int SAVING_INDEX_NOTE = 6;
+	private static final int SAVING_INDEX_TAG = 7;
+	private static final int SAVING_INDEX_IMPORTANT = 8;
+	private static final int SAVING_INDEX_FINISHED = 9;
 	
 	private String name;
 	private String googleEventId;
@@ -75,6 +76,9 @@ public class Task {
 	}
 	
 	public String getEventId() {
+		if (googleEventId == null) {
+			return EMPTY;
+		}
 		return googleEventId;
 	}
 	
@@ -162,8 +166,22 @@ public class Task {
 		this.startTime = time;
 	}
 	
+	public void setStartTime(EventDateTime startTime) {
+		DateTime dateTime = startTime.getDateTime();
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(dateTime.getValue());
+		this.startTime = cal;
+	}
+	
 	public void setEndTime(GregorianCalendar time) {
 		this.endTime = time;
+	}
+	
+	public void setEndTime(EventDateTime endTime) {
+		DateTime dateTime = endTime.getDateTime();
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(dateTime.getValue());
+		this.endTime = cal;
 	}
 	
 	public void setType (TASK_TYPE type) {
@@ -190,14 +208,24 @@ public class Task {
 		this.isFinished = isFinished;
 	}
 	
+	public void setIsFinishedByString(String strFinished) {
+		if (strFinished.equals(FINISHED)) {
+			this.isFinished = true;
+		}
+		else {
+			this.isFinished = false;
+		}
+	}
+	
 	public String toSaveable() {
 		String res;
-		res = getName() + OBJ_SEPERATOR;
+		res = name + OBJ_SEPERATOR;
 		res += getTypeStr() + OBJ_SEPERATOR;
+		res += googleEventId + OBJ_SEPERATOR;
 		res += getStartTimeStr() + OBJ_SEPERATOR;
 		res += getEndTimeStr() + OBJ_SEPERATOR;
-		res += getLocation() + OBJ_SEPERATOR;
-		res += getNote() + OBJ_SEPERATOR;
+		res += location + OBJ_SEPERATOR;
+		res += note + OBJ_SEPERATOR;
 		res += getTag() + OBJ_SEPERATOR;
 		res += getImportantStr() + OBJ_SEPERATOR;
 		res += getFinishedStr() + OBJ_SEPERATOR;
@@ -214,27 +242,32 @@ public class Task {
 		DateTime start;
 		DateTime end;
 		event.setSummary(name);
-		if (location != null)
-			event.setLocation(location);
+		event.setLocation(location);
+		String description = getFinishedStr();
 		switch(type) {
 			case EVENT:
 				start = new DateTime(startTime.getTime(), startTime.getTimeZone());
 				end = new DateTime(endTime.getTime(), endTime.getTimeZone());
 				event.setStart(new EventDateTime().setDateTime(start));
 				event.setEnd(new EventDateTime().setDateTime(end));
+				description = description + "|" + STR_EVENT;
+				event.setDescription(description);
 				break;
 			case DEADLINE:
 				end = new DateTime(endTime.getTime(), endTime.getTimeZone());
 				event.setStart(new EventDateTime().setDateTime(end));
 				event.setEnd(new EventDateTime().setDateTime(end));
-				//If start and end time are required, set start time to be equal to end time or 1 second more.
+				description = description + "|" + STR_DEADLINE;
+				event.setDescription(description);
 				break;
 			case FLOATING:
 				//Set Start Time to be the time at this instance
 				Date now = new Date();
 				start = new DateTime(now.getTime());
 				event.setStart(new EventDateTime().setDateTime(start));
-				event.setEnd(new EventDateTime().setDateTime(start));				
+				event.setEnd(new EventDateTime().setDateTime(start));
+				description = description + "|" + STR_FLOATING;
+				event.setDescription(description);
 				break;
 			case RECURRING:
 				break;
@@ -242,6 +275,56 @@ public class Task {
 				break;
 		}
 		return event;
+	}
+	
+	/**
+	 * @author Phang Chun Rong
+	 * @param googleEvent
+	 * @return Task
+	 */
+	public static Task parseGoogleEvent(Event googleEvent) {
+		Task task = new Task();
+		task.setName(googleEvent.getSummary());
+		task.setEventId(googleEvent.getId());
+		task.setLocation(googleEvent.getLocation());
+		EventDateTime start;
+		EventDateTime end;
+		
+		String description = googleEvent.getDescription();
+		if (description != null) {
+			String[] tokenizedDescription = description.split("|");
+			//Means that this description is set programmatically by calendear
+			if (tokenizedDescription.length == 2) {
+				task.setIsFinishedByString(tokenizedDescription[0]);
+				
+				switch(tokenizedDescription[1]) {
+					case STR_EVENT: start = googleEvent.getStart();
+									end = googleEvent.getEnd();
+									task.setStartTime(start);
+									task.setEndTime(end);
+									task.setType(TASK_TYPE.EVENT);
+									break;
+									
+					case STR_DEADLINE: end = googleEvent.getEnd();
+									   task.setEndTime(end);
+									   task.setType(TASK_TYPE.DEADLINE);
+									   break;
+									   
+					case STR_FLOATING: task.setType(TASK_TYPE.FLOATING);
+					   				   break;
+				}
+			}
+		}
+		else {
+			start = googleEvent.getStart();
+			end = googleEvent.getEnd();
+			task.setStartTime(start);
+			task.setEndTime(end);
+			task.setType(TASK_TYPE.EVENT);
+		}
+
+		
+		return task;
 	}
 	
 	public static Task parseSaveable(String allString) throws ParseException {
@@ -266,6 +349,7 @@ public class Task {
 	}
 
 	private static void parseOptionalAttribute(Task res, String[] members) {
+		res.setEventId(members[SAVING_INDEX_GOOGLE_ID]);
 		res.setLocation(members[SAVING_INDEX_LOCATION]);
 		res.setNote(members[SAVING_INDEX_NOTE]);
 		if (members[SAVING_INDEX_IMPORTANT].equals(IMPORTANT)){

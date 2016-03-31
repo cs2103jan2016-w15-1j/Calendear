@@ -21,11 +21,13 @@ import com.google.api.services.calendar.model.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.Events;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.ArrayList;
 
 import calendear.util.Task;
 
@@ -55,7 +57,7 @@ public class GoogleIO {
 	  private static Credential authorize() throws Exception {
 	    // load client secrets
 	    GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-	        new InputStreamReader(GoogleIO.class.getResourceAsStream("../../libs/client_secrets.json")));
+	        new InputStreamReader(GoogleIO.class.getResourceAsStream("/libs/client_secrets.json")));
 	    if (clientSecrets.getDetails().getClientId().startsWith("Enter")
 	        || clientSecrets.getDetails().getClientSecret().startsWith("Enter ")) {
 	      System.out.println(
@@ -90,23 +92,36 @@ public class GoogleIO {
 		      return true;
 
 		    } catch (IOException e) {
-//		      System.err.println(e.getMessage());
+		      System.err.println(e.getMessage());
 		      return false;
 		    } catch (Throwable t) {
-//		      t.printStackTrace();
+		      t.printStackTrace();
 		      return false;
 		    }
-		  
 	  }
 	  
-		public static String addEvent(Task task) {
+	  
+	  
+	  public static String addEvent(Task task) {
+		  try {
+			  Event event = task.toGoogleEvent();
+			  Event result = client.events().insert(calendarID, event).execute();
+			  return result.getId();
+			}
+		  catch (IOException ex) {
+			  System.out.println(ex);
+			  return MESSAGE_ERROR;
+		  }
+		}
+		
+	  public static void updateEvent(Task task) {
 			try {
+				String eventId = task.getEventId();
 				Event event = task.toGoogleEvent();
-				Event result = client.events().insert(calendarID, event).execute();
-				return result.getId();
+				client.events().update(calendarID, eventId, event).execute();
 			}
 			catch (IOException ex) {
-				return MESSAGE_ERROR;
+				System.out.println(ex);
 			}
 		}
 		
@@ -116,8 +131,26 @@ public class GoogleIO {
 				client.events().delete(calendarID, eventId).execute();
 			}
 			catch (IOException ex) {
-				System.out.println(ex);
+//				System.out.println(ex);
 			}
+		}
+		
+		public static ArrayList<Task> loadTasksFromGoogle() {
+			ArrayList<Task> tasks = new ArrayList<Task>();
+			try {
+			    Events feed = client.events().list(calendarID).execute();
+			    Iterable<Event> listOfEvents = feed.getItems();
+				for (Event event: listOfEvents) {
+					Task newTask = Task.parseGoogleEvent(event);
+					tasks.add(newTask);
+				}
+			    
+				return tasks;
+			}
+			catch (IOException ex) {
+				return tasks;
+			}
+			
 		}
 		  
 		private static String findOrCreateCalendar() throws IOException {

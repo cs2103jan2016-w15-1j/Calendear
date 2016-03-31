@@ -27,6 +27,7 @@ public class Controller {
 		try {
 			instantiateLogic(nameOfFile);
 		} catch (ParseException e) {
+			System.out.println(e);
 			System.out.println("file reading failed");
 		}
 		
@@ -64,34 +65,38 @@ public class Controller {
 	    					  View.displayUpdateInLine(updatedTask);
 	    					  break;
 	    		
-	    		case SEARCH:
+	    		case SEARCH:	ArrayList<Task> foundTasks = _cdLogic.exeSearch((CommandSearch) command);
+	    						View.displaySearchInLine(foundTasks);
 	    				break;
 	    		
 	    		case MARK:	Task markedImportanceTask = _cdLogic.exeMarkImportant((CommandMark) command);
-	    					//TODO
+	    					View.displayMark(markedImportanceTask);
 	    				break;
 
-	    		case TAG:
+	    		case TAG:	Task taggedTag = _cdLogic.exeTag((CommandTag) command);
+	    					View.displayTag(taggedTag);
 	    				break;
 	    		
-	    		case LINK_GOOGLE: System.out.println("Trying to link");
-	    						  _cdLogic.exeLinkGoogle();
+	    		case LINK_GOOGLE: _cdLogic.exeLinkGoogle();
 	    						  break;
-	    						  	
+	    						  
+	    		case LOAD_FROM_GOOGLE: ArrayList<Task> resultingList =  _cdLogic.exeLoadTasksFromGoogle((CommandLoadFromGoogle) command);
+	    								View.displayDisplayInLine(resultingList);
+	    						  	break;
 
 	    		case DONE: Task completedTask = _cdLogic.exeMarkDone((CommandDone) command);
 	    				   View.displayDone(completedTask);
 	    				break;
 	    				
 	    		case UNDO: _cdLogic.exeUndo();
-	    				   break;
-	    				
-	    		
+	    				break;
+	    				   
 	    		case EXIT:  View.displayExit();
 	    					System.exit(0);
-	    					break;
+	    				break;
 	    					
 	    		case REDO: _cdLogic.exeRedo();
+	    				break;
 	    		default: 
 	    				break;
 	    	}
