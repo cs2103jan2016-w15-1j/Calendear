@@ -26,7 +26,7 @@ public class View {
 	private static final String MSG_MARK ="Marked task:\n";
 	private static final String MSG_DONE = "Finished task:\n";
 	private static final String MSG_TAG ="Tagged task:\n";
-	private static final String MSG_UNDO ="Undo task:\n";
+	private static final String MSG_UNDO ="Undo successfully.\n";
 	private static final String MSG_LINKGOOGLE ="Linked to google";
 	private static final String MSG_EXIT ="Exited";
 	private static final String MSG_INVALID ="Invalid command";
@@ -108,8 +108,10 @@ public class View {
 		System.out.println(MSG_ARR[5]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
-	public static void displayUndo(Task task){
-		System.out.println(MSG_ARR[6]+ Full.getTask(task));
+	public static void displayUndo(boolean successful){
+		if (successful){
+			System.out.println(MSG_ARR[6]);
+		}
 	}
 	
 	public static void displayUndoInLine(Task task){

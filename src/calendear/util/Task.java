@@ -166,8 +166,22 @@ public class Task {
 		this.startTime = time;
 	}
 	
+	public void setStartTime(EventDateTime startTime) {
+		DateTime dateTime = startTime.getDateTime();
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(dateTime.getValue());
+		this.startTime = cal;
+	}
+	
 	public void setEndTime(GregorianCalendar time) {
 		this.endTime = time;
+	}
+	
+	public void setEndTime(EventDateTime endTime) {
+		DateTime dateTime = endTime.getDateTime();
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(dateTime.getValue());
+		this.endTime = cal;
 	}
 	
 	public void setType (TASK_TYPE type) {
@@ -192,6 +206,15 @@ public class Task {
 	
 	public void setIsFinished(boolean isFinished){
 		this.isFinished = isFinished;
+	}
+	
+	public void setIsFinishedByString(String strFinished) {
+		if (strFinished.equals(FINISHED)) {
+			this.isFinished = true;
+		}
+		else {
+			this.isFinished = false;
+		}
 	}
 	
 	public String toSaveable() {
@@ -219,27 +242,23 @@ public class Task {
 		DateTime start;
 		DateTime end;
 		event.setSummary(name);
-		event.setEtag(tag);
 		event.setLocation(location);
-		if (isFinished) {
-			event.setStatus(FINISHED);
-		}
-		else {
-			event.setStatus(NOT_FINISHED);
-		}
+		String description = getFinishedStr();
 		switch(type) {
 			case EVENT:
 				start = new DateTime(startTime.getTime(), startTime.getTimeZone());
 				end = new DateTime(endTime.getTime(), endTime.getTimeZone());
 				event.setStart(new EventDateTime().setDateTime(start));
 				event.setEnd(new EventDateTime().setDateTime(end));
-				event.setDescription(STR_EVENT);
+				description = description + "|" + STR_EVENT;
+				event.setDescription(description);
 				break;
 			case DEADLINE:
 				end = new DateTime(endTime.getTime(), endTime.getTimeZone());
 				event.setStart(new EventDateTime().setDateTime(end));
 				event.setEnd(new EventDateTime().setDateTime(end));
-				event.setDescription(STR_DEADLINE);
+				description = description + "|" + STR_DEADLINE;
+				event.setDescription(description);
 				break;
 			case FLOATING:
 				//Set Start Time to be the time at this instance
@@ -247,7 +266,8 @@ public class Task {
 				start = new DateTime(now.getTime());
 				event.setStart(new EventDateTime().setDateTime(start));
 				event.setEnd(new EventDateTime().setDateTime(start));
-				event.setDescription(STR_FLOATING);
+				description = description + "|" + STR_FLOATING;
+				event.setDescription(description);
 				break;
 			case RECURRING:
 				break;
@@ -257,10 +277,52 @@ public class Task {
 		return event;
 	}
 	
+	/**
+	 * @author Phang Chun Rong
+	 * @param googleEvent
+	 * @return Task
+	 */
 	public static Task parseGoogleEvent(Event googleEvent) {
 		Task task = new Task();
+		task.setName(googleEvent.getSummary());
+		task.setEventId(googleEvent.getId());
+		task.setLocation(googleEvent.getLocation());
+		EventDateTime start;
+		EventDateTime end;
 		
-		
+		String description = googleEvent.getDescription();
+		if (description != null) {
+			String[] tokenizedDescription = description.split("|");
+			//Means that this description is set programmatically by calendear
+			if (tokenizedDescription.length == 2) {
+				task.setIsFinishedByString(tokenizedDescription[0]);
+				
+				switch(tokenizedDescription[1]) {
+					case STR_EVENT: start = googleEvent.getStart();
+									end = googleEvent.getEnd();
+									task.setStartTime(start);
+									task.setEndTime(end);
+									task.setType(TASK_TYPE.EVENT);
+									break;
+									
+					case STR_DEADLINE: end = googleEvent.getEnd();
+									   task.setEndTime(end);
+									   task.setType(TASK_TYPE.DEADLINE);
+									   break;
+									   
+					case STR_FLOATING: task.setType(TASK_TYPE.FLOATING);
+					   				   break;
+				}
+			}
+		}
+		else {
+			start = googleEvent.getStart();
+			end = googleEvent.getEnd();
+			task.setStartTime(start);
+			task.setEndTime(end);
+			task.setType(TASK_TYPE.EVENT);
+		}
+
 		
 		return task;
 	}

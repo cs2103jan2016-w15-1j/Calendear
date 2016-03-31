@@ -2,9 +2,11 @@ package calendear.view;
 
 import java.util.ArrayList;
 
+import java.util.Collections;
+import java.util.HashMap;
+
 import calendear.util.Task;
 
-//import calendear.util.Task;
 
 
 public class Table {
@@ -43,7 +45,7 @@ public class Table {
 	
 	private static final String S = " ";
 	private static final int NUM_OF_ATTRI = 8;
-	private static final int LEN_ID = 2;
+	private static final int LEN_ID = 4;
 	private static final int LEN_IMPO = 10;
 	private static final int LEN_FINI = 10;
 	private static final int LEN_NAME = 16;
@@ -79,7 +81,7 @@ public class Table {
 	
 	
 	private static String getHeaderString(String[] arr){
-		String headerString= "|  ";
+		String headerString= "|    ";
 		for(int i=0;i<arr.length;i++){
 			headerString += ("|"+ANSI_CYAN+arr[i]+ANSI_RESET+addSpace(LEN_TITLE_ARR[i]));
 		}
@@ -118,18 +120,21 @@ public class Table {
  	
 	
 	public static String getMultipleTasks(ArrayList<Task> taskArr){
+		ArrayList<Pair<Integer,Task>> pairArr = formPairArr(taskArr);
+		pairArr.remove(0);
+		Collections.sort(pairArr,new PairComparator());
 		String outputUpper = titleLine()+borderLine()+borderLineWithWords(BORDER_INCOMPLETE);
 		String outputLower =borderLineWithWords(BORDER_COMPLETE);
 		String outputComplete="";
 		String outputIncomplete="";
-		for(int i=0;i<taskArr.size();i++){
-			if(taskArr.get(i)!=null){
-				if(taskArr.get(i).isFinished()){
-					outputComplete+=getSingleTask(taskArr.get(i),i);
+		for(int i=0;i<pairArr.size();i++){
+			if(pairArr.get(i)!=null){
+				if(pairArr.get(i).getTask().isFinished()){
+					outputComplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
 					outputComplete+=borderLine();
 				}
 				else {
-					outputIncomplete+=getSingleTask(taskArr.get(i),i);
+					outputIncomplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
 					outputIncomplete+=borderLine();
 				}
 			}
@@ -143,6 +148,16 @@ public class Table {
 		return outputUpper+outputIncomplete+outputLower+outputComplete;
 	}
 	
+
+
+
+	private static ArrayList<Pair<Integer, Task>> formPairArr(ArrayList<Task> taskArr) {
+		ArrayList<Pair<Integer, Task>> pairArr = new ArrayList<Pair<Integer, Task>>();
+		for(int i=0;i<taskArr.size();i++){
+			pairArr.add(new Pair(i,taskArr.get(i)));
+		}
+		return pairArr;
+	}
 
 	public static String getTask(Task task,int id){
 		ArrayList<String> detailsInArray = getDetailsArr(task);
