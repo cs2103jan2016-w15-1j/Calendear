@@ -625,6 +625,7 @@ public class Action {
 			Task currentTask = this._data.get(i);
 			if(currentTask != null && currentTask.getEventId().equals("null")){
 				System.out.println("Trying to Add: " + i);
+				//hacked by chunrong
 				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
 				currentTask.setEventId(newEventId);
 			}
@@ -633,7 +634,8 @@ public class Action {
 
 	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle cmd){
 		if(!this._dataManager.isLogined()){
-			//throw some exception
+			System.out.println("user not logged in");
+			return new ArrayList<Task>();
 		}
 		ArrayList<Task> originalTaskList = new ArrayList<Task>(this._data);
 		cmd.setUndoList(originalTaskList);
