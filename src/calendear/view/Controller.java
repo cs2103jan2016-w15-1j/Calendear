@@ -79,7 +79,10 @@ public class Controller {
 	    		
 	    		case LINK_GOOGLE: _cdLogic.exeLinkGoogle();
 	    						  break;
-	    						  	
+	    						  
+	    		case LOAD_FROM_GOOGLE: ArrayList<Task> resultingList =  _cdLogic.exeLoadTasksFromGoogle((CommandLoadFromGoogle) command);
+	    								View.displayDisplayInLine(resultingList);
+	    						  	break;
 
 	    		case DONE: Task completedTask = _cdLogic.exeMarkDone((CommandDone) command);
 	    				   View.displayDone(completedTask);
