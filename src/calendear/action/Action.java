@@ -623,7 +623,7 @@ public class Action {
 		assert(this._dataManager.isLogined()): "called exeAddAllToGoogle without logging in\n";
 		for(int i = 0; i<this._data.size(); i++){
 			Task currentTask = this._data.get(i);
-			if(currentTask.getEventId() == null){
+			if(currentTask != null && currentTask.getEventId() == null){
 				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
 				currentTask.setEventId(newEventId);
 			}

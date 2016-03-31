@@ -76,5 +76,4 @@ public class CDLogic {
 	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle commandLoadFromGoogle){
 		return _action.exeLoadTasksFromGoogle(commandLoadFromGoogle);
 	}
-	
 }
