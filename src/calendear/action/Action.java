@@ -623,13 +623,14 @@ public class Action {
 
 		for(int i = 1; i<this._data.size(); i++){
 			Task currentTask = this._data.get(i);
-			if(currentTask != null && currentTask.getEventId().equals("null")){
+			if(currentTask != null 
+					&& (currentTask.getEventId().equals(null) || currentTask.getEventId().equals("null"))){
 				System.out.println("Trying to Add: " + i);
-				//hacked by chunrong
 				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
 				currentTask.setEventId(newEventId);
 			}
 		}
+		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 
 	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle cmd){
@@ -655,6 +656,7 @@ public class Action {
 			}
 		}
 		this._data.addAll(loadedTasks);
+		this._dataManager.insertDataToFile(getNoNullArr());
 		this._undoStack.push(cmd);
 		return this._data;
 	}
