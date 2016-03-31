@@ -5,16 +5,18 @@ import calendear.util.TASK_TYPE;
 import calendear.util.Task;
 
 /* order of display:
- * incomplete important event
+ * incomplete important event with early start time
+ * incomplete important deadline task with early end time
+ * incomplete important floating task
  * incomplete event with early start time
- * incomplete important deadline task
  * incomplete deadline task with early end time
  * incomplete floating task
- * complete important event
- * complete event with early start time
- * complete important deadline task
- * complete deadline task with early end time
- * complete floating task
+ * completed important event with early start time
+ * completed important deadline task with early end time
+ * completed important floating task 
+ * completed event with early start time
+ * completed deadline task with early end time
+ * completed floating task
  */
 
 
@@ -31,6 +33,19 @@ public class PairComparator implements Comparator<Pair> {
 		}
 		else if(!t1.isFinished()&&t2.isFinished()) {
 			return -1;
+		}
+		else{
+			return compareImportance(t1,t2);
+		}
+	}
+	
+	private int compareImportance(Task t1,Task t2){
+		int i;
+		if(t1.isImportant()&&!t2.isImportant()){
+			return -1;
+		}
+		else if(!t1.isImportant()&&t2.isImportant() ) {
+			return 1;
 		}
 		else{
 			return compareType(t1,t2);
@@ -56,54 +71,27 @@ public class PairComparator implements Comparator<Pair> {
 	}
 	
 	
-	
 	private int compareDeadline(Task t1, Task t2) {
-		int i = compareImportance(t1,t2);
-		if(i==0){
-			int j;
-			j= t1.getEndTime().compareTo(t2.getEndTime());
-			if(j==0){
-				compareName(t1,t2);
-			}
-			return j;
+		int j;
+		j= t1.getEndTime().compareTo(t2.getEndTime());
+		if(j==0){
+			compareName(t1,t2);
 		}
-		return i;
+		return j;
 	}
 
 	private int compareEvent(Task t1, Task t2) {
-		int i = compareImportance(t1,t2);
-		if(i==0){
-			int j;
-			j= t1.getStartTime().compareTo(t2.getStartTime());
-			if(j==0){
-				compareName(t1,t2);
-			}
-			return j;
+		int j;
+		j= t1.getStartTime().compareTo(t2.getStartTime());
+		if(j==0){
+			compareName(t1,t2);
 		}
-		return i;
+		return j;
 	}
 
 	private int compareFloat(Task t1, Task t2) {
-		int i = compareImportance(t1,t2);
-		if(i==0){
-			return compareName(t1,t2);
-		}
-		return i;
+		return compareName(t1,t2);
 	}
-
-	private int compareImportance(Task t1,Task t2){
-		int i;
-		if(t1.isImportant()&&!t2.isImportant()){
-			return -1;
-		}
-		else if(!t1.isImportant()&&t2.isImportant() ) {
-			return 1;
-		}
-		else{
-			return 0;
-		}
-	}
-
 
 	private int compareName(Task t1, Task t2){
 		return (t1.getName().compareTo(t2.getName()));
