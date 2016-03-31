@@ -21,7 +21,7 @@ public class Parser {
 	private static final String LINK_GOOGLE = "linkGoogle";
 	private static final String EXIT = "exit";
 	private static final String REDO = "redo";
-	private static final String LOAD_TO_GOOGLE = "loadFromGoogle";
+	private static final String LOAD_TO_GOOGLE = "syncGoogle";
 	private static final String EMPTY = "";
 	//when using regex and regex-related methods like String.split() and String.replaceAll()
 	//the "." is treated as metacharacter so you have to include the escape character "\\"

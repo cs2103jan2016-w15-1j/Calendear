@@ -671,7 +671,6 @@ public class Action {
 		}
 		
 		if (this._dataManager.isLogined()) {
-			System.out.println("Trying to add all");
 			exeAddAllToGoogle();
 		}
 	}
