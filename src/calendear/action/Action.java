@@ -267,23 +267,15 @@ public class Action {
 				if(toShow[TYPE_ID] && !task.getType().equals((TASK_TYPE)searchWith[TYPE_ID])){
 					task = null;
 				}
-				if(toShow[STARTT_ID]){//show after start id
-					/*GregorianCalendar comparingWith = (GregorianCalendar)searchWith[STARTT_ID];
-					if(task.getStartTime() != null && task.getStartTime().compareTo(comparingWith) > 0){
-						task = null;
-					}*/
+				if(toShow[STARTT_ID]){
 					GregorianCalendar[] comparingWith = (GregorianCalendar[])searchWith[STARTT_ID];
 					assert(comparingWith.length == 2): "length of startTime comparision not 2\n";
-					filterWithStartTime(task, comparingWith[0], comparingWith[1]);
+					isStartTimeWithinRange(task, comparingWith[0], comparingWith[1]);
 				}
-				if(toShow[ENDT_ID]){//show before end id
-					/*GregorianCalendar comparingWith = (GregorianCalendar)searchWith[STARTT_ID];
-					if(task.getEndTime() != null && task.getStartTime().compareTo(comparingWith) < 0){
-						task = null;
-					}*/
+				if(toShow[ENDT_ID]){
 					GregorianCalendar[] comparingWith = (GregorianCalendar[])searchWith[ENDT_ID];
 					assert(comparingWith.length == 2): "length of startTime comparision not 2\n";
-					filterWithEndTime(task, comparingWith[0], comparingWith[1]);
+					isEndTimeWithinRange(task, comparingWith[0], comparingWith[1]);
 				}
 				if(toShow[LOCATION_ID] &&!(task.getLocation().contains((String) searchWith[LOCATION_ID]))){
 					task = null;
@@ -321,7 +313,7 @@ public class Action {
 		return show;
 	}
 	
-	private boolean filterWithStartTime(Task currentTask, GregorianCalendar start, GregorianCalendar end){
+	private boolean isStartTimeWithinRange(Task currentTask, GregorianCalendar start, GregorianCalendar end){
 		if(currentTask != null 
 				&& currentTask.getStartTime().compareTo(start) <= 0//before start
 				&& currentTask.getStartTime().compareTo(end) >= 0){//after end
@@ -331,7 +323,7 @@ public class Action {
 		return true;
 	}
 	
-	private boolean filterWithEndTime(Task currentTask, GregorianCalendar start, GregorianCalendar end){
+	private boolean isEndTimeWithinRange(Task currentTask, GregorianCalendar start, GregorianCalendar end){
 			if(currentTask != null 
 					&& currentTask.getEndTime().compareTo(start) <= 0//before start
 					&& currentTask.getEndTime().compareTo(end) >= 0){//after end
@@ -341,6 +333,12 @@ public class Action {
 		return true;
 	}
 	
+	/**
+	 * returns arraylist with !<isImportant> importance tasks as null
+	 * @param isImportant
+	 * @param dataToFilter
+	 * @return
+	 */
 	private ArrayList<Task> filterWithImportance(boolean isImportant, ArrayList<Task> dataToFilter){
 		ArrayList<Task> toDisplay = new ArrayList<Task>();
 		toDisplay.addAll(dataToFilter);
@@ -367,6 +365,12 @@ public class Action {
 		return displaySelectiveHelper(toShow, searchWith);
 	}
 	
+	/**
+	 * replaces !<isDone> completeness tasks with null
+	 * @param isDone
+	 * @param dataToFilter
+	 * @return
+	 */
 	private ArrayList<Task> filterWithCompleteness(boolean isDone, ArrayList<Task> dataToFilter){
 		ArrayList<Task> toDisplay = new ArrayList<Task>();
 		toDisplay.addAll(dataToFilter);
@@ -492,6 +496,12 @@ public class Action {
 						this._dataManager.updateTaskToGoogle(toUndoTag);
 					}
 					break;
+					
+				case LOAD_FROM_GOOGLE:
+					log.log(Level.FINE, "undo loadfromgoogle", previousCmd);
+					CommandLoadFromGoogle cmdLoadFromGoogle = (CommandLoadFromGoogle) previousCmd;
+					this._data = cmdLoadFromGoogle.getUndoList();
+					break;
 				default:
 					log.log(Level.SEVERE, "reached unreachable area in undo", previousCmd);
 					throw new AssertionError(cmdType);
@@ -545,6 +555,12 @@ public class Action {
 					log.log(Level.FINE, "redo tag finished", redoCmd);
 					CommandTag cmdTag = (CommandTag) redoCmd;
 					exeTag(cmdTag);
+					break;
+				case LOAD_FROM_GOOGLE:
+					
+					log.log(Level.FINE, "redo loadtogoogle", redoCmd);
+					CommandLoadFromGoogle cmdLoadFromGoogle = (CommandLoadFromGoogle) redoCmd;
+					exeLoadTasksFromGoogle(cmdLoadFromGoogle);
 					break;
 				default:
 					log.log(Level.SEVERE, "reached unreachable area in redo", redoCmd);
@@ -613,11 +629,13 @@ public class Action {
 			}
 		}
 	}
-	/**
-	 * currently no way to undo
-	 */
-	public void exeLoadTasksFromGoogle(){
-		assert(this._dataManager.isLogined()): "calling exeLoadTasksFromGoogle when not logged in\n";
+
+	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle cmd){
+		if(!this._dataManager.isLogined()){
+			//throw some exception
+		}
+		ArrayList<Task> originalTaskList = new ArrayList<Task>(this._data);
+		cmd.setUndoList(originalTaskList);
 		ArrayList<Task> loadedTasks = this._dataManager.getTasksFromGoogle();
 		for(int i = 0; i< this._data.size(); i++){
 			Task currentTask = this._data.get(i);
@@ -634,11 +652,10 @@ public class Action {
 			}
 		}
 		this._data.addAll(loadedTasks);
+		this._undoStack.push(cmd);
+		return this._data;
 	}
-	
-	private void filterExistingTasks(ArrayList<Task> tasks){
-		//TODO
-	}
+
 	
 	/**
 	 * @author Phang Chun Rong
