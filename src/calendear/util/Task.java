@@ -181,7 +181,7 @@ public class Task {
 		DateTime dateTime = endTime.getDateTime();
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(dateTime.getValue());
-		this.startTime = cal;
+		this.endTime = cal;
 	}
 	
 	public void setType (TASK_TYPE type) {
@@ -242,7 +242,6 @@ public class Task {
 		DateTime start;
 		DateTime end;
 		event.setSummary(name);
-		event.setEtag(tag);
 		event.setLocation(location);
 		String description = getFinishedStr();
 		switch(type) {
@@ -288,31 +287,42 @@ public class Task {
 		task.setName(googleEvent.getSummary());
 		task.setEventId(googleEvent.getId());
 		task.setLocation(googleEvent.getLocation());
-		task.setTag(googleEvent.getEtag());
-		
-		String description = googleEvent.getDescription();
-		String[] tokenizedDescription = description.split("|");
-		task.setIsFinishedByString(tokenizedDescription[0]);
-		
 		EventDateTime start;
 		EventDateTime end;
 		
-		switch(tokenizedDescription[1]) {
-			case STR_EVENT: start = googleEvent.getStart();
-							end = googleEvent.getEnd();
-							task.setStartTime(start);
-							task.setEndTime(end);
-							task.setType(TASK_TYPE.EVENT);
-							break;
-							
-			case STR_DEADLINE: end = googleEvent.getEnd();
-							   task.setEndTime(end);
-							   task.setType(TASK_TYPE.DEADLINE);
-							   break;
-							   
-			case STR_FLOATING: task.setType(TASK_TYPE.FLOATING);
-			   				   break;
+		String description = googleEvent.getDescription();
+		if (description != null) {
+			String[] tokenizedDescription = description.split("|");
+			//Means that this description is set programmatically by calendear
+			if (tokenizedDescription.length == 2) {
+				task.setIsFinishedByString(tokenizedDescription[0]);
+				
+				switch(tokenizedDescription[1]) {
+					case STR_EVENT: start = googleEvent.getStart();
+									end = googleEvent.getEnd();
+									task.setStartTime(start);
+									task.setEndTime(end);
+									task.setType(TASK_TYPE.EVENT);
+									break;
+									
+					case STR_DEADLINE: end = googleEvent.getEnd();
+									   task.setEndTime(end);
+									   task.setType(TASK_TYPE.DEADLINE);
+									   break;
+									   
+					case STR_FLOATING: task.setType(TASK_TYPE.FLOATING);
+					   				   break;
+				}
+			}
 		}
+		else {
+			start = googleEvent.getStart();
+			end = googleEvent.getEnd();
+			task.setStartTime(start);
+			task.setEndTime(end);
+			task.setType(TASK_TYPE.EVENT);
+		}
+
 		
 		return task;
 	}

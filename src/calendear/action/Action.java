@@ -7,7 +7,6 @@ import java.util.Stack;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import calendear.util.*;
 import calendear.storage.DataManager;
 /**
@@ -622,13 +621,10 @@ public class Action {
 	private void exeAddAllToGoogle(){
 		assert(this._dataManager.isLogined()): "called exeAddAllToGoogle without logging in\n";
 
-		System.out.println(this._data.size());
 		for(int i = 1; i<this._data.size(); i++){
 			Task currentTask = this._data.get(i);
 			if(currentTask != null && currentTask.getEventId().equals("null")){
-				//tasksWithoutEventId.add(currentTask);
-				//tasksWithoutEventIdIndex.add(i);
-
+				System.out.println("Trying to Add: " + i);
 				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
 				currentTask.setEventId(newEventId);
 			}
@@ -668,6 +664,13 @@ public class Action {
 	public void exeLinkGoogle() {
 		if (!this._dataManager.isLogined()) {
 			this._dataManager.loginGoogle();
+		}
+		
+		try {
+			Thread.sleep(300);
+		}
+		catch (InterruptedException ex) {
+			System.out.println(ex);
 		}
 		
 		if (this._dataManager.isLogined()) {
