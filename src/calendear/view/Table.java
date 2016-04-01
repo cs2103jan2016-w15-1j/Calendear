@@ -103,10 +103,10 @@ public class Table {
 			details.add("");
 		}
 		if(task.isImportant()){
-			details.set(0, "√");
+			details.set(0, "Yes");
 		}
 		if(task.isFinished()){
-			details.set(1, "√");
+			details.set(1, "Yes");
 		}
 		details.set(2, task.getName());
 		details.set(3, task.getTag());
@@ -121,7 +121,6 @@ public class Table {
 	
 	public static String getMultipleTasks(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer,Task>> pairArr = formPairArr(taskArr);
-		pairArr.remove(0);
 		Collections.sort(pairArr,new PairComparator());
 		String outputUpper = titleLine()+borderLine()+borderLineWithWords(BORDER_INCOMPLETE);
 		String outputLower =borderLineWithWords(BORDER_COMPLETE);
@@ -154,7 +153,9 @@ public class Table {
 	private static ArrayList<Pair<Integer, Task>> formPairArr(ArrayList<Task> taskArr) {
 		ArrayList<Pair<Integer, Task>> pairArr = new ArrayList<Pair<Integer, Task>>();
 		for(int i=0;i<taskArr.size();i++){
-			pairArr.add(new Pair(i,taskArr.get(i)));
+			if(taskArr.get(i)!=null){
+				pairArr.add(new Pair<Integer, Task>(i,taskArr.get(i)));
+			}
 		}
 		return pairArr;
 	}
