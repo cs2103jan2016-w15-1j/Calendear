@@ -68,7 +68,7 @@ public class Parser {
 	+ "|(?:(\\bimportant\\b) *()) *"			//represent the group mark
 	+ "|(?:(\\bdone\\b) *()) *)+";		//represent the group done
 	private static final String PATTERN_SEARCH = 
-	"(\\badd\\b) +"				//represent the groups update and <taskID>
+	"(\\bsearch\\b) +"				//represent the groups update and <taskID>
 	+ "(?:(?:(\\bname\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
 	+ "|(?:(\\bby\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups by and <dateAndTime>
 	+ "|(?:(\\bfrom\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups from and <dateAndTime>
@@ -266,6 +266,7 @@ public class Parser {
 		Pattern pattern = Pattern.compile(PATTERN_SEARCH);
 		Matcher matcher = pattern.matcher(rawInput);
 		if (matcher.find()){
+			System.out.println("bal");
 			try {	
 				boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
 				Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
