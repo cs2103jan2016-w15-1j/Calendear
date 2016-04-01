@@ -90,8 +90,8 @@ public class ParserTest {
 
 	private void addCaseAddDeadlineWithOptions() {
 		caseDescriptions.add("add deadline task with options");
-		rawInputs.add("add visit friends at garden .by the bay by 3/21/16 5:30 important note bring cakes");
-		String name = "visit friends";
+		rawInputs.add("add visit friendssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss at garden .by the bay by 3/21/16 5:30 important note bring cakes");
+		String name = "visit friendssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss";
 		GregorianCalendar deadline = new GregorianCalendar(2016, Calendar.MARCH, 21, 5, 30);
 		boolean[] checklist = new boolean[CHECKLIST_SIZE];
 		Object[] newInfo = new Object[CHECKLIST_SIZE];
