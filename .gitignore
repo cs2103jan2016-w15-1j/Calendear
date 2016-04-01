@@ -1,3 +1,7 @@
+*.txt
+*.in
+*.out
+*.jar
 /bin/
 *.txt
 /target/

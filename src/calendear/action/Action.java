@@ -93,6 +93,7 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		this._redoStack.clear();
 		return addedTask;
 	}
 	/**
@@ -127,6 +128,7 @@ public class Action {
 		cmd.setDeletedTask(taskToDelete);
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		this._redoStack.clear();
 			
 		return taskToDelete;
 	}
@@ -227,6 +229,7 @@ public class Action {
 		}
 		_undoStack.add(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		this._redoStack.clear();
 		return toUpdate;
 	}
 	
@@ -584,6 +587,7 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		this._redoStack.clear();
 		return toTag;
 	}
 	
@@ -598,6 +602,7 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		this._redoStack.clear();
 		return toMark;
 	}
 
@@ -613,7 +618,8 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
-
+		this._redoStack.clear();
+		
 		return toMarkDone;
 	}
 	
@@ -623,17 +629,20 @@ public class Action {
 
 		for(int i = 1; i<this._data.size(); i++){
 			Task currentTask = this._data.get(i);
-			if(currentTask != null && currentTask.getEventId().equals("null")){
+			if(currentTask != null 
+					&& (currentTask.getEventId().equals(null) || currentTask.getEventId().equals("null"))){
 				System.out.println("Trying to Add: " + i);
 				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
 				currentTask.setEventId(newEventId);
 			}
 		}
+		this._dataManager.insertDataToFile(getNoNullArr());
 	}
 
 	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle cmd){
 		if(!this._dataManager.isLogined()){
-			//throw some exception
+			System.out.println("user not logged in");
+			return new ArrayList<Task>();
 		}
 		ArrayList<Task> originalTaskList = new ArrayList<Task>(this._data);
 		cmd.setUndoList(originalTaskList);
@@ -653,7 +662,9 @@ public class Action {
 			}
 		}
 		this._data.addAll(loadedTasks);
+		this._dataManager.insertDataToFile(getNoNullArr());
 		this._undoStack.push(cmd);
+		this._redoStack.clear();
 		return this._data;
 	}
 
