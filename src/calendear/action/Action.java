@@ -602,7 +602,7 @@ public class Action {
 	}
 
 	public Task exeMarkDone(CommandDone cmd){
-
+		
 		int toMarkDoneIndex = cmd.getIndex();
 		Task toMarkDone = this._data.get(toMarkDoneIndex);
 		boolean isOriginallyDone = toMarkDone.isFinished();
@@ -660,7 +660,6 @@ public class Action {
 		this._undoStack.push(cmd);
 		return this._data;
 	}
-
 	
 	/**
 	 * @author Phang Chun Rong

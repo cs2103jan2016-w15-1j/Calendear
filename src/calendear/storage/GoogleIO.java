@@ -41,7 +41,6 @@ public class GoogleIO {
 	  private static final String APPLICATION_NAME = "Calendear";
 	  private static final String MESSAGE_ERROR = "Exception Caught";
 	  
-	  
 	  /** Global instance of the HTTP transport. */
 	  private static HttpTransport httpTransport;
 
@@ -52,7 +51,7 @@ public class GoogleIO {
 	  
 	  /** Google Calendar ID for Calendear*/
 	  private static String calendarID;
-
+	  
 	  /** Authorizes the installed application to access user's protected data. */
 	  private static Credential authorize() throws Exception {
 	    // load client secrets
