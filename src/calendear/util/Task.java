@@ -314,6 +314,14 @@ public class Task {
 					   				   break;
 				}
 			}
+			//Ugly repetition
+			else {
+				start = googleEvent.getStart();
+				end = googleEvent.getEnd();
+				task.setStartTime(start);
+				task.setEndTime(end);
+				task.setType(TASK_TYPE.EVENT);
+			}
 		}
 		else {
 			start = googleEvent.getStart();
