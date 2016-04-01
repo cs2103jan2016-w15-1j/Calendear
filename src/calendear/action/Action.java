@@ -93,6 +93,7 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		this._redoStack.clear();
 		return addedTask;
 	}
 	/**
@@ -127,6 +128,7 @@ public class Action {
 		cmd.setDeletedTask(taskToDelete);
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		this._redoStack.clear();
 			
 		return taskToDelete;
 	}
@@ -227,6 +229,7 @@ public class Action {
 		}
 		_undoStack.add(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		this._redoStack.clear();
 		return toUpdate;
 	}
 	
@@ -584,6 +587,7 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		this._redoStack.clear();
 		return toTag;
 	}
 	
@@ -598,6 +602,7 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
+		this._redoStack.clear();
 		return toMark;
 	}
 
@@ -613,7 +618,8 @@ public class Action {
 		}
 		this._undoStack.push(cmd);
 		this._dataManager.insertDataToFile(getNoNullArr());
-
+		this._redoStack.clear();
+		
 		return toMarkDone;
 	}
 	
@@ -658,6 +664,7 @@ public class Action {
 		this._data.addAll(loadedTasks);
 		this._dataManager.insertDataToFile(getNoNullArr());
 		this._undoStack.push(cmd);
+		this._redoStack.clear();
 		return this._data;
 	}
 	

@@ -66,7 +66,8 @@ public class Controller {
 	    					  break;
 	    		
 	    		case SEARCH:	ArrayList<Task> foundTasks = _cdLogic.exeSearch((CommandSearch) command);
-	    						View.displaySearchInLine(foundTasks);
+	    			System.out.println("bla");
+	    		View.displaySearchInLine(foundTasks);
 	    				break;
 	    		
 	    		case MARK:	Task markedImportanceTask = _cdLogic.exeMarkImportant((CommandMark) command);

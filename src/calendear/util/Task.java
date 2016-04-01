@@ -349,9 +349,24 @@ public class Task {
 	}
 
 	private static void parseOptionalAttribute(Task res, String[] members) {
-		res.setEventId(members[SAVING_INDEX_GOOGLE_ID]);
-		res.setLocation(members[SAVING_INDEX_LOCATION]);
-		res.setNote(members[SAVING_INDEX_NOTE]);
+		if (members[SAVING_INDEX_GOOGLE_ID].equals(EMPTY)){
+			res.setEventId(null);
+		} else {
+			res.setEventId(members[SAVING_INDEX_GOOGLE_ID]);
+		}
+		
+		if (members[SAVING_INDEX_LOCATION].equals(EMPTY)){
+			res.setEventId(null);
+		} else {
+			res.setLocation(members[SAVING_INDEX_LOCATION]);
+		}
+		
+		if (members[SAVING_INDEX_NOTE].equals(EMPTY)){
+			res.setEventId(null);
+		} else {
+			res.setNote(members[SAVING_INDEX_NOTE]);
+		}
+		
 		if (members[SAVING_INDEX_IMPORTANT].equals(IMPORTANT)){
 			res.setIsFinished(true);
 		} else {
