@@ -73,7 +73,7 @@ public class CDLogic {
 		return _action.exeSearch(commandSearch);
 	}
 	
-	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle commandLoadFromGoogle){
+	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle commandLoadFromGoogle) throws LogicException{
 		return _action.exeLoadTasksFromGoogle(commandLoadFromGoogle);
 	}
 }
