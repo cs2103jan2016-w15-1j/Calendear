@@ -12,6 +12,7 @@ import calendear.storage.DataManager;
 /**
  * 
  * @author Wu XiaoXiao
+ * Class for taking care of main logic
  *
  *methods in Action:
  *1. exeAdd: functioning

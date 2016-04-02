@@ -91,8 +91,7 @@ public class Controller {
 	    				//TODO view print error
 	    				System.out.println(logicException.getMessage());
 	    			}
-	    						  	
-
+	    			
 	    		case DONE: Task completedTask = _cdLogic.exeMarkDone((CommandDone) command);
 	    				   View.displayDone(completedTask);
 	    				break;
