@@ -66,17 +66,17 @@ public class Controller {
 	    					  View.displayUpdateInLine(updatedTask);
 	    					  break;
 	    		
-	    		case SEARCH:	ArrayList<Task> foundTasks = _cdLogic.exeSearch((CommandSearch) command);
-	    						View.displaySearchInLine(foundTasks);
-	    				break;
+	    		case SEARCH:  ArrayList<Task> foundTasks = _cdLogic.exeSearch((CommandSearch) command);
+	    					  View.displaySearchInLine(foundTasks);
+	    					  break;
 	    		
 	    		case MARK:	Task markedImportanceTask = _cdLogic.exeMarkImportant((CommandMark) command);
 	    					View.displayMark(markedImportanceTask);
-	    				break;
+	    					break;
 
 	    		case TAG:	Task taggedTag = _cdLogic.exeTag((CommandTag) command);
 	    					View.displayTag(taggedTag);
-	    				break;
+	    					break;
 	    		
 	    		case LINK_GOOGLE: _cdLogic.exeLinkGoogle();
 	    						  break;
@@ -90,21 +90,25 @@ public class Controller {
 	    			catch (LogicException logicException){
 	    				//TODO view print error
 	    				System.out.println(logicException.getMessage());
+	    				break;
 	    			}
 	    			
 	    		case DONE: Task completedTask = _cdLogic.exeMarkDone((CommandDone) command);
 	    				   View.displayDone(completedTask);
-	    				break;
+	    				   break;
 	    				
 	    		case UNDO: _cdLogic.exeUndo();
-	    				break;
+	    					break;
 	    				   
 	    		case EXIT:  View.displayExit();
 	    					System.exit(0);
-	    				break;
+	    					break;
 	    					
 	    		case REDO: _cdLogic.exeRedo();
-	    				break;
+	    					break;
+	    		
+//	    		case SAVE_FILE: _cdLogic.exeSaveFile();
+//	    						break;
 	    		default: 
 	    				break;
 	    	}
