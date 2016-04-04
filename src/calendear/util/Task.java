@@ -330,7 +330,6 @@ public class Task {
 			task.setEndTime(end);
 			task.setType(TASK_TYPE.EVENT);
 		}
-
 		
 		return task;
 	}
