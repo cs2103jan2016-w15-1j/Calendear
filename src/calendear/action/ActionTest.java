@@ -11,8 +11,8 @@ import calendear.util.*;
 
 public class ActionTest {
 	
-	/**[0:name][1:type][2:starttime]
-	[3:endtime][4:location][5:note]
+	/**[0:name][1:type][2:start time]
+	[3:end time][4:location][5:note]
 	[6:tag][7:important][8:finished]
 */
 
