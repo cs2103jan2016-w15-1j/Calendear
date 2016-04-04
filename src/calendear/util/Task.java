@@ -20,6 +20,7 @@ public class Task {
 	private static final String EMPTY = "";
 	private static final String OBJ_SEPERATOR = ".";
 	private static final String PATTERN_OBJ_SEPERATOR = "\\.";
+	private static final String GOOGLE_EVENT_SEPERATOR = "-___-";
 	private static final String IMPORTANT = "important";
 	private static final String NOT_IMPORTANT = "not important";
 	private static final String FINISHED = "finished";
@@ -238,7 +239,6 @@ public class Task {
 	 */
 	public Event toGoogleEvent() {
 		Event event = new Event();
-		//TODO
 		DateTime start;
 		DateTime end;
 		event.setSummary(name);
@@ -250,14 +250,14 @@ public class Task {
 				end = new DateTime(endTime.getTime(), endTime.getTimeZone());
 				event.setStart(new EventDateTime().setDateTime(start));
 				event.setEnd(new EventDateTime().setDateTime(end));
-				description = description + "|" + STR_EVENT;
+				description = description + GOOGLE_EVENT_SEPERATOR + STR_EVENT;
 				event.setDescription(description);
 				break;
 			case DEADLINE:
 				end = new DateTime(endTime.getTime(), endTime.getTimeZone());
 				event.setStart(new EventDateTime().setDateTime(end));
 				event.setEnd(new EventDateTime().setDateTime(end));
-				description = description + "|" + STR_DEADLINE;
+				description = description + GOOGLE_EVENT_SEPERATOR + STR_DEADLINE;
 				event.setDescription(description);
 				break;
 			case FLOATING:
@@ -266,10 +266,8 @@ public class Task {
 				start = new DateTime(now.getTime());
 				event.setStart(new EventDateTime().setDateTime(start));
 				event.setEnd(new EventDateTime().setDateTime(start));
-				description = description + "|" + STR_FLOATING;
+				description = description + GOOGLE_EVENT_SEPERATOR + STR_FLOATING;
 				event.setDescription(description);
-				break;
-			case RECURRING:
 				break;
 			default:
 				break;
@@ -292,11 +290,10 @@ public class Task {
 		
 		String description = googleEvent.getDescription();
 		if (description != null) {
-			String[] tokenizedDescription = description.split("|");
+			String[] tokenizedDescription = description.split(GOOGLE_EVENT_SEPERATOR);
 			//Means that this description is set programmatically by calendear
 			if (tokenizedDescription.length == 2) {
 				task.setIsFinishedByString(tokenizedDescription[0]);
-				
 				switch(tokenizedDescription[1]) {
 					case STR_EVENT: start = googleEvent.getStart();
 									end = googleEvent.getEnd();
@@ -312,6 +309,8 @@ public class Task {
 									   
 					case STR_FLOATING: task.setType(TASK_TYPE.FLOATING);
 					   				   break;
+					default:
+							break;
 				}
 			}
 			//Ugly repetition
