@@ -532,6 +532,12 @@ public class Action {
 					CommandLoadFromGoogle commandLoadFromGoogle = (CommandLoadFromGoogle) commandToUndo;
 					this._data = commandLoadFromGoogle.getUndoList();
 					break;
+					
+				case CLEAR:
+					log.log(Level.FINE, "undo clear", commandToUndo);
+					CommandClear commandClear = (CommandClear) commandToUndo;
+					this._data = commandClear.getListBeforeClear();
+					break;
 				default:
 					log.log(Level.SEVERE, "reached unreachable area in undo", commandToUndo);
 					throw new AssertionError(commandType);
@@ -592,6 +598,13 @@ public class Action {
 					CommandLoadFromGoogle commandLoadFromGoogle = (CommandLoadFromGoogle) commandToRedo;
 					exeLoadTasksFromGoogle(commandLoadFromGoogle);
 					break;
+				case CLEAR:
+					
+					log.log(Level.FINE, "redo clear", commandToRedo);
+					CommandClear commandClear = (CommandClear) commandToRedo;
+					exeClear(commandClear);
+					break;
+					
 				default:
 					log.log(Level.SEVERE, "reached unreachable area in redo", commandToRedo);
 					throw new AssertionError(commandToRedo);
@@ -701,10 +714,12 @@ public class Action {
 		return this._data;
 	}
 	
-	public boolean exeClear(){
-		//TODO
+	public boolean exeClear(CommandClear commandClear){
 		ArrayList<Task> listToSave = new ArrayList<Task>(this._data);
+		commandClear.setBeforeList(listToSave);
 		this._data.clear();
+		this._dataManager.insertDataToFile(dataWithNullRemoved());
+		this._undoStack.push(commandClear);
 		return false;
 	}
 	
