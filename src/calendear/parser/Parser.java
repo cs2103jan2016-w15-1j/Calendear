@@ -266,7 +266,6 @@ public class Parser {
 		Pattern pattern = Pattern.compile(PATTERN_SEARCH);
 		Matcher matcher = pattern.matcher(rawInput);
 		if (matcher.find()){
-			System.out.println("bal");
 			try {	
 				boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
 				Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];

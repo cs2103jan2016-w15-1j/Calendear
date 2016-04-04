@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import calendear.util.*;
 import calendear.storage.DataManager;
+import calendear.parser.EditDistance;
 /**
  * 
  * @author Wu XiaoXiao
@@ -267,29 +268,36 @@ public class Action {
 		
 		for(int i = 0; i<toDisplay.size(); i++){
 			Task task = toDisplay.get(i);
+			if(task == null){
+				continue;
+			}
 			try{
-				if(toShow[NAME_ID] && !task.getName().contains((String)searchWith[NAME_ID])){
-					task = null;
+				if(toShow[NAME_ID] && !withinDistance(task.getName(), (String)searchWith[NAME_ID])){
+					toDisplay.set(i, null);
 				}
 				if(toShow[TYPE_ID] && !task.getType().equals((TASK_TYPE)searchWith[TYPE_ID])){
-					task = null;
+					toDisplay.set(i, null);
 				}
 				if(toShow[STARTT_ID]){
 					GregorianCalendar[] comparingWith = (GregorianCalendar[])searchWith[STARTT_ID];
 					assert(comparingWith.length == 2): "length of startTime comparision not 2\n";
-					isStartTimeWithinRange(task, comparingWith[0], comparingWith[1]);
+					if(!isStartTimeWithinRange(task, comparingWith[0], comparingWith[1])){
+						toDisplay.set(i, null);
+					}
 				}
 				if(toShow[ENDT_ID]){
 					GregorianCalendar[] comparingWith = (GregorianCalendar[])searchWith[ENDT_ID];
 					assert(comparingWith.length == 2): "length of startTime comparision not 2\n";
-					isEndTimeWithinRange(task, comparingWith[0], comparingWith[1]);
+					if(!isEndTimeWithinRange(task, comparingWith[0], comparingWith[1])){
+						toDisplay.set(i, null);
+					}
 				}
-				if(toShow[LOCATION_ID] &&!(task.getLocation().contains((String) searchWith[LOCATION_ID]))){
-					task = null;
+				if(toShow[LOCATION_ID] &&!withinDistance(task.getLocation(), (String)searchWith[LOCATION_ID])){
+					toDisplay.set(i, null);
 				
 				}
-				if(toShow[NOTE_ID] && !task.getNote().contains((String) searchWith[NOTE_ID])){
-					task = null;
+				if(toShow[NOTE_ID] && !withinDistance(task.getNote(), (String)searchWith[NOTE_ID])){
+					toDisplay.set(i, null);
 				}
 				if(toShow[TAG_ID]){
 					String[] tagList = task.getTag().split(TAG_SEPARATOR);
@@ -301,14 +309,14 @@ public class Action {
 						}
 					}
 					if(!isTagged){
-						task = null;
+						toDisplay.set(i, null);
 					}
 				}
 				if(toShow[IMP_ID] && !(task.isImportant() == (boolean)searchWith[IMP_ID])){
-					task = null;
+					toDisplay.set(i, null);
 				}
 				if(toShow[COMP_ID] && !(task.isFinished() == (boolean)searchWith[COMP_ID])){
-					task = null;
+					toDisplay.set(i, null);
 				}
 			}catch (NullPointerException e){
 				e.printStackTrace();
@@ -338,6 +346,21 @@ public class Action {
 				return false;
 			}
 		return true;
+	}
+	
+	private boolean withinDistance(String str1, String str2){
+		String splitWith = " ";
+		String[] strArr1 = str1.split(splitWith);
+		String[] strArr2 = str2.split(splitWith);
+		
+		for(int i = 0; i<strArr1.length; i++){
+			for(int j = 0; j<strArr2.length; j++){
+				if(EditDistance.computeLevenshteinDistance(strArr1[i], strArr2[j]) <= 2){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -760,6 +783,8 @@ public class Action {
 			}
 		}
 	}
+	
+	
 	
 	
 }
