@@ -21,6 +21,7 @@ public class Parser {
 	private static final String LINK_GOOGLE = "linkGoogle";
 	private static final String EXIT = "exit";
 	private static final String REDO = "redo";
+	private static final String CLEAR = "clear";
 	private static final String LOAD_FROM_GOOGLE = "syncGoogle";
 	private static final String EMPTY = "";
 	//when using regex and regex-related methods like String.split() and String.replaceAll()
@@ -68,7 +69,7 @@ public class Parser {
 	+ "|(?:(\\bimportant\\b) *()) *"			//represent the group mark
 	+ "|(?:(\\bdone\\b) *()) *)+";		//represent the group done
 	private static final String PATTERN_SEARCH = 
-	"(\\bsearch\\b) +"				//represent the groups update and <taskID>
+	"(\\bsearch\\b) +()"				//represent the groups update and <taskID>
 	+ "(?:(?:(\\bname\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
 	+ "|(?:(\\bby\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups by and <dateAndTime>
 	+ "|(?:(\\bfrom\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups from and <dateAndTime>
@@ -113,6 +114,8 @@ public class Parser {
 				return parseUndoCmd(words, rawInput);
 			case REDO:
 				return parseRedoCmd(words, rawInput);
+			case CLEAR:
+				return parseClearCmd(words, rawInput);
 			case CMD_STR_TAG:
 				return parseTagCmd(words, rawInput);
 			case LINK_GOOGLE:
@@ -266,7 +269,6 @@ public class Parser {
 		Pattern pattern = Pattern.compile(PATTERN_SEARCH);
 		Matcher matcher = pattern.matcher(rawInput);
 		if (matcher.find()){
-			System.out.println("bal");
 			try {	
 				boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
 				Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
@@ -301,6 +303,10 @@ public class Parser {
 	
 	private static Command parseRedoCmd(String[] words, String rawInput){
 		return new CommandRedo();
+	}
+	
+	private static Command parseClearCmd(String[] words, String rawInput){
+		return new CommandClear();
 	}
 	
 	private static Command parseTagCmd(String[] words, String rawInput){

@@ -11,8 +11,8 @@ import calendear.util.*;
 
 public class ActionTest {
 	
-	/**[0:name][1:type][2:starttime]
-	[3:endtime][4:location][5:note]
+	/**[0:name][1:type][2:start time]
+	[3:end time][4:location][5:note]
 	[6:tag][7:important][8:finished]
 */
 
@@ -93,4 +93,31 @@ public class ActionTest {
 		action1.exeRedo();
 		assertEquals(t1.getEndTime(), newTime);
 	}
+	
+	@Test
+	public void testSearch() throws ParseException{
+		Action action1 = new Action("action4.txt");
+		int nextIndex = action1.getAmount();
+		Task test1 = new Task("search test1 aaaa");
+		Task test2 = new Task("search Test2 bbbb");
+		Task test3 = new Task("search test3 cccc");
+		
+		action1.exeAdd(new CommandAdd(test1));
+		action1.exeAdd(new CommandAdd(test2));
+		action1.exeAdd(new CommandAdd(test3));
+		
+		boolean[] toShow = {true, false, false, false, false, false, false, false, false};
+		Object[] searchWith = {"aaa", null, null, null, null, null, null, null};
+		
+		CommandSearch commandSearch = new CommandSearch(toShow, searchWith );
+		
+		ArrayList<Task> result = action1.exeSearch(commandSearch);
+		for(int i = 0; i< result.size(); i++){
+			if(result.get(i) == null){
+				continue;
+			}
+			System.out.println(i + " " + result.get(i).getName());
+		}
+	}
+	
 }
