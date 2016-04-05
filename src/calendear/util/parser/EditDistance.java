@@ -1,4 +1,4 @@
-package calendear.util;
+package calendear.util.parser;
 
 public class EditDistance {
 	private static int minimum(int a, int b, int c) {                            
@@ -21,7 +21,7 @@ public class EditDistance {
 	 * @param string2
 	 * @return the Levenshtein distance between string1 and string2
 	 */
-    public static int computeEditDistance(CharSequence string1, CharSequence string2) {      
+    public static int computeLevenshteinDistance(CharSequence string1, CharSequence string2) {      
         //dynamic programming memo table
     	int[][] distance = new int[string1.length() + 1][string2.length() + 1];        
 

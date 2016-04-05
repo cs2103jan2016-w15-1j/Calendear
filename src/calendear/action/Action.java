@@ -365,7 +365,7 @@ public class Action {
 		
 		for(int i = 0; i<strArr1.length; i++){
 			for(int j = 0; j<strArr2.length; j++){
-				if(EditDistance.computeLevenshteinDistance(strArr1[i].trim(), strArr2[j].trim()) <= 2){
+				if(EditDistance.computeEditDistance(strArr1[i].trim(), strArr2[j].trim()) <= 2){
 					return true;
 				}
 			}

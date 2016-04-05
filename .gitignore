@@ -1,4 +1,5 @@
 *.txt
+*.class
 *.in
 *.out
 *.jar
