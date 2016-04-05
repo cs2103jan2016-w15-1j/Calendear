@@ -76,4 +76,8 @@ public class CDLogic {
 	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle commandLoadFromGoogle) throws LogicException{
 		return _action.exeLoadTasksFromGoogle(commandLoadFromGoogle);
 	}
+	
+	public boolean exeClear(CommandClear commandClear){
+		return _action.exeClear(commandClear);
+	}
 }

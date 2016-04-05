@@ -267,48 +267,63 @@ public class Action {
 		
 		for(int i = 0; i<toDisplay.size(); i++){
 			Task task = toDisplay.get(i);
+			if(task == null){
+				continue;
+			}
 			try{
-				if(toShow[NAME_ID] && !task.getName().contains((String)searchWith[NAME_ID])){
-					task = null;
+				if(toShow[NAME_ID] && !withinDistance(task.getName(), (String)searchWith[NAME_ID])){
+					toDisplay.set(i, null);
 				}
 				if(toShow[TYPE_ID] && !task.getType().equals((TASK_TYPE)searchWith[TYPE_ID])){
-					task = null;
+					toDisplay.set(i, null);
 				}
 				if(toShow[STARTT_ID]){
-					GregorianCalendar[] comparingWith = (GregorianCalendar[])searchWith[STARTT_ID];
-					assert(comparingWith.length == 2): "length of startTime comparision not 2\n";
-					isStartTimeWithinRange(task, comparingWith[0], comparingWith[1]);
+					GregorianCalendar comparingWithStart = (GregorianCalendar)searchWith[STARTT_ID];
+					GregorianCalendar comparingWithEnd = (GregorianCalendar)searchWith[ENDT_ID];
+					assert(comparingWithStart != null) : "start time null";
+					assert(comparingWithEnd != null) : "end time null";
+					if(!isStartTimeWithinRange(task, comparingWithStart, comparingWithEnd)){
+						toDisplay.set(i, null);
+					}
 				}
 				if(toShow[ENDT_ID]){
-					GregorianCalendar[] comparingWith = (GregorianCalendar[])searchWith[ENDT_ID];
-					assert(comparingWith.length == 2): "length of startTime comparision not 2\n";
-					isEndTimeWithinRange(task, comparingWith[0], comparingWith[1]);
+					GregorianCalendar comparingWithStart = (GregorianCalendar)searchWith[STARTT_ID];
+					GregorianCalendar comparingWithEnd = (GregorianCalendar)searchWith[ENDT_ID];
+					assert(comparingWithStart != null) : "start time null";
+					assert(comparingWithEnd != null) : "end time null";
+					if(!isEndTimeWithinRange(task, comparingWithStart, comparingWithEnd)){
+						toDisplay.set(i, null);
+					}
 				}
-				if(toShow[LOCATION_ID] &&!(task.getLocation().contains((String) searchWith[LOCATION_ID]))){
-					task = null;
+				if(toShow[LOCATION_ID] &&!withinDistance(task.getLocation(), (String)searchWith[LOCATION_ID])){
+					toDisplay.set(i, null);
 				
 				}
-				if(toShow[NOTE_ID] && !task.getNote().contains((String) searchWith[NOTE_ID])){
-					task = null;
+				if(toShow[NOTE_ID] && !withinDistance(task.getNote(), (String)searchWith[NOTE_ID])){
+					toDisplay.set(i, null);
 				}
 				if(toShow[TAG_ID]){
-					String[] tagList = task.getTag().split(TAG_SEPARATOR);
-					boolean isTagged = false;
-					for(int j = 0; j<tagList.length ;j++ ){
-						if(tagList[i].equalsIgnoreCase((String) searchWith[TAG_ID])){
-							isTagged = true;
-							break;
+					if(task.getTag() == null){
+						toDisplay.set(i, null);
+					}else{
+						String[] tagList = task.getTag().split(TAG_SEPARATOR);
+						boolean isTagged = false;
+						for(int j = 0; j<tagList.length ;j++ ){
+							if(tagList[i].equalsIgnoreCase(((String) searchWith[TAG_ID]).trim())){
+								isTagged = true;
+								break;
+							}
 						}
-					}
-					if(!isTagged){
-						task = null;
+						if(!isTagged){
+							toDisplay.set(i, null);
+						}
 					}
 				}
 				if(toShow[IMP_ID] && !(task.isImportant() == (boolean)searchWith[IMP_ID])){
-					task = null;
+					toDisplay.set(i, null);
 				}
 				if(toShow[COMP_ID] && !(task.isFinished() == (boolean)searchWith[COMP_ID])){
-					task = null;
+					toDisplay.set(i, null);
 				}
 			}catch (NullPointerException e){
 				e.printStackTrace();
@@ -338,6 +353,24 @@ public class Action {
 				return false;
 			}
 		return true;
+	}
+	
+	private boolean withinDistance(String str1, String str2){
+		String splitWith = " ";
+		if(str1 == null || str2 == null){
+			return false;
+		}
+		String[] strArr1 = str1.split(splitWith);
+		String[] strArr2 = str2.split(splitWith);
+		
+		for(int i = 0; i<strArr1.length; i++){
+			for(int j = 0; j<strArr2.length; j++){
+				if(EditDistance.computeEditDistance(strArr1[i], strArr2[j]) <= 2){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -509,6 +542,12 @@ public class Action {
 					CommandLoadFromGoogle commandLoadFromGoogle = (CommandLoadFromGoogle) commandToUndo;
 					this._data = commandLoadFromGoogle.getUndoList();
 					break;
+					
+				case CLEAR:
+					log.log(Level.FINE, "undo clear", commandToUndo);
+					CommandClear commandClear = (CommandClear) commandToUndo;
+					this._data = commandClear.getListBeforeClear();
+					break;
 				default:
 					log.log(Level.SEVERE, "reached unreachable area in undo", commandToUndo);
 					throw new AssertionError(commandType);
@@ -569,6 +608,13 @@ public class Action {
 					CommandLoadFromGoogle commandLoadFromGoogle = (CommandLoadFromGoogle) commandToRedo;
 					exeLoadTasksFromGoogle(commandLoadFromGoogle);
 					break;
+				case CLEAR:
+					
+					log.log(Level.FINE, "redo clear", commandToRedo);
+					CommandClear commandClear = (CommandClear) commandToRedo;
+					exeClear(commandClear);
+					break;
+					
 				default:
 					log.log(Level.SEVERE, "reached unreachable area in redo", commandToRedo);
 					throw new AssertionError(commandToRedo);
@@ -678,11 +724,13 @@ public class Action {
 		return this._data;
 	}
 	
-	public boolean exeClear(){
-		//TODO
+	public boolean exeClear(CommandClear commandClear){
 		ArrayList<Task> listToSave = new ArrayList<Task>(this._data);
+		commandClear.setBeforeList(listToSave);
 		this._data.clear();
-		return false;
+		this._dataManager.insertDataToFile(dataWithNullRemoved());
+		this._undoStack.push(commandClear);
+		return true;
 	}
 	
 	/**
@@ -760,6 +808,8 @@ public class Action {
 			}
 		}
 	}
+	
+	
 	
 	
 }

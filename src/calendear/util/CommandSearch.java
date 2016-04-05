@@ -26,9 +26,11 @@ public class CommandSearch extends Command {
 	}
 	
 	public CommandSearch(boolean[] toShow, Object[] searchWith){
+		type = CMD_TYPE.SEARCH;
 		assert(toShow.length == searchWith.length): "toShow is different length from searchWith in CommandSearch\n";
 		this.toShow = toShow;
 		this.searchWith = searchWith;
+		this.type = CMD_TYPE.SEARCH;
 	}
 	
 	public boolean[] getArrToShow(){

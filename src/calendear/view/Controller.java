@@ -88,7 +88,7 @@ public class Controller {
 	    				break;
 	    			}
 	    			catch (LogicException logicException){
-	    				//TODO view print error
+	    				//TODO
 	    				System.out.println(logicException.getMessage());
 	    				break;
 	    			}
@@ -109,6 +109,9 @@ public class Controller {
 	    		
 //	    		case SAVE_FILE: _cdLogic.exeSaveFile();
 //	    						break;
+	    				
+	    		case CLEAR: _cdLogic.exeClear((CommandClear) command);
+	    				break;
 	    		default: 
 	    				break;
 	    	}
