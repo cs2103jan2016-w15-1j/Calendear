@@ -3,6 +3,6 @@
 *.in
 *.out
 *.jar
-/bin/
+/bin
 *.txt
-/target/
+/target
