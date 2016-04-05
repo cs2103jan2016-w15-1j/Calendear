@@ -634,7 +634,8 @@ public class Action {
 	public Task exeTag(CommandTag commandTag){
 		int toTagIndex = commandTag.getIndex();
 		Task taskToTag = this._data.get(toTagIndex);
-		if(taskToTag.getTag() == null){
+		String tag = taskToTag.getTag();
+		if(tag == null || tag.equals("")){
 			taskToTag.setTag(commandTag.getTagName());
 		}else{
 			taskToTag.setTag(taskToTag.getTag() + " # " + commandTag.getTagName());
