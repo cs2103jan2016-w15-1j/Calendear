@@ -378,6 +378,7 @@ public class Task {
 		} else {
 			res.setIsImportant(false);
 		}
+		
 		if (members[SAVING_INDEX_FINISHED].equals(FINISHED)){
 			res.setIsFinished(true);
 		} else {

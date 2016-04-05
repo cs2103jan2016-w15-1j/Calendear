@@ -63,7 +63,7 @@ public class Controller {
 	    					  break;
 	    		
 	    		case UPDATE:  Task updatedTask = _cdLogic.exeUpdate((CommandUpdate) command);
-	    					  View.displayUpdateInLine(updatedTask);
+	    					  View.displayUpdate(updatedTask);
 	    					  break;
 	    		
 	    		case SEARCH:	ArrayList<Task> foundTasks = _cdLogic.exeSearch((CommandSearch) command);
