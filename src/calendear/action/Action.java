@@ -170,12 +170,16 @@ public class Action {
 				GregorianCalendar oldStartTime = toUpdate.getStartTime();
 				toUpdate.setStartTime((GregorianCalendar) newData[STARTT_ID]);
 				newData[STARTT_ID] = (Object)oldStartTime;
+				toUpdate.setType(TASK_TYPE.EVENT);// only even tasks have start time
 			}
 			if(infoList[ENDT_ID]){
 				//end time
 				GregorianCalendar oldEndTime = toUpdate.getEndTime();
 				toUpdate.setEndTime((GregorianCalendar) newData[ENDT_ID]);
 				newData[ENDT_ID] = (Object)oldEndTime;
+				if(toUpdate.getType() == null || toUpdate.getType().equals(TASK_TYPE.FLOATING)){//originally float now deadline
+					toUpdate.setType(TASK_TYPE.DEADLINE);
+				}
 			}
 			if(infoList[LOCATION_ID]){
 				String newLoc = (String)newData[LOCATION_ID];
@@ -273,15 +277,18 @@ public class Action {
 			try{
 				if(toShow[NAME_ID] && !withinDistance(task.getName(), (String)searchWith[NAME_ID])){
 					toDisplay.set(i, null);
+					continue;
 				}
 				if(toShow[TYPE_ID] && !task.getType().equals((TASK_TYPE)searchWith[TYPE_ID])){
 					toDisplay.set(i, null);
+					continue;
 				}
 				if(toShow[STARTT_ID]){
 					GregorianCalendar comparingWithStart = (GregorianCalendar)searchWith[STARTT_ID];
 					assert(comparingWithStart != null) : "start time null";
 					if(!isStartTimeWithinRange(task, comparingWithStart)){
 						toDisplay.set(i, null);
+						continue;
 					}
 				}
 				if(toShow[ENDT_ID]){
@@ -289,14 +296,17 @@ public class Action {
 					assert(comparingWithEnd != null) : "end time null";
 					if(!isEndTimeWithinRange(task, comparingWithEnd)){
 						toDisplay.set(i, null);
+						continue;
 					}
 				}
 				if(toShow[LOCATION_ID] &&!withinDistance(task.getLocation(), (String)searchWith[LOCATION_ID])){
 					toDisplay.set(i, null);
+					continue;
 				
 				}
 				if(toShow[NOTE_ID] && !withinDistance(task.getNote(), (String)searchWith[NOTE_ID])){
 					toDisplay.set(i, null);
+					continue;
 				}
 				if(toShow[TAG_ID]){
 					if(task.getTag() == null){
@@ -312,11 +322,13 @@ public class Action {
 						}
 						if(!isTagged){
 							toDisplay.set(i, null);
+							continue;
 						}
 					}
 				}
 				if(toShow[IMP_ID] && !(task.isImportant() == (boolean)searchWith[IMP_ID])){
 					toDisplay.set(i, null);
+					continue;
 				}
 				if(toShow[COMP_ID] && !(task.isFinished() == (boolean)searchWith[COMP_ID])){
 					toDisplay.set(i, null);
@@ -332,9 +344,18 @@ public class Action {
 	}
 	
 	private boolean isStartTimeWithinRange(Task task, GregorianCalendar startTimeToCompare){
-		if(task == null || task.getStartTime() == null){
+		if(task == null){
 			return false;
 		}
+		
+		if(task.getStartTime() == null){
+			if(task.getType() != null && task.getType().equals(TASK_TYPE.DEADLINE)){
+				return true;//no one searches for deadline tasks with start time
+			}else{
+				return false;
+			}
+		}
+		
 		if(task.getStartTime().compareTo(startTimeToCompare) >= 0){
 			return true;
 		} 
@@ -345,7 +366,7 @@ public class Action {
 		if(task == null || task.getEndTime() == null){
 			return false;
 		}
-		if(task.getEndTime().compareTo(endTimeToCompare) >= 0){
+		if(task.getEndTime().compareTo(endTimeToCompare) <= 0){
 			return true;
 		}
 		return false;
@@ -634,7 +655,8 @@ public class Action {
 	public Task exeTag(CommandTag commandTag){
 		int toTagIndex = commandTag.getIndex();
 		Task taskToTag = this._data.get(toTagIndex);
-		if(taskToTag.getTag() == null){
+		String tag = taskToTag.getTag();
+		if(tag == null || tag.equals("")){
 			taskToTag.setTag(commandTag.getTagName());
 		}else{
 			taskToTag.setTag(taskToTag.getTag() + " # " + commandTag.getTagName());
@@ -749,6 +771,12 @@ public class Action {
 		if (this._dataManager.isLogined()) {
 			exeAddAllToGoogle();
 		}
+	}
+	
+	public String exeSaveFile(CommandSave commandSave) {
+		System.out.println("Saving...");
+		String path = commandSave.getPath();
+		return this._dataManager.changeFilePath(path);
 	}
 	
 	

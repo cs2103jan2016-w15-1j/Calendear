@@ -1,7 +1,6 @@
 package calendear.util;
 
 
-
 public class CommandTag extends Command {
 	
 	private int index;

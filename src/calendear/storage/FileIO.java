@@ -17,8 +17,13 @@ import calendear.util.Task;
  *
  */
 public class FileIO {
+	
+	private static final String MESSAGE_FILE_ERROR = "File Creation failed.";
+	private static final String MESSAGE_FILE_SUCCESS = "File Created";
+	
 	private static String nameOfFile;
 	private static File file;
+	
 	
 	public static void createFile(String fileName) {
 		try {
@@ -27,7 +32,7 @@ public class FileIO {
 			file.createNewFile();
 	    }
 	    catch(IOException ex) {
-	    	System.out.println(ex);
+	    	System.out.println(MESSAGE_FILE_ERROR);
 	    }		
 	}
 
@@ -74,6 +79,41 @@ public class FileIO {
 	    catch (IOException ex) {
 	    	System.out.println(ex);
 	    }
+	}
+	
+	public static String changeFilePath(String path) {
+		try {
+			File newFile = new File(path);
+			newFile.createNewFile();
+			
+			copyData(newFile);
+			
+			nameOfFile = path;
+			file = newFile;
+			
+			return MESSAGE_FILE_SUCCESS;
+		}
+		catch(IOException ex) {
+			return MESSAGE_FILE_ERROR;
+		}
+		
+	}
+	
+	private static void copyData(File newFile) throws IOException {
+		FileReader fileReader = new FileReader(file);
+
+		BufferedReader bufferedReader = 
+            new BufferedReader(fileReader);
+		String line = null;
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(newFile, true));
+
+		while((line = bufferedReader.readLine()) != null) {
+			bufferedWriter.write(line);
+			bufferedWriter.newLine();
+		}
+		
+		bufferedWriter.close();
+		bufferedReader.close();
 	}
 	
 	private static void wipeFile() {
