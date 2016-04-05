@@ -77,6 +77,10 @@ public class CDLogic {
 		return _action.exeLoadTasksFromGoogle(commandLoadFromGoogle);
 	}
 	
+	public String exeSaveFile(CommandSave commandSave) {
+		return _action.exeSaveFile(commandSave);
+	}
+	
 	public boolean exeClear(CommandClear commandClear){
 		return _action.exeClear(commandClear);
 	}

@@ -118,14 +118,23 @@ public class Task {
 	}
 	
 	public String getLocation() {
+		if (location == null) {
+			return EMPTY;
+		}
 		return location;
 	}
 	
 	public String getNote() {
+		if (note == null) {
+			return EMPTY;
+		}
 		return note;
 	}
 	
 	public String getTag(){
+		if (tag == null) {
+			return EMPTY;
+		}
 		return tag;
 	}
 	
@@ -361,6 +370,12 @@ public class Task {
 			res.setEventId(members[SAVING_INDEX_GOOGLE_ID]);
 		}
 		
+		if (members[SAVING_INDEX_TAG].equals(EMPTY)){
+			res.setTag(null);
+		} else {
+			res.setTag(members[SAVING_INDEX_TAG]);
+		}
+		
 		if (members[SAVING_INDEX_LOCATION].equals(EMPTY)){
 			res.setEventId(null);
 		} else {
@@ -378,6 +393,7 @@ public class Task {
 		} else {
 			res.setIsImportant(false);
 		}
+		
 		if (members[SAVING_INDEX_FINISHED].equals(FINISHED)){
 			res.setIsFinished(true);
 		} else {

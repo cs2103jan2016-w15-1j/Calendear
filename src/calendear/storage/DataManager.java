@@ -75,12 +75,20 @@ public class DataManager {
 	}
 	
 	/**
+	 * Change the file path that data is stored
+	 * @param path
+	 * @return 
+	 */
+	public String changeFilePath(String path) {
+		return FileIO.changeFilePath(path);
+	}
+	
+	/**
 	 * DataManager constructor
 	 * @param fileName
 	 */
 	public DataManager(String fileName) {
 		FileIO.createFile(fileName);
 	}
-
 
 }
