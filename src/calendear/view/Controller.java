@@ -88,7 +88,6 @@ public class Controller {
 	    				break;
 	    			}
 	    			catch (LogicException logicException){
-	    				//TODO
 	    				System.out.println(logicException.getMessage());
 	    			}
 	    			

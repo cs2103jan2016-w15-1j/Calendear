@@ -309,7 +309,7 @@ public class Action {
 						String[] tagList = task.getTag().split(TAG_SEPARATOR);
 						boolean isTagged = false;
 						for(int j = 0; j<tagList.length ;j++ ){
-							if(tagList[i].equalsIgnoreCase(((String) searchWith[TAG_ID]).trim())){
+							if(tagList[j].equalsIgnoreCase(((String) searchWith[TAG_ID]).trim())){
 								isTagged = true;
 								break;
 							}
@@ -365,7 +365,7 @@ public class Action {
 		
 		for(int i = 0; i<strArr1.length; i++){
 			for(int j = 0; j<strArr2.length; j++){
-				if(EditDistance.computeLevenshteinDistance(strArr1[i], strArr2[j]) <= 2){
+				if(EditDistance.computeLevenshteinDistance(strArr1[i].trim(), strArr2[j].trim()) <= 2){
 					return true;
 				}
 			}
@@ -558,6 +558,7 @@ public class Action {
 			return true;
 		}
 		catch (EmptyStackException e){
+			System.out.println("nothing to undo");
 			return false;
 		}
 	}
@@ -625,6 +626,7 @@ public class Action {
 		}
 		
 		catch (EmptyStackException e){
+			System.out.println("nothing to undo");
 			return false;
 		}
 		

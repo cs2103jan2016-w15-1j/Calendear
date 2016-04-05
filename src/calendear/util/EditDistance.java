@@ -1,4 +1,4 @@
-package calendear.parser;
+package calendear.util;
 
 public class EditDistance {
 	private static int minimum(int a, int b, int c) {                            
