@@ -22,6 +22,7 @@ public class Parser {
 	private static final String EXIT = "exit";
 	private static final String REDO = "redo";
 	private static final String CLEAR = "clear";
+	private static final String SAVE = "save";
 	private static final String LOAD_FROM_GOOGLE = "syncGoogle";
 	private static final String EMPTY = "";
 	//when using regex and regex-related methods like String.split() and String.replaceAll()
@@ -120,6 +121,8 @@ public class Parser {
 				return parseTagCmd(words, rawInput);
 			case LINK_GOOGLE:
 				return parseLinkGoogleCmd(words, rawInput);
+			case SAVE:
+				return parseSave(words, rawInput);
 			case LOAD_FROM_GOOGLE:
 				return parseLoadToGoogleCmd(words, rawInput);
 			case EXIT:
@@ -129,6 +132,14 @@ public class Parser {
 		}
 	}
 	
+	private static Command parseSave(String[] words, String rawInput) {
+		if (words.length<=2){
+			return new CommandSave(words[1]);
+		} else {
+			return new CommandInvalid(rawInput);
+		}
+	}
+
 	private static Command parseAddCmd(String[] words, String rawInput){
 		Pattern pattern = Pattern.compile(PATTERN_ADD);
 		Matcher matcher = pattern.matcher(rawInput);
