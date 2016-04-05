@@ -279,19 +279,15 @@ public class Action {
 				}
 				if(toShow[STARTT_ID]){
 					GregorianCalendar comparingWithStart = (GregorianCalendar)searchWith[STARTT_ID];
-					GregorianCalendar comparingWithEnd = (GregorianCalendar)searchWith[ENDT_ID];
 					assert(comparingWithStart != null) : "start time null";
-					assert(comparingWithEnd != null) : "end time null";
-					if(!isStartTimeWithinRange(task, comparingWithStart, comparingWithEnd)){
+					if(!isStartTimeWithinRange(task, comparingWithStart)){
 						toDisplay.set(i, null);
 					}
 				}
 				if(toShow[ENDT_ID]){
-					GregorianCalendar comparingWithStart = (GregorianCalendar)searchWith[STARTT_ID];
 					GregorianCalendar comparingWithEnd = (GregorianCalendar)searchWith[ENDT_ID];
-					assert(comparingWithStart != null) : "start time null";
 					assert(comparingWithEnd != null) : "end time null";
-					if(!isEndTimeWithinRange(task, comparingWithStart, comparingWithEnd)){
+					if(!isEndTimeWithinRange(task, comparingWithEnd)){
 						toDisplay.set(i, null);
 					}
 				}
@@ -335,24 +331,24 @@ public class Action {
 		return toDisplay;
 	}
 	
-	private boolean isStartTimeWithinRange(Task currentTask, GregorianCalendar startTime, GregorianCalendar endTime){
-		if(currentTask != null 
-				&& currentTask.getStartTime().compareTo(startTime) <= 0//before start
-				&& currentTask.getStartTime().compareTo(endTime) >= 0){//after end
-			currentTask = null;
+	private boolean isStartTimeWithinRange(Task task, GregorianCalendar startTimeToCompare){
+		if(task == null || task.getStartTime() == null){
 			return false;
 		}
-		return true;
+		if(task.getStartTime().compareTo(startTimeToCompare) >= 0){
+			return true;
+		} 
+		return false;
 	}
 	
-	private boolean isEndTimeWithinRange(Task currentTask, GregorianCalendar startTime, GregorianCalendar endTime){
-			if(currentTask != null 
-					&& currentTask.getEndTime().compareTo(startTime) <= 0//before start
-					&& currentTask.getEndTime().compareTo(endTime) >= 0){//after end
-				currentTask = null;
-				return false;
-			}
-		return true;
+	private boolean isEndTimeWithinRange(Task task, GregorianCalendar endTimeToCompare){
+		if(task == null || task.getEndTime() == null){
+			return false;
+		}
+		if(task.getEndTime().compareTo(endTimeToCompare) >= 0){
+			return true;
+		}
+		return false;
 	}
 	
 	private boolean withinDistance(String str1, String str2){
