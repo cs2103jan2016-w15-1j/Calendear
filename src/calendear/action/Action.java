@@ -303,16 +303,20 @@ public class Action {
 					toDisplay.set(i, null);
 				}
 				if(toShow[TAG_ID]){
-					String[] tagList = task.getTag().split(TAG_SEPARATOR);
-					boolean isTagged = false;
-					for(int j = 0; j<tagList.length ;j++ ){
-						if(tagList[i].equalsIgnoreCase(((String) searchWith[TAG_ID]).trim())){
-							isTagged = true;
-							break;
-						}
-					}
-					if(!isTagged){
+					if(task.getTag() == null){
 						toDisplay.set(i, null);
+					}else{
+						String[] tagList = task.getTag().split(TAG_SEPARATOR);
+						boolean isTagged = false;
+						for(int j = 0; j<tagList.length ;j++ ){
+							if(tagList[i].equalsIgnoreCase(((String) searchWith[TAG_ID]).trim())){
+								isTagged = true;
+								break;
+							}
+						}
+						if(!isTagged){
+							toDisplay.set(i, null);
+						}
 					}
 				}
 				if(toShow[IMP_ID] && !(task.isImportant() == (boolean)searchWith[IMP_ID])){
@@ -353,6 +357,9 @@ public class Action {
 	
 	private boolean withinDistance(String str1, String str2){
 		String splitWith = " ";
+		if(str1 == null || str2 == null){
+			return false;
+		}
 		String[] strArr1 = str1.split(splitWith);
 		String[] strArr2 = str2.split(splitWith);
 		
