@@ -105,6 +105,9 @@ public class Controller {
 	    					
 	    		case REDO: _cdLogic.exeRedo();
 	    				break;
+	    				
+	    		case CLEAR: _cdLogic.exeClear((CommandClear) command);
+	    				break;
 	    		default: 
 	    				break;
 	    	}

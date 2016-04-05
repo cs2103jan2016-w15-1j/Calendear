@@ -303,7 +303,7 @@ public class Action {
 					String[] tagList = task.getTag().split(TAG_SEPARATOR);
 					boolean isTagged = false;
 					for(int j = 0; j<tagList.length ;j++ ){
-						if(tagList[i].equalsIgnoreCase((String) searchWith[TAG_ID])){
+						if(tagList[i].equalsIgnoreCase(((String) searchWith[TAG_ID]).trim())){
 							isTagged = true;
 							break;
 						}
@@ -720,7 +720,7 @@ public class Action {
 		this._data.clear();
 		this._dataManager.insertDataToFile(dataWithNullRemoved());
 		this._undoStack.push(commandClear);
-		return false;
+		return true;
 	}
 	
 	/**
