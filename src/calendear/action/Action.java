@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import calendear.util.*;
 import calendear.storage.DataManager;
-import calendear.parser.EditDistance;
 /**
  * 
  * @author Wu XiaoXiao
@@ -279,16 +278,20 @@ public class Action {
 					toDisplay.set(i, null);
 				}
 				if(toShow[STARTT_ID]){
-					GregorianCalendar[] comparingWith = (GregorianCalendar[])searchWith[STARTT_ID];
-					assert(comparingWith.length == 2): "length of startTime comparision not 2\n";
-					if(!isStartTimeWithinRange(task, comparingWith[0], comparingWith[1])){
+					GregorianCalendar comparingWithStart = (GregorianCalendar)searchWith[STARTT_ID];
+					GregorianCalendar comparingWithEnd = (GregorianCalendar)searchWith[ENDT_ID];
+					assert(comparingWithStart != null) : "start time null";
+					assert(comparingWithEnd != null) : "end time null";
+					if(!isStartTimeWithinRange(task, comparingWithStart, comparingWithEnd)){
 						toDisplay.set(i, null);
 					}
 				}
 				if(toShow[ENDT_ID]){
-					GregorianCalendar[] comparingWith = (GregorianCalendar[])searchWith[ENDT_ID];
-					assert(comparingWith.length == 2): "length of startTime comparision not 2\n";
-					if(!isEndTimeWithinRange(task, comparingWith[0], comparingWith[1])){
+					GregorianCalendar comparingWithStart = (GregorianCalendar)searchWith[STARTT_ID];
+					GregorianCalendar comparingWithEnd = (GregorianCalendar)searchWith[ENDT_ID];
+					assert(comparingWithStart != null) : "start time null";
+					assert(comparingWithEnd != null) : "end time null";
+					if(!isEndTimeWithinRange(task, comparingWithStart, comparingWithEnd)){
 						toDisplay.set(i, null);
 					}
 				}
