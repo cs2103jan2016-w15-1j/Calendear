@@ -1,5 +1,6 @@
 package calendear.view;
 import calendear.action.CDLogic;
+import calendear.action.LogicException;
 
 import calendear.util.*;
 
@@ -80,10 +81,17 @@ public class Controller {
 	    		case LINK_GOOGLE: _cdLogic.exeLinkGoogle();
 	    						  break;
 	    						  
-	    		case LOAD_FROM_GOOGLE: ArrayList<Task> resultingList =  _cdLogic.exeLoadTasksFromGoogle((CommandLoadFromGoogle) command);
-	    								View.displayDisplayInLine(resultingList);
-	    						  	break;
-
+	    		case LOAD_FROM_GOOGLE:  
+	    			try{
+	    				ArrayList<Task> resultingList =  _cdLogic.exeLoadTasksFromGoogle((CommandLoadFromGoogle) command);
+	    				View.displayDisplayInLine(resultingList);
+	    				break;
+	    			}
+	    			catch (LogicException logicException){
+	    				//TODO
+	    				System.out.println(logicException.getMessage());
+	    			}
+	    			
 	    		case DONE: Task completedTask = _cdLogic.exeMarkDone((CommandDone) command);
 	    				   View.displayDone(completedTask);
 	    				break;
@@ -96,6 +104,9 @@ public class Controller {
 	    				break;
 	    					
 	    		case REDO: _cdLogic.exeRedo();
+	    				break;
+	    				
+	    		case CLEAR: _cdLogic.exeClear((CommandClear) command);
 	    				break;
 	    		default: 
 	    				break;

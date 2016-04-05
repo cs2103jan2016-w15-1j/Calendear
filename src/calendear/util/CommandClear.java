@@ -1,9 +1,20 @@
 package calendear.util;
 
-public class CommandClear extends Command {
+import java.util.ArrayList;
+
+public class CommandClear extends Command{
+	ArrayList<Task> listBeforeClear;
 	
 	public CommandClear(){
-		this.type = CMD_TYPE.CLEAR;
+		type = CMD_TYPE.CLEAR;
+		listBeforeClear = new ArrayList<Task>();
 	}
 	
+	public void setBeforeList(ArrayList<Task> list){
+		this.listBeforeClear = list;
+	}
+	
+	public ArrayList<Task> getListBeforeClear(){
+		return this.listBeforeClear;
+	}
 }
