@@ -40,6 +40,7 @@ public class Task {
 	private static final int SAVING_INDEX_IMPORTANT = 8;
 	private static final int SAVING_INDEX_FINISHED = 9;
 	
+	private static final long NUMBER_MILLISECOND_EIGHT_HOURS = 28800000;
 	private String name;
 	private String googleEventId;
 	private TASK_TYPE type;
@@ -175,8 +176,19 @@ public class Task {
 	
 	public void setStartTime(EventDateTime startTime) {
 		DateTime dateTime = startTime.getDateTime();
+		long timeValue;
+		
+		if (dateTime != null) {
+			timeValue = dateTime.getValue();
+
+		}
+		else {
+			dateTime = startTime.getDate();
+			timeValue = dateTime.getValue() - NUMBER_MILLISECOND_EIGHT_HOURS;
+		}
+		
 		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTimeInMillis(dateTime.getValue());
+		cal.setTimeInMillis(timeValue);
 		this.startTime = cal;
 	}
 	
@@ -186,8 +198,19 @@ public class Task {
 	
 	public void setEndTime(EventDateTime endTime) {
 		DateTime dateTime = endTime.getDateTime();
+		long timeValue;
+		
+		if (dateTime != null) {
+			timeValue = dateTime.getValue();
+
+		}
+		else {
+			dateTime = endTime.getDate();
+			timeValue = dateTime.getValue() - NUMBER_MILLISECOND_EIGHT_HOURS;
+		}
+		
 		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTimeInMillis(dateTime.getValue());
+		cal.setTimeInMillis(timeValue);
 		this.endTime = cal;
 	}
 	
