@@ -77,9 +77,6 @@ public class Task {
 	}
 	
 	public String getEventId() {
-		if (googleEventId == null) {
-			return EMPTY;
-		}
 		return googleEventId;
 	}
 	

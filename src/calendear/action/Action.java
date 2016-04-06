@@ -706,8 +706,8 @@ public class Action {
 		for(int i = DATA_START_INDEX; i<this._data.size(); i++){
 			Task currentTask = this._data.get(i);
 			if(currentTask != null 
-					&& (currentTask.getEventId().equals(null) || currentTask.getEventId().equals("null"))){
-				//System.out.println("Trying to Add: " + i);
+					&& (currentTask.getEventId() == null || currentTask.getEventId().equals("null"))){
+				System.out.println("Trying to Add: " + currentTask.getName());
 				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
 				currentTask.setEventId(newEventId);
 			}
@@ -769,6 +769,7 @@ public class Action {
 		}
 		
 		if (this._dataManager.isLogined()) {
+			System.out.println("logging in");
 			exeAddAllToGoogle();
 		}
 	}
