@@ -848,6 +848,7 @@ public class Action {
 		}
 		
 		if (this._dataManager.isLogined()) {
+			System.out.println("logging in");
 			exeAddAllToGoogle();
 		}
 	}
