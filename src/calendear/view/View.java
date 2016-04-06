@@ -1,7 +1,8 @@
 package calendear.view;
 import java.util.ArrayList;
-
 import calendear.util.Task;
+
+//@@author Pan Jiyun
 
 public class View {
 	
@@ -19,17 +20,19 @@ public class View {
 	
 	private static final String MSG_ADD = "Added task:\n";
 	private static final String MSG_DELETE = "Deleted task:\n";
+	private static final String MSG_UPDATE ="Updated task:\n";
+	private static final String MSG_MARK ="Marked task:\n";
+	private static final String MSG_TAG ="Tagged task:\n";
+	private static final String MSG_DONE = "Finished task:\n";
+	private static final String MSG_UNDO ="Undo successfully.\n";
 	private static final String MSG_DISPLAY = "Display tasks:\n";
 	private static final String MSG_SORT = "Sort results:\n";
 	private static final String MSG_SEARCH ="Search results:\n";
-	private static final String MSG_UPDATE ="Updated task:\n";
-	private static final String MSG_MARK ="Marked task:\n";
-	private static final String MSG_DONE = "Finished task:\n";
-	private static final String MSG_TAG ="Tagged task:\n";
-	private static final String MSG_UNDO ="Undo successfully.\n";
 	private static final String MSG_LINKGOOGLE ="Linked to google";
 	private static final String MSG_EXIT ="Exited";
 	private static final String MSG_INVALID ="Invalid command";
+	
+
 	
 	private static final String[] MSG_ARR_N = {MSG_ADD,MSG_DELETE,MSG_UPDATE,MSG_MARK,MSG_TAG,MSG_DONE,
 		MSG_UNDO,MSG_DISPLAY,MSG_SORT,MSG_SEARCH,
@@ -126,6 +129,10 @@ public class View {
 		System.out.println(MSG_ARR[7]+ Table.getMultipleTasksIncomplete(taskArr));
 	}
 	
+	public static void displayDisplayAllInLine(ArrayList<Task> taskArr){
+		System.out.println(MSG_ARR[7]+ Table.getMultipleTasksInFull(taskArr));
+	}
+	
 	public static void displaySort(ArrayList<Task> taskArr){
 		System.out.println(MSG_ARR[8]+ Full.getMultipleTasks(taskArr));
 	}
@@ -139,9 +146,12 @@ public class View {
 	}
 	
 	public static void displaySearchInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[9]+ Table.getMultipleTasksIncomplete(taskArr));
+		System.out.println(MSG_ARR[9]+ Table.getMultipleTasksInFull(taskArr));
 	}
 	
+	public static void displaySearchDoneInLine(ArrayList<Task> taskArr){
+		System.out.println(MSG_ARR[9]+ Table.getMultipleTasksComplete(taskArr));
+	}
 	
 	public static void displayLinkGoogle(){
 		System.out.println(MSG_ARR[10]);
