@@ -123,7 +123,7 @@ public class View {
 	}
 	
 	public static void displayDisplayInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[7]+ Table.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[7]+ Table.getMultipleTasksIncomplete(taskArr));
 	}
 	
 	public static void displaySort(ArrayList<Task> taskArr){
@@ -131,7 +131,7 @@ public class View {
 	}
 	
 	public static void displaySortInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[8]+ Table.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[8]+ Table.getMultipleTasksIncomplete(taskArr));
 	}
 	
 	public static void displaySearch(ArrayList<Task> taskArr){
@@ -139,7 +139,7 @@ public class View {
 	}
 	
 	public static void displaySearchInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[9]+ Table.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[9]+ Table.getMultipleTasksIncomplete(taskArr));
 	}
 	
 	

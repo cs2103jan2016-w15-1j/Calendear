@@ -3,7 +3,6 @@ package calendear.view;
 import java.util.ArrayList;
 
 import java.util.Collections;
-import java.util.HashMap;
 
 import calendear.util.Task;
 
@@ -120,7 +119,7 @@ public class Table {
 	}
  	
 	
-	public static String getMultipleTasks(ArrayList<Task> taskArr){
+	public static String getMultipleTasksInFull(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer,Task>> pairArr = formPairArr(taskArr);
 		Collections.sort(pairArr,new PairComparator());
 		String outputUpper = titleLine()+borderLine()+borderLineWithWords(BORDER_INCOMPLETE);
@@ -148,6 +147,44 @@ public class Table {
 		return outputUpper+outputIncomplete+outputLower+outputComplete;
 	}
 	
+	public static String getMultipleTasksIncomplete(ArrayList<Task> taskArr){
+		ArrayList<Pair<Integer,Task>> pairArr = formPairArr(taskArr);
+		Collections.sort(pairArr,new PairComparator());
+		String outputUpper = titleLine()+borderLine()+borderLineWithWords(BORDER_INCOMPLETE);
+		String outputIncomplete="";
+		for(int i=0;i<pairArr.size();i++){
+			if(pairArr.get(i)!=null){
+				if(!pairArr.get(i).getTask().isFinished()){
+					outputIncomplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
+					outputIncomplete+=borderLine();
+					
+				}
+			}
+		}
+		if (outputIncomplete.equals("")){
+			outputIncomplete+=MSG_NO_INCOMPLETE+borderLine();
+		}
+		return outputUpper+outputIncomplete;
+	}
+	
+	public static String getMultipleTasksComplete(ArrayList<Task> taskArr){
+		ArrayList<Pair<Integer,Task>> pairArr = formPairArr(taskArr);
+		Collections.sort(pairArr,new PairComparator());
+		String outputLower =titleLine()+borderLine()+borderLineWithWords(BORDER_COMPLETE);
+		String outputComplete="";
+		for(int i=0;i<pairArr.size();i++){
+			if(pairArr.get(i)!=null){
+				if(pairArr.get(i).getTask().isFinished()){
+					outputComplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
+					outputComplete+=borderLine();
+				}
+			}
+		}
+		if (outputComplete.equals("")){
+			outputComplete+=MSG_NO_COMPLETE+borderLine();
+		}
+		return outputLower+outputComplete;
+	}
 
 
 
