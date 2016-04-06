@@ -23,7 +23,7 @@ public class CDLogic {
 		return Parser.parse(userInput);
 	}
 	
-	public Task exeAdd(CommandAdd commandAdd) {
+	public Task exeAdd(CommandAdd commandAdd) throws LogicException{
 		Task addedTask = _action.exeAdd(commandAdd);
 		return addedTask;
 	}
@@ -33,7 +33,7 @@ public class CDLogic {
 		return tasks;
 	}
 	
-	public Task exeUpdate(CommandUpdate commandUpdate) {
+	public Task exeUpdate(CommandUpdate commandUpdate) throws LogicException{
 		Task task = _action.exeUpdate(commandUpdate);
 		return task;
 	}
