@@ -11,6 +11,8 @@ import org.junit.Test;
 import calendear.util.TASK_TYPE;
 import calendear.util.Task;
 
+//@@author Pan Jiyun
+
 public class ViewTest {
 	@Test
 	public void testTable(){
@@ -30,26 +32,22 @@ public class ViewTest {
 	public void testSort(){
 		ArrayList<Task> taskArr = new ArrayList<Task>();
 		taskArr.add(new Task("learn violin "));
-		taskArr.get(0).setType(TASK_TYPE.FLOATING);
 		taskArr.get(0).setIsFinished(false);
 		taskArr.get(0).setIsImportant(false);
 		
-		taskArr.add(new Task("go for piano lesson "));
-		taskArr.get(1).setType(TASK_TYPE.EVENT);
-		taskArr.get(1).setStartTime((new GregorianCalendar(2016,4,2,13,0)));
-		taskArr.get(1).setEndTime((new GregorianCalendar(2016,4,2,15,0)));
+		taskArr.add(new Task("go for piano lesson ",
+				new GregorianCalendar(2016,4,2,13,0),
+				new GregorianCalendar(2016,4,2,15,0)));
 		taskArr.get(1).setIsFinished(false);
 		taskArr.get(1).setIsImportant(true);
 		
-		taskArr.add(new Task("hand in piano homework "));
-		taskArr.get(2).setType(TASK_TYPE.DEADLINE);
-		taskArr.get(2).setEndTime((new GregorianCalendar(2016,4,1,15,0)));
+		taskArr.add(new Task("hand in piano homework ",
+				new GregorianCalendar(2016,4,1,15,0)));
 		taskArr.get(2).setIsFinished(false);
 		taskArr.get(2).setIsImportant(true);
 		
-		taskArr.add(new Task("buy piano book"));
-		taskArr.get(3).setType(TASK_TYPE.DEADLINE);
-		taskArr.get(3).setEndTime((new GregorianCalendar(2016,3,18,17,0)));
+		taskArr.add(new Task("buy piano book",
+				new GregorianCalendar(2016,3,18,17,0)));
 		taskArr.get(3).setIsFinished(true);
 		taskArr.get(3).setIsImportant(false);
 		
@@ -58,10 +56,9 @@ public class ViewTest {
 		taskArr.get(4).setIsFinished(true);
 		taskArr.get(4).setIsImportant(false);
 		
-		taskArr.add(new Task("practice playing the piano "));
-		taskArr.get(5).setType(TASK_TYPE.EVENT);
-		taskArr.get(5).setStartTime((new GregorianCalendar(2016,4,1,8,0)));
-		taskArr.get(5).setEndTime((new GregorianCalendar(2016,4,1,10,0)));
+		taskArr.add(new Task("practice playing the piano ",
+				new GregorianCalendar(2016,4,1,8,0),
+				new GregorianCalendar(2016,4,1,10,0)));
 		taskArr.get(5).setIsFinished(true);
 		taskArr.get(5).setIsImportant(true);
 		
