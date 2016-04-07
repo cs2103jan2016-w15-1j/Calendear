@@ -14,6 +14,7 @@ import java.util.ArrayList;
  * Controller for User Interaction
  */
 public class Controller {
+	private static final int DONE_ID = 8;
 	
 	private Scanner _scanner;
 	private CDLogic _cdLogic;
@@ -50,9 +51,16 @@ public class Controller {
 	    	Command command = _cdLogic.parseInput(userCommand);
 //	    	Do Actions
 	    	switch(command.getType()) {
-		    	case ADD:	  Task addedTask = _cdLogic.exeAdd((CommandAdd) command);
-		    				  View.displayAdd(addedTask);
-		    				  break;
+		    	case ADD:	  
+		    		try{
+		    			Task addedTask = _cdLogic.exeAdd((CommandAdd) command);
+		    			View.displayAdd(addedTask);
+		    			break;
+		    		}
+		    		catch(LogicException e){
+		    			View.displayError(e.getMessage());
+		    			break;
+		    		}
 		    				  
 	    		case DISPLAY: ArrayList<Task> tasks = _cdLogic.exeDisplay((CommandDisplay) command);
 	    					  View.displayDisplayInLine(tasks);
@@ -62,13 +70,27 @@ public class Controller {
 	    					  View.displayDelete(deletedTask);
 	    					  break;
 	    		
-	    		case UPDATE:  Task updatedTask = _cdLogic.exeUpdate((CommandUpdate) command);
-	    					  View.displayUpdate(updatedTask);
-	    					  break;
+	    		case UPDATE:  
+	    			try{
+	    				Task updatedTask = _cdLogic.exeUpdate((CommandUpdate) command);
+	    				View.displayUpdate(updatedTask);
+	    				break;
+	    			}
+	    			catch (LogicException e){
+	    				View.displayError(e.getMessage());
+	    				break;
+	    			}
 	    		
-	    		case SEARCH:  ArrayList<Task> foundTasks = _cdLogic.exeSearch((CommandSearch) command);
-	    					  View.displaySearchInLine(foundTasks);
-	    					  break;
+	    		case SEARCH:  
+	    			CommandSearch commandSearch = (CommandSearch)command;
+	    			ArrayList<Task> foundTasks = _cdLogic.exeSearch(commandSearch);
+	    			
+	    			if(commandSearch.getArrToShow()[DONE_ID]){
+	    				View.displaySearchDoneInLine(foundTasks);
+	    			}else{
+	    				View.displaySearchInLine(foundTasks);
+	    			}
+	    			break;
 	    		
 	    		case MARK:	Task markedImportanceTask = _cdLogic.exeMarkImportant((CommandMark) command);
 	    					View.displayMark(markedImportanceTask);
@@ -88,7 +110,7 @@ public class Controller {
 	    				break;
 	    			}
 	    			catch (LogicException logicException){
-	    				System.out.println(logicException.getMessage());
+	    				View.displayError(logicException.getMessage());
 	    				break;
 	    			}
 	    			

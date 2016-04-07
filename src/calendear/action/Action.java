@@ -34,22 +34,27 @@ public class Action {
 	private static final int DATA_START_INDEX = 1;
 	private static final String CLASS_NAME = "Action";
 	private static final Logger log= Logger.getLogger( CLASS_NAME );
+	
 	private ArrayList<Task> _data;
 	private Stack<Command> _undoStack;
 	private Stack<Command> _redoStack;
 	private DataManager _dataManager; 
 	
-	final int NAME_ID = 0;
-	final int TYPE_ID = 1;
-	final int STARTT_ID = 2;
-	final int ENDT_ID = 3;
-	final int LOCATION_ID = 4;
-	final int NOTE_ID = 5;
-	final int TAG_ID = 6;
-	final int IMP_ID = 7;//important
-	final int COMP_ID = 8;//finished
+	static final int NAME_ID = 0;
+	static final int TYPE_ID = 1;
+	static final int STARTT_ID = 2;
+	static final int ENDT_ID = 3;
+	static final int LOCATION_ID = 4;
+	static final int NOTE_ID = 5;
+	static final int TAG_ID = 6;
+	static final int IMP_ID = 7;//important
+	static final int COMP_ID = 8;//finished
 	
-	final String TAG_SEPARATOR = " # ";
+	static final String TAG_SEPARATOR = " # ";
+	static final String NULL_STRING = "";
+	static final int TRUE_START_ID = 1;
+	
+	private final LogicException endTimeBeforeStartTime;
 	
 	//constructor
 
@@ -64,6 +69,7 @@ public class Action {
 		this._dataManager = new DataManager(nameOfFile);
 		this._data = _dataManager.getDataFromFile();
 		this._data.add(0, null);
+		this.endTimeBeforeStartTime = new LogicException("Error: end time before start time");
 	}
 
 	/**
@@ -78,6 +84,12 @@ public class Action {
 		Task toReturn = new Task();
 		boolean[] infoList = commandAdd.getChecklist();
 		Object[] newData = commandAdd.getNewInfo();
+		//quick fix
+		//TODO
+		if(infoList[TYPE_ID] == false){
+			infoList[TYPE_ID] = true;
+			newData[TYPE_ID] = TASK_TYPE.FLOATING;
+		}
 		exchangeInfo(toReturn, infoList, newData);
 		return toReturn;
 	}
@@ -87,10 +99,18 @@ public class Action {
 	 * @param commandAdd
 	 * @return task added to storage
 	 */
-	public Task exeAdd(CommandAdd commandAdd){
+	public Task exeAdd(CommandAdd commandAdd) throws LogicException{
 		assertCommandNotNull(commandAdd);
 		String eventId; 
 		Task addedTask = addWithoutSave(commandAdd);
+		
+		GregorianCalendar startTime = addedTask.getStartTime();
+		GregorianCalendar endTime = addedTask.getEndTime();
+		
+		if(startTime != null && endTime!= null && startTime.compareTo(endTime) > 0){
+			throw endTimeBeforeStartTime;
+		}
+		
 		if(this._dataManager.isLogined()){
 			eventId = this._dataManager.addTaskToGoogle(addedTask);
 			addedTask.setEventId(eventId);
@@ -123,15 +143,18 @@ public class Action {
 	 */
 	public Task exeDelete(CommandDelete commandDelete){
 		assertCommandNotNull(commandDelete);
+		
 		int id = commandDelete.getIndex();
 		Task taskToDelete = this._data.get(id);
-		if(this._dataManager.isLogined() && taskToDelete.getEventId() != null){
+		
+		if(this._dataManager.isLogined() && hasEventId(taskToDelete)){
 			this._dataManager.deleteTaskFromGoogle(taskToDelete);
 			taskToDelete.setEventId(null);
 		}
+		
 		this._data.set(id, null);
 		commandDelete.setDeletedTask(taskToDelete);
-		this._undoStack.push(commandDelete);
+		this._undoStack.push(commandDelete); 
 		this._dataManager.insertDataToFile(dataWithNullRemoved());
 		this._redoStack.clear();
 			
@@ -193,7 +216,11 @@ public class Action {
 			}
 			if(infoList[TAG_ID]){
 				String newTag = (String) newData[TAG_ID];
-				toUpdate.setTag(toUpdate.getTag() + TAG_SEPARATOR + newTag);
+				if(toUpdate.getTag() == null || toUpdate.getTag().equals("")){
+					toUpdate.setTag(newTag);
+				}else{
+					toUpdate.setTag(toUpdate.getTag() + TAG_SEPARATOR + newTag);
+				}
 			}
 			if(infoList[IMP_ID]){
 				boolean isImportant = (boolean)newData[IMP_ID];
@@ -216,9 +243,31 @@ public class Action {
 	 * @param commandUpdate
 	 * @param toUpdate
 	 */
-	private void updateInformation(CommandUpdate commandUpdate, Task toUpdate){
+	private void updateInformation(CommandUpdate commandUpdate, Task toUpdate) throws LogicException{
 		boolean[] infoList = commandUpdate.getChecklist();
 		Object[] newData = commandUpdate.getNewInfo();
+		
+		if(infoList[STARTT_ID] && infoList[ENDT_ID]){
+			GregorianCalendar startTime = (GregorianCalendar)newData[STARTT_ID];
+			GregorianCalendar endTime = (GregorianCalendar)newData[ENDT_ID];
+			if(endTime.compareTo(startTime) < 0){
+				throw endTimeBeforeStartTime;
+			}
+		} else if(infoList[STARTT_ID]){
+			GregorianCalendar startTime = (GregorianCalendar)newData[STARTT_ID];
+			GregorianCalendar endTime = toUpdate.getEndTime();
+			
+			if(endTime.compareTo(startTime) < 0){
+				throw endTimeBeforeStartTime;
+			}
+		} else if(infoList[ENDT_ID]){
+			GregorianCalendar startTime = toUpdate.getEndTime();
+			GregorianCalendar endTime = (GregorianCalendar)newData[ENDT_ID];
+			
+			if(endTime.compareTo(startTime) < 0){
+				throw endTimeBeforeStartTime;
+			}
+		}
 		exchangeInfo(toUpdate, infoList, newData);
 	}
 	
@@ -228,12 +277,12 @@ public class Action {
 	 * @param commandUpdate
 	 * @return
 	 */
-	public Task exeUpdate(CommandUpdate commandUpdate){
+	public Task exeUpdate(CommandUpdate commandUpdate) throws LogicException{
 		assertCommandNotNull(commandUpdate);
 		int changeId = commandUpdate.getIndex();
 		Task toUpdate = _data.get(changeId);
 		updateInformation(commandUpdate, toUpdate);
-		if(this._dataManager.isLogined() && toUpdate.getEventId() != null){
+		if(this._dataManager.isLogined() && hasEventId(toUpdate)){
 			this._dataManager.updateTaskToGoogle(toUpdate);
 		}
 		_undoStack.add(commandUpdate);
@@ -251,7 +300,7 @@ public class Action {
 	public ArrayList<Task> exeDisplay(CommandDisplay commandDisplay){
 		assertCommandNotNull(commandDisplay);
 		ArrayList<Task> toDisplay = new ArrayList<Task>();
-		toDisplay.addAll(this._data);
+		toDisplay.addAll(exeDisplayNotDone());
 		if(commandDisplay.isOnlyImportantDisplayed()){
 			return filterWithImportance(true, toDisplay);
 		}else{
@@ -299,7 +348,7 @@ public class Action {
 						continue;
 					}
 				}
-				if(toShow[LOCATION_ID] &&!withinDistance(task.getLocation(), (String)searchWith[LOCATION_ID])){
+				if(toShow[LOCATION_ID] && !withinDistance(task.getLocation(), (String)searchWith[LOCATION_ID])){
 					toDisplay.set(i, null);
 					continue;
 				
@@ -311,6 +360,7 @@ public class Action {
 				if(toShow[TAG_ID]){
 					if(task.getTag() == null){
 						toDisplay.set(i, null);
+						continue;
 					}else{
 						String[] tagList = task.getTag().split(TAG_SEPARATOR);
 						boolean isTagged = false;
@@ -348,9 +398,9 @@ public class Action {
 			return false;
 		}
 		
-		if(task.getStartTime() == null){
+		if(task.getStartTime() == null){//is deadline task return true
 			if(task.getType() != null && task.getType().equals(TASK_TYPE.DEADLINE)){
-				return true;//no one searches for deadline tasks with start time
+				return true;
 			}else{
 				return false;
 			}
@@ -373,7 +423,7 @@ public class Action {
 	}
 	
 	private boolean withinDistance(String str1, String str2){
-		String splitWith = " ";
+		final String splitWith = " ";
 		if(str1 == null || str2 == null){
 			return false;
 		}
@@ -463,16 +513,16 @@ public class Action {
 			switch(commandType){
 				case ADD:
 					log.log(Level.FINE, "undo add", commandToUndo);
-					CommandAdd commandAdd = (CommandAdd) commandToUndo;//type casting, we are sure that cmdType == ADD
+					CommandAdd commandAdd = (CommandAdd) commandToUndo;
 					int lastIndex = this._data.size()-1;
 					
 					Task toBeRemoved = this._data.get(lastIndex);
-					this._data.remove(lastIndex);//removed from _data ArrayList
-					commandAdd.setTask(toBeRemoved);//commandAdd in _redoStack will always contain the task.
+					this._data.remove(lastIndex);
+					commandAdd.setTask(toBeRemoved);
 					
-					commandToUndo = commandAdd;//typecast back to be added to _redoStack
+					commandToUndo = commandAdd;
 					
-					if(this._dataManager.isLogined() && toBeRemoved.getEventId() != null){
+					if(this._dataManager.isLogined() && hasEventId(toBeRemoved)){
 						this._dataManager.deleteTaskFromGoogle(toBeRemoved);
 					}
 					
@@ -482,12 +532,17 @@ public class Action {
 					CommandUpdate commandUpdate = (CommandUpdate) commandToUndo;
 					Task toUndoUpdate = this._data.get(commandUpdate.getIndex());
 					
-					updateInformation(commandUpdate, toUndoUpdate);
-					
-					commandToUndo = commandUpdate;
-					
-					if(this._dataManager.isLogined() && toUndoUpdate.getEventId() != null){
-						this._dataManager.updateTaskToGoogle(toUndoUpdate);
+					try{
+						updateInformation(commandUpdate, toUndoUpdate);
+						
+						commandToUndo = commandUpdate;
+						
+						if(this._dataManager.isLogined() && hasEventId(toUndoUpdate)){
+							this._dataManager.updateTaskToGoogle(toUndoUpdate);
+						}
+					}
+					catch (LogicException e){
+						assert(false): "encountered unencountable error";
 					}
 					
 					break;
@@ -499,7 +554,7 @@ public class Action {
 					
 					this._data.set(deleteIndex, toAddBack);
 					
-					if(this._dataManager.isLogined() && toAddBack.getEventId() != null){
+					if(this._dataManager.isLogined() && hasEventId(toAddBack)){
 						this._dataManager.addTaskToGoogle(toAddBack);
 					}
 					break;
@@ -517,7 +572,7 @@ public class Action {
 					
 					commandToUndo = commandMark;
 					
-					if(this._dataManager.isLogined() && toUndoMark.getEventId() != null){
+					if(this._dataManager.isLogined() && hasEventId(toUndoMark)){
 						this._dataManager.updateTaskToGoogle(toUndoMark);
 					}
 					break;
@@ -535,7 +590,7 @@ public class Action {
 					
 					commandToUndo = commandDone;
 
-					if(this._dataManager.isLogined() && toUndoDone.getEventId() != null){
+					if(this._dataManager.isLogined() && hasEventId(toUndoDone)){
 						this._dataManager.updateTaskToGoogle(toUndoDone);
 					}
 					break;
@@ -549,7 +604,7 @@ public class Action {
 					
 					commandToUndo = cmdTag;
 					
-					if(this._dataManager.isLogined() && toUndoTag.getEventId() != null){
+					if(this._dataManager.isLogined() && hasEventId(toUndoTag)){
 						this._dataManager.updateTaskToGoogle(toUndoTag);
 					}
 					break;
@@ -563,7 +618,16 @@ public class Action {
 				case CLEAR:
 					log.log(Level.FINE, "undo clear", commandToUndo);
 					CommandClear commandClear = (CommandClear) commandToUndo;
-					this._data = commandClear.getListBeforeClear();
+					ArrayList<Task> listBeforeClear = commandClear.getListBeforeClear();
+					if(commandClear.isLoggedToGoogle()){//logged in when clear
+						for(int i = TRUE_START_ID; i<listBeforeClear.size(); i++){
+							Task currentTask = listBeforeClear.get(i);
+							this._dataManager.addTaskToGoogle(currentTask);
+						}
+					}else{
+						this._data = listBeforeClear;
+					}
+					
 					break;
 				default:
 					log.log(Level.SEVERE, "reached unreachable area in undo", commandToUndo);
@@ -653,6 +717,8 @@ public class Action {
 	}
 	
 	public Task exeTag(CommandTag commandTag){
+		assertCommandNotNull(commandTag);
+		
 		int toTagIndex = commandTag.getIndex();
 		Task taskToTag = this._data.get(toTagIndex);
 		String tag = taskToTag.getTag();
@@ -661,19 +727,24 @@ public class Action {
 		}else{
 			taskToTag.setTag(taskToTag.getTag() + " # " + commandTag.getTagName());
 		}
+		if(this._dataManager.isLogined() && hasEventId(taskToTag)){
+			this._dataManager.updateTaskToGoogle(taskToTag);
+		}
 		this._undoStack.push(commandTag);
 		this._dataManager.insertDataToFile(dataWithNullRemoved());
 		this._redoStack.clear();
 		return taskToTag;
 	}
 	
-	public Task exeMarkImportance(CommandMark commandMark){//marks importance
+	public Task exeMarkImportance(CommandMark commandMark){
+		assertCommandNotNull(commandMark);
+		
 		int toMarkIndex = commandMark.getIndex();
 		Task taskToMark = this._data.get(toMarkIndex);
 		boolean originalImportance = taskToMark.isImportant();
 		taskToMark.setIsImportant(commandMark.isImportant());
 		commandMark.setIsImportant(originalImportance);
-		if(this._dataManager.isLogined() && taskToMark.getEventId() != null){
+		if(this._dataManager.isLogined() && hasEventId(taskToMark)){
 			this._dataManager.updateTaskToGoogle(taskToMark);
 		}
 		this._undoStack.push(commandMark);
@@ -683,13 +754,14 @@ public class Action {
 	}
 
 	public Task exeMarkDone(CommandDone commandDone){
+		assertCommandNotNull(commandDone);
 		
 		int toMarkDoneIndex = commandDone.getIndex();
 		Task taskToMarkDone = this._data.get(toMarkDoneIndex);
 		boolean isOriginallyDone = taskToMarkDone.isFinished();
 		taskToMarkDone.setIsFinished(commandDone.isDone());
 		commandDone.setIsDone(isOriginallyDone);
-		if(this._dataManager.isLogined() && taskToMarkDone.getEventId() != null){
+		if(this._dataManager.isLogined() && hasEventId(taskToMarkDone)){
 			this._dataManager.updateTaskToGoogle(taskToMarkDone);
 		}
 		this._undoStack.push(commandDone);
@@ -706,7 +778,7 @@ public class Action {
 		for(int i = DATA_START_INDEX; i<this._data.size(); i++){
 			Task currentTask = this._data.get(i);
 			if(currentTask != null 
-					&& (currentTask.getEventId().equals(null) || currentTask.getEventId().equals("null"))){
+					&& !hasEventId(currentTask)){
 				//System.out.println("Trying to Add: " + i);
 				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
 				currentTask.setEventId(newEventId);
@@ -717,7 +789,6 @@ public class Action {
 
 	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle commandLoadFromGoogle) throws LogicException{
 		if(!this._dataManager.isLogined()){
-			System.out.println("user not logged in");
 			throw new LogicException("user is not logged in");
 		}
 		ArrayList<Task> originalTaskList = new ArrayList<Task>(this._data);
@@ -745,9 +816,23 @@ public class Action {
 	}
 	
 	public boolean exeClear(CommandClear commandClear){
+		assertCommandNotNull(commandClear);
+		
 		ArrayList<Task> listToSave = new ArrayList<Task>(this._data);
 		commandClear.setBeforeList(listToSave);
-		this._data.clear();
+		if(this._dataManager.isLogined()){
+			Task currentTask;
+			commandClear.setIsLoggedToGoogle();
+			for(int i = TRUE_START_ID; i<this._data.size(); i++){
+				currentTask = this._data.get(i);
+				if(currentTask == null || !hasEventId(currentTask)){
+					continue;
+				}
+				this._dataManager.deleteTaskFromGoogle(currentTask);
+			}
+		}else{
+			this._data.clear();
+		}
 		this._dataManager.insertDataToFile(dataWithNullRemoved());
 		this._undoStack.push(commandClear);
 		return true;
@@ -769,6 +854,7 @@ public class Action {
 		}
 		
 		if (this._dataManager.isLogined()) {
+			System.out.println("logging in");
 			exeAddAllToGoogle();
 		}
 	}
@@ -816,15 +902,19 @@ public class Action {
 	private void removeLastTag(Task taggedTask){
 		String[] tags = taggedTask.getTag().split(TAG_SEPARATOR);
 		String newTag = new String();
-		final int SECOND_LAST_TAG_INDEX = tags.length-2;
-		
-		for(int i = 0; i<SECOND_LAST_TAG_INDEX; i++){
-			newTag += tags[i] + TAG_SEPARATOR;
+		if(tags.length == 1){
+			taggedTask.setTag(null);
+		}else{
+			final int SECOND_LAST_TAG_INDEX = tags.length-2;
+			
+			for(int i = 0; i<SECOND_LAST_TAG_INDEX; i++){
+				newTag += tags[i] + TAG_SEPARATOR;
+			}
+			newTag += tags[SECOND_LAST_TAG_INDEX];
+			taggedTask.setTag(newTag);
 		}
-		newTag += tags[SECOND_LAST_TAG_INDEX];
-		taggedTask.setTag(newTag);
 	}
-	
+	//testing function
 	public void showData(){
 		for(int i = 0; i< this._data.size(); i++){
 			if(this._data.get(i) == null){
@@ -835,7 +925,10 @@ public class Action {
 		}
 	}
 	
-	
+	private boolean hasEventId(Task task){
+		String eventId = task.getEventId();
+		return eventId != null && !eventId.equals("") && !eventId.equals("null");
+	}
 	
 	
 }

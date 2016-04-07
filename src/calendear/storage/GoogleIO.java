@@ -123,7 +123,7 @@ public class GoogleIO {
 				client.events().delete(calendarID, eventId).execute();
 			}
 			catch (IOException ex) {
-//				System.out.println(ex);
+				System.out.println(ex);
 			}
 		}
 		

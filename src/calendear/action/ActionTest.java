@@ -18,7 +18,7 @@ public class ActionTest {
 
 
 	@Test
-	public void testUpdate() throws ParseException{
+	public void testUpdate() throws ParseException, LogicException{
 		Action action1 = new Action("action1.txt");
 		int nextIndex = action1.getAmount();
 		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
@@ -29,7 +29,6 @@ public class ActionTest {
 		String newName = "newName";
 		GregorianCalendar newST = new GregorianCalendar(3, 3, 2003);
 		String newTag = "newTag";
-		//System.out.println(nextIndex);
 		boolean[] chklst = {true, false, true, true, false, false, false, false, false};
 		Object[] objArr = {newName, null, null, (Object) newTime, null, null, null, null};
 		CommandUpdate cU = new CommandUpdate(nextIndex, chklst, objArr);
@@ -38,7 +37,7 @@ public class ActionTest {
 	}
 	
 	@Test
-	public void testUndo() throws ParseException{
+	public void testUndo() throws ParseException, LogicException{
 		Action action1 = new Action("action2.txt");
 		int nextIndex = action1.getAmount();
 		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
@@ -58,7 +57,7 @@ public class ActionTest {
 	}
 	
 	@Test
-	public void testUndoDelete() throws ParseException{
+	public void testUndoDelete() throws ParseException, LogicException{
 		Action action1 = new Action("action2.txt");
 		int nextIndex = action1.getAmount();
 		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
@@ -73,7 +72,7 @@ public class ActionTest {
 	}
 
 	@Test
-	public void testRedo() throws ParseException{
+	public void testRedo() throws ParseException, LogicException{
 		Action action1 = new Action("action3.txt");
 		int nextIndex = action1.getAmount();
 		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
@@ -95,7 +94,7 @@ public class ActionTest {
 	}
 	
 	@Test
-	public void testSearch() throws ParseException{
+	public void testSearch() throws ParseException, LogicException{
 		Action action1 = new Action("action4.txt");
 		int nextIndex = action1.getAmount();
 		Task test1 = new Task("search test1 aaaa");
