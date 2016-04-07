@@ -28,14 +28,29 @@ public class View {
 	private static final String MSG_DISPLAY = "Display tasks:\n";
 	private static final String MSG_SORT = "Sort results:\n";
 	private static final String MSG_SEARCH ="Search results:\n";
+	private static final String MSG_SEARCH_DONE="Search results (done):\n";
 	private static final String MSG_LINKGOOGLE ="Linked to google";
 	private static final String MSG_EXIT ="Exited";
 	private static final String MSG_INVALID ="Invalid command";
 	
-
+	private static final int ID_ADD = 0;
+	private static final int ID_DELETE = 1;
+	private static final int ID_UPDATE =2;
+	private static final int ID_MARK =3;
+	private static final int ID_TAG =4;
+	private static final int ID_DONE = 5;
+	private static final int ID_UNDO =6;
+	private static final int ID_DISPLAY = 7;
+	private static final int ID_SORT = 8;
+	private static final int ID_SEARCH =9;
+	private static final int ID_SEARCH_DONE=10;
+	private static final int ID_LINKGOOGLE =11;
+	private static final int ID_EXIT =12;
+	private static final int ID_INVALID =13;
+	
 	
 	private static final String[] MSG_ARR_N = {MSG_ADD,MSG_DELETE,MSG_UPDATE,MSG_MARK,MSG_TAG,MSG_DONE,
-		MSG_UNDO,MSG_DISPLAY,MSG_SORT,MSG_SEARCH,
+		MSG_UNDO,MSG_DISPLAY,MSG_SORT,MSG_SEARCH,MSG_SEARCH_DONE,
 			MSG_LINKGOOGLE,MSG_EXIT,MSG_INVALID};
 	
 	private static final String[] MSG_ARR = addColor(MSG_ARR_N);
@@ -64,109 +79,109 @@ public class View {
 	}
 	
 	public static void displayAdd(Task task){
-		System.out.println(MSG_ARR[0]+ Full.getTask(task));
+		System.out.println(MSG_ARR[ID_ADD]+ Full.getTask(task));
 	}
 	
 	public static void displayAddInLine(Task task){
-		System.out.println(MSG_ARR[0]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_ADD]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayDelete(Task task){
-		System.out.println(MSG_ARR[1]+ Full.getTask(task));
+		System.out.println(MSG_ARR[ID_DELETE]+ Full.getTask(task));
 	}
 	
 	public static void displayDeleteInLine(Task task){
-		System.out.println(MSG_ARR[1]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_DELETE]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayUpdate(Task task){
-		System.out.println(MSG_ARR[2]+ Full.getTask(task));
+		System.out.println(MSG_ARR[ID_UPDATE]+ Full.getTask(task));
 	}
 	
 	public static void displayUpdateInLine(Task task){
-		System.out.println(MSG_ARR[2]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_UPDATE]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayMark(Task task){
-		System.out.println(MSG_ARR[3]+ Full.getTask(task));
+		System.out.println(MSG_ARR[ID_MARK]+ Full.getTask(task));
 	}
 	
 	public static void displayMarkInLine(Task task){
-		System.out.println(MSG_ARR[3]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_MARK]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayTag(Task task){
-		System.out.println(MSG_ARR[4]+ Full.getTask(task));
+		System.out.println(MSG_ARR[ID_TAG]+ Full.getTask(task));
 	}
 	
 	public static void displayTagInLine(Task task){
-		System.out.println(MSG_ARR[4]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_TAG]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayDone(Task task){
-		System.out.println(MSG_ARR[5]+ Full.getTask(task));
+		System.out.println(MSG_ARR[ID_DONE]+ Full.getTask(task));
 	}
 	
 	public static void displayDoneInLine(Task task){
-		System.out.println(MSG_ARR[5]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_DONE]+ Table.getTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayUndo(boolean successful){
 		if (successful){
-			System.out.println(MSG_ARR[6]);
+			System.out.println(MSG_ARR[ID_UNDO]);
 		}
 	}
 	
-	public static void displayUndoInLine(Task task){
-		System.out.println(MSG_ARR[6]+ Table.getTask(task,NOT_ARR_LIST));
-	}
-	
 	public static void displayDisplay(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[7]+ Full.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[ID_DISPLAY]+ Full.getMultipleTasks(taskArr));
 	}
 	
 	public static void displayDisplayInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[7]+ Table.getMultipleTasksIncomplete(taskArr));
+		System.out.println(MSG_ARR[ID_DISPLAY]+ Table.getMultipleTasksIncomplete(taskArr));
 	}
 	
 	public static void displayDisplayAllInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[7]+ Table.getMultipleTasksInFull(taskArr));
+		System.out.println(MSG_ARR[ID_DISPLAY]+ Table.getMultipleTasksInFull(taskArr));
 	}
 	
 	public static void displaySort(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[8]+ Full.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[ID_SORT]+ Full.getMultipleTasks(taskArr));
 	}
 	
 	public static void displaySortInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[8]+ Table.getMultipleTasksIncomplete(taskArr));
+		System.out.println(MSG_ARR[ID_SORT]+ Table.getMultipleTasksIncomplete(taskArr));
 	}
 	
 	public static void displaySearch(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[9]+ Full.getMultipleTasks(taskArr));
+		System.out.println(MSG_ARR[ID_SEARCH]+ Full.getMultipleTasks(taskArr));
 	}
 	
 	public static void displaySearchInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[9]+ Table.getMultipleTasksInFull(taskArr));
+		System.out.println(MSG_ARR[ID_SEARCH]+ Table.getMultipleTasksInFull(taskArr));
 	}
 	
 	public static void displaySearchDoneInLine(ArrayList<Task> taskArr){
-		System.out.println(MSG_ARR[9]+ Table.getMultipleTasksComplete(taskArr));
+		System.out.println(MSG_ARR[ID_SEARCH_DONE]+ Table.getMultipleTasksComplete(taskArr));
 	}
 	
 	public static void displayLinkGoogle(){
-		System.out.println(MSG_ARR[10]);
+		System.out.println(MSG_ARR[ID_LINKGOOGLE]);
 	}
 	
 	public static void displayExit(){
-		System.out.println(MSG_ARR[11]);
+		System.out.println(MSG_ARR[ID_EXIT]);
 	}
 	
 	public static void displayInvalid(){
-		System.out.println(MSG_ARR[12]);
+		System.out.println(MSG_ARR[ID_INVALID]);
 	}
 	
 	public static void displayError(String msg){
 		System.out.println(msg);
+	}
+	
+	public static void displayHelp(){
+		System.out.println(HelpTable.getHelpTable());
 	}
 	
 
