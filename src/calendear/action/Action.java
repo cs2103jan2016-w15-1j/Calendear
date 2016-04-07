@@ -84,6 +84,12 @@ public class Action {
 		Task toReturn = new Task();
 		boolean[] infoList = commandAdd.getChecklist();
 		Object[] newData = commandAdd.getNewInfo();
+		//quick fix
+		//TODO
+		if(infoList[TYPE_ID] == false){
+			infoList[TYPE_ID] = true;
+			newData[TYPE_ID] = TASK_TYPE.FLOATING;
+		}
 		exchangeInfo(toReturn, infoList, newData);
 		return toReturn;
 	}
