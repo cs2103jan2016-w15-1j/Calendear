@@ -83,7 +83,7 @@ public class View {
 	}
 	
 	public static void displayAddInLine(Task task){
-		System.out.println(MSG_ARR[ID_ADD]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_ADD]+ Table.getSingleTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayDelete(Task task){
@@ -91,7 +91,7 @@ public class View {
 	}
 	
 	public static void displayDeleteInLine(Task task){
-		System.out.println(MSG_ARR[ID_DELETE]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_DELETE]+ Table.getSingleTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayUpdate(Task task){
@@ -99,7 +99,7 @@ public class View {
 	}
 	
 	public static void displayUpdateInLine(Task task){
-		System.out.println(MSG_ARR[ID_UPDATE]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_UPDATE]+ Table.getSingleTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayMark(Task task){
@@ -107,7 +107,7 @@ public class View {
 	}
 	
 	public static void displayMarkInLine(Task task){
-		System.out.println(MSG_ARR[ID_MARK]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_MARK]+ Table.getSingleTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayTag(Task task){
@@ -115,7 +115,7 @@ public class View {
 	}
 	
 	public static void displayTagInLine(Task task){
-		System.out.println(MSG_ARR[ID_TAG]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_TAG]+ Table.getSingleTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayDone(Task task){
@@ -123,7 +123,7 @@ public class View {
 	}
 	
 	public static void displayDoneInLine(Task task){
-		System.out.println(MSG_ARR[ID_DONE]+ Table.getTask(task,NOT_ARR_LIST));
+		System.out.println(MSG_ARR[ID_DONE]+ Table.getSingleTask(task,NOT_ARR_LIST));
 	}
 	
 	public static void displayUndo(boolean successful){

@@ -399,7 +399,8 @@ public class Action {
 		}
 		
 		if(task.getStartTime() == null){//is deadline task return true
-			if(task.getType() != null && task.getType().equals(TASK_TYPE.DEADLINE)){
+			if(task.getType() != null && task.getType().equals(TASK_TYPE.DEADLINE)
+					&& task.getEndTime().compareTo(startTimeToCompare)>=0){
 				return true;
 			}else{
 				return false;

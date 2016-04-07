@@ -131,53 +131,26 @@ public class Table {
 	
 	public static String getMultipleTasksInFull(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
-		String outputUpper = titleLine()+Line.borderLineStar()+Line.borderLineWithWordsStarYellow(BORDER_INCOMPLETE);
-		String outputLower =Line.borderLineWithWordsStarYellow(BORDER_COMPLETE);
-		String outputComplete="";
-		String outputIncomplete="";
-		for(int i=0;i<pairArr.size();i++){
-			if(pairArr.get(i)!=null){
-				if(pairArr.get(i).getTask().isFinished()){
-					outputComplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
-					outputComplete+=Line.borderLineStar();
-				}
-				else {
-					outputIncomplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
-					outputIncomplete+=Line.borderLineStar();
-				}
-			}
-		}
-		if (outputIncomplete.equals("")){
-			outputIncomplete+=MSG_NO_INCOMPLETE+Line.borderLineStar();
-		}
-		if (outputComplete.equals("")){
-			outputComplete+=MSG_NO_COMPLETE+Line.borderLineStar();
-		}
-		return outputUpper+outputIncomplete+outputLower+outputComplete;
+		String output = titleLine()+Line.borderLineStar()
+							+getIncompleteTaskStr(pairArr)
+							+getCompletedTaskStr(pairArr);
+		return output;
 	}
 	
 	public static String getMultipleTasksIncomplete(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
-		String outputUpper = titleLine()+Line.borderLineStar()+Line.borderLineWithWordsStarYellow(BORDER_INCOMPLETE);
-		String outputIncomplete="";
-		for(int i=0;i<pairArr.size();i++){
-			if(pairArr.get(i)!=null){
-				if(!pairArr.get(i).getTask().isFinished()){
-					outputIncomplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
-					outputIncomplete+=Line.borderLineStar();
-					
-				}
-			}
-		}
-		if (outputIncomplete.equals("")){
-			outputIncomplete+=MSG_NO_INCOMPLETE+Line.borderLineStar();
-		}
-		return outputUpper+outputIncomplete;
+		String output = titleLine()+Line.borderLineStar()+getIncompleteTaskStr(pairArr);
+		return output;
 	}
 	
 	public static String getMultipleTasksComplete(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
-		String outputLower =titleLine()+Line.borderLineStar()+Line.borderLineWithWordsStarYellow(BORDER_COMPLETE);
+		String output =titleLine()+Line.borderLineStar()+getCompletedTaskStr(pairArr);
+		return output;
+	}
+	
+	private static String getCompletedTaskStr(ArrayList<Pair<Integer,Task>> pairArr){
+		String outputLower =Line.borderLineWithWordsStarYellow(BORDER_COMPLETE);
 		String outputComplete="";
 		for(int i=0;i<pairArr.size();i++){
 			if(pairArr.get(i)!=null){
@@ -192,6 +165,24 @@ public class Table {
 		}
 		return outputLower+outputComplete;
 	}
+	
+	private static String getIncompleteTaskStr(ArrayList<Pair<Integer,Task>> pairArr){
+		String outputUpper =Line.borderLineWithWordsStarYellow(BORDER_INCOMPLETE);
+		String outputIncomplete="";
+		for(int i=0;i<pairArr.size();i++){
+			if(pairArr.get(i)!=null){
+				if(!pairArr.get(i).getTask().isFinished()){
+					outputIncomplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
+					outputIncomplete+=Line.borderLineStar();			
+				}
+			}
+		}
+		if (outputIncomplete.equals("")){
+			outputIncomplete+=MSG_NO_INCOMPLETE+Line.borderLineStar();
+		}
+		return outputUpper+outputIncomplete;
+	}
+	
 
 
 
@@ -209,14 +200,6 @@ public class Table {
 		ArrayList<Pair<Integer, Task>> pairArr = formPairArr(taskArr);
 		Collections.sort(pairArr,new PairComparator());
 		return pairArr;
-	}
-
-	public static String getTask(Task task,int id){
-		ArrayList<String> detailsInArray = getDetailsArr(task);
-		ArrayList<ArrayList<String>> arrayOfAttributesArr = formArrayOfAttributesArr(detailsInArray);
-		ArrayList<ArrayList<String>> arrayOfLines = formLineArr(arrayOfAttributesArr);
-		String taskInLine = titleLine()+Line.borderLineStar()+formLineString(arrayOfLines,id)+Line.borderLineStar();
-		return taskInLine;
 	}
 	
 	public static String getSingleTask(Task task,int id){
