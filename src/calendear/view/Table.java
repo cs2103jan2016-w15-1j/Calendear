@@ -70,7 +70,6 @@ public class Table {
 	
 	
 	private static final int[] LEN_TITLE_ARR = {0/*,1*/,6,12,1,3,7,11};
-	private static final String BORDER_SIGN = "*";
 	private static final String BORDER_INCOMPLETE = "Incomplete";
 	private static final String BORDER_COMPLETE = "Completed";
 	private static final String BORDER_SIGN2 = ">";
@@ -114,88 +113,76 @@ public class Table {
 			details.add("");
 		}
 		if(task.isImportant()){
-			details.set(0, "Yes");
+			details.set(ID_IMPO, "Yes");
 		}
 		if(task.isFinished()){
-			details.set(1, "Yes");
+			details.set(ID_FINI, "Yes");
 		}
-		details.set(2, task.getName());
-		details.set(3, task.getTag());
-		details.set(4, task.getStartTimeStr());
-		details.set(5, task.getEndTimeStr());
-		details.set(6, task.getLocation()) ;
-		details.set(7, task.getNote());
+		details.set(ID_NAME, task.getName());
+		details.set(ID_TAG, task.getTag());
+		details.set(ID_STIME, task.getStartTimeStr());
+		details.set(ID_ETIME, task.getEndTimeStr());
+		details.set(ID_LOCA, task.getLocation()) ;
+		details.set(ID_NOTE, task.getNote());
 		
 		return details;
 	}
  	
 	
 	public static String getMultipleTasksInFull(ArrayList<Task> taskArr){
-		ArrayList<Pair<Integer,Task>> pairArr = formPairArr(taskArr);
-		Collections.sort(pairArr,new PairComparator());
-		String outputUpper = titleLine()+borderLine()+borderLineWithWords(BORDER_INCOMPLETE);
-		String outputLower =borderLineWithWords(BORDER_COMPLETE);
+		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
+		String output = titleLine()+Line.borderLineStar()
+							+getIncompleteTaskStr(pairArr)
+							+getCompletedTaskStr(pairArr);
+		return output;
+	}
+	
+	public static String getMultipleTasksIncomplete(ArrayList<Task> taskArr){
+		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
+		String output = titleLine()+Line.borderLineStar()+getIncompleteTaskStr(pairArr);
+		return output;
+	}
+	
+	public static String getMultipleTasksComplete(ArrayList<Task> taskArr){
+		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
+		String output =titleLine()+Line.borderLineStar()+getCompletedTaskStr(pairArr);
+		return output;
+	}
+	
+	private static String getCompletedTaskStr(ArrayList<Pair<Integer,Task>> pairArr){
+		String outputLower =Line.borderLineWithWordsStarYellow(BORDER_COMPLETE);
 		String outputComplete="";
-		String outputIncomplete="";
 		for(int i=0;i<pairArr.size();i++){
 			if(pairArr.get(i)!=null){
 				if(pairArr.get(i).getTask().isFinished()){
 					outputComplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
-					outputComplete+=borderLine();
-				}
-				else {
-					outputIncomplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
-					outputIncomplete+=borderLine();
+					outputComplete+=Line.borderLineStar();
 				}
 			}
 		}
-		if (outputIncomplete.equals("")){
-			outputIncomplete+=MSG_NO_INCOMPLETE+borderLine();
-		}
 		if (outputComplete.equals("")){
-			outputComplete+=MSG_NO_COMPLETE+borderLine();
+			outputComplete+=MSG_NO_COMPLETE+Line.borderLineStar();
 		}
-		return outputUpper+outputIncomplete+outputLower+outputComplete;
+		return outputLower+outputComplete;
 	}
 	
-	public static String getMultipleTasksIncomplete(ArrayList<Task> taskArr){
-		ArrayList<Pair<Integer,Task>> pairArr = formPairArr(taskArr);
-		Collections.sort(pairArr,new PairComparator());
-		String outputUpper = titleLine()+borderLine()+borderLineWithWords(BORDER_INCOMPLETE);
+	private static String getIncompleteTaskStr(ArrayList<Pair<Integer,Task>> pairArr){
+		String outputUpper =Line.borderLineWithWordsStarYellow(BORDER_INCOMPLETE);
 		String outputIncomplete="";
 		for(int i=0;i<pairArr.size();i++){
 			if(pairArr.get(i)!=null){
 				if(!pairArr.get(i).getTask().isFinished()){
 					outputIncomplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
-					outputIncomplete+=borderLine();
-					
+					outputIncomplete+=Line.borderLineStar();			
 				}
 			}
 		}
 		if (outputIncomplete.equals("")){
-			outputIncomplete+=MSG_NO_INCOMPLETE+borderLine();
+			outputIncomplete+=MSG_NO_INCOMPLETE+Line.borderLineStar();
 		}
 		return outputUpper+outputIncomplete;
 	}
 	
-	public static String getMultipleTasksComplete(ArrayList<Task> taskArr){
-		ArrayList<Pair<Integer,Task>> pairArr = formPairArr(taskArr);
-		Collections.sort(pairArr,new PairComparator());
-		String outputLower =titleLine()+borderLine()+borderLineWithWords(BORDER_COMPLETE);
-		String outputComplete="";
-		for(int i=0;i<pairArr.size();i++){
-			if(pairArr.get(i)!=null){
-				if(pairArr.get(i).getTask().isFinished()){
-					outputComplete+=getSingleTask(pairArr.get(i).getTask(),pairArr.get(i).getId());
-					outputComplete+=borderLine();
-				}
-			}
-		}
-		if (outputComplete.equals("")){
-			outputComplete+=MSG_NO_COMPLETE+borderLine();
-		}
-		return outputLower+outputComplete;
-	}
 
 
 
@@ -208,13 +195,11 @@ public class Table {
 		}
 		return pairArr;
 	}
-
-	public static String getTask(Task task,int id){
-		ArrayList<String> detailsInArray = getDetailsArr(task);
-		ArrayList<ArrayList<String>> arrayOfAttributesArr = formArrayOfAttributesArr(detailsInArray);
-		ArrayList<ArrayList<String>> arrayOfLines = formLineArr(arrayOfAttributesArr);
-		String taskInLine = titleLine()+borderLine()+formLineString(arrayOfLines,id)+borderLine();
-		return taskInLine;
+	
+	public static ArrayList<Pair<Integer, Task>> getSortedList(ArrayList<Task> taskArr){
+		ArrayList<Pair<Integer, Task>> pairArr = formPairArr(taskArr);
+		Collections.sort(pairArr,new PairComparator());
+		return pairArr;
 	}
 	
 	public static String getSingleTask(Task task,int id){
@@ -231,14 +216,14 @@ public class Table {
 		for(int i=0;i<NUM_OF_ATTRI;i++){
 			arrayOfAttributesArr.add(new ArrayList<String>());
 		}
-		arrayOfAttributesArr.get(0).add(details.get(0));
-		arrayOfAttributesArr.get(1).add(details.get(1));
-		arrayOfAttributesArr.get(2).addAll(formAttributesArr(LEN_NAME, details.get(2)));
-		arrayOfAttributesArr.get(3).addAll(formAttributesArr(LEN_TAG, details.get(3)));
-		arrayOfAttributesArr.get(4).addAll(formAttributesArr(LEN_STIME, details.get(4)));
-		arrayOfAttributesArr.get(5).addAll(formAttributesArr(LEN_ETIME, details.get(5)));
-		arrayOfAttributesArr.get(6).addAll(formAttributesArr(LEN_LOCA, details.get(6)));
-		arrayOfAttributesArr.get(7).addAll(formAttributesArr(LEN_NOTE, details.get(7)));
+		arrayOfAttributesArr.get(ID_IMPO).add(details.get(ID_IMPO));
+		arrayOfAttributesArr.get(ID_FINI).add(details.get(ID_FINI));
+		arrayOfAttributesArr.get(ID_NAME).addAll(formAttributesArr(LEN_NAME, details.get(ID_NAME)));
+		arrayOfAttributesArr.get(ID_TAG).addAll(formAttributesArr(LEN_TAG, details.get(ID_TAG)));
+		arrayOfAttributesArr.get(ID_STIME).addAll(formAttributesArr(LEN_STIME, details.get(ID_STIME)));
+		arrayOfAttributesArr.get(ID_ETIME).addAll(formAttributesArr(LEN_ETIME, details.get(ID_ETIME)));
+		arrayOfAttributesArr.get(ID_LOCA).addAll(formAttributesArr(LEN_LOCA, details.get(ID_LOCA)));
+		arrayOfAttributesArr.get(ID_NOTE).addAll(formAttributesArr(LEN_NOTE, details.get(ID_NOTE)));
 		
 		return arrayOfAttributesArr;
 	}
@@ -310,59 +295,33 @@ public class Table {
 		formLineString(ArrayList<ArrayList<String>> arr,int id){
 		String taskInLine ="";
 		if(id == NOT_ARR_LIST){
-			taskInLine += String.format(format,S,arr.get(0).get(0)/*,arr.get(0).get(1)*/
-				,arr.get(0).get(2),arr.get(0).get(3),arr.get(0).get(4)
-				,arr.get(0).get(5)/*,arr.get(0).get(6),arr.get(0).get(7)*/);
+			taskInLine += String.format(format,S,arr.get(0).get(ID_IMPO)/*,arr.get(0).get(ID_FINI)*/
+				,arr.get(0).get(ID_NAME),arr.get(0).get(ID_TAG),arr.get(0).get(ID_STIME)
+				,arr.get(0).get(ID_ETIME)/*,arr.get(0).get(ID_LOCA),arr.get(0).get(ID_NOTE)*/);
 		}
 		else{
-			taskInLine += String.format(format,id+".",arr.get(0).get(0)/*,arr.get(0).get(1)*/
-					,arr.get(0).get(2),arr.get(0).get(3),arr.get(0).get(4)
-					,arr.get(0).get(5)/*,arr.get(0).get(6),arr.get(0).get(7)*/);
+			taskInLine += String.format(format,id+".",arr.get(0).get(ID_IMPO)/*,arr.get(0).get(ID_FINI)*/
+					,arr.get(0).get(ID_NAME),arr.get(0).get(ID_TAG),arr.get(0).get(ID_STIME)
+					,arr.get(0).get(ID_ETIME)/*,arr.get(0).get(ID_LOCA),arr.get(0).get(ID_NOTE)*/);
 		}
 		for(int i=1;i<arr.size();i++){
-			taskInLine += String.format(format," ",arr.get(i).get(0)/*,arr.get(i).get(1)*/
-					,arr.get(i).get(2),arr.get(i).get(3),arr.get(i).get(4)
-					,arr.get(i).get(5)/*,arr.get(i).get(6),arr.get(i).get(7)*/);
+			taskInLine += String.format(format," ",arr.get(i).get(ID_IMPO)/*,arr.get(i).get(ID_FINI)*/
+					,arr.get(i).get(ID_NAME),arr.get(i).get(ID_TAG),arr.get(i).get(ID_STIME)
+					,arr.get(i).get(ID_ETIME)/*,arr.get(i).get(ID_LOCA),arr.get(i).get(ID_NOTE)*/);
 		}
 		return taskInLine;
 		
 	}
 	
 	private static String titleLine(){
-		String titleLine = borderLine();
+		String titleLine = Line.borderLineStar();
 		titleLine+= getHeaderString(HEADERS_ARR_N);
 				/*String.format(format," ",HEADERS_ARR[0],HEADERS_ARR[1],HEADERS_ARR[2], 
 				HEADERS_ARR[3], HEADERS_ARR[4],HEADERS_ARR[5],HEADERS_ARR[6],HEADERS_ARR[7]);*/
 		return titleLine;
 	}
 	
-	private static String borderLine(){
-		String border ="";
-		for(int i=0;i<LEN_TOTAL;i++){
-			border+= BORDER_SIGN;
-		}
-		border+="\n";
-		String nborder = String.format(formatGreen, border);
-		return nborder;
-	}
 	
-	private static String borderLineWithWords(String s){
-		int sLen = s.length();
-		int lineLen = LEN_TOTAL -sLen;
-		int segment1 = lineLen/2;
-		int segment2 = lineLen -segment1;
-		String line="";
-		for(int i=0;i<segment1;i++){
-			line+= BORDER_SIGN;
-		}
-		line+=s;
-		for(int i=0;i<segment2;i++){
-			line+= BORDER_SIGN;
-		}
-		line+="\n";
-		String nLine = String.format(formatYellow, line);
-		return nLine;
-	}
 	
 	private static String welcomeString(String s){
 		int sLen = s.length();
@@ -378,7 +337,6 @@ public class Table {
 			line+= BORDER_SIGN3;
 		}
 		line+="\n";
-		String nLine = String.format(formatRed, line);
-		return nLine;
+		return line;
 	}
 }
