@@ -84,8 +84,6 @@ public class Action {
 		Task toReturn = new Task();
 		boolean[] infoList = commandAdd.getChecklist();
 		Object[] newData = commandAdd.getNewInfo();
-		//quick fix
-		//TODO
 		if(infoList[TYPE_ID] == false){
 			infoList[TYPE_ID] = true;
 			newData[TYPE_ID] = TASK_TYPE.FLOATING;
@@ -364,12 +362,7 @@ public class Action {
 					}else{
 						String[] tagList = task.getTag().split(TAG_SEPARATOR);
 						boolean isTagged = false;
-						for(int j = 0; j<tagList.length ;j++ ){
-							if(tagList[j].equalsIgnoreCase(((String) searchWith[TAG_ID]).trim())){
-								isTagged = true;
-								break;
-							}
-						}
+						isTagged = setIsTagged(searchWith, tagList, isTagged);
 						if(!isTagged){
 							toDisplay.set(i, null);
 							continue;
@@ -391,6 +384,17 @@ public class Action {
 		}
 		
 		return toDisplay;
+	}
+
+	private boolean setIsTagged(Object[] searchWith, String[] tagList,
+			boolean isTagged) {
+		for(int j = 0; j<tagList.length ;j++ ){
+			if(tagList[j].equalsIgnoreCase(((String) searchWith[TAG_ID]).trim())){
+				isTagged = true;
+				break;
+			}
+		}
+		return isTagged;
 	}
 	
 	private boolean isStartTimeWithinRange(Task task, GregorianCalendar startTimeToCompare){
@@ -639,7 +643,6 @@ public class Action {
 			return true;
 		}
 		catch (EmptyStackException e){
-			System.out.println("nothing to undo");
 			return false;
 		}
 	}
@@ -707,7 +710,6 @@ public class Action {
 		}
 		
 		catch (EmptyStackException e){
-			System.out.println("nothing to undo");
 			return false;
 		}
 		
@@ -794,6 +796,15 @@ public class Action {
 		ArrayList<Task> originalTaskList = new ArrayList<Task>(this._data);
 		commandLoadFromGoogle.setUndoList(originalTaskList);
 		ArrayList<Task> loadedTasks = this._dataManager.getTasksFromGoogle();
+		updateLocalTasks(loadedTasks);
+		this._data.addAll(loadedTasks);
+		this._dataManager.insertDataToFile(dataWithNullRemoved());
+		this._undoStack.push(commandLoadFromGoogle);
+		this._redoStack.clear();
+		return this._data;
+	}
+
+	private void updateLocalTasks(ArrayList<Task> loadedTasks) {
 		for(int i = DATA_START_INDEX; i< this._data.size(); i++){
 			Task currentTask = this._data.get(i);
 			for(int j = 0; j< loadedTasks.size(); j++){
@@ -808,11 +819,6 @@ public class Action {
 				}
 			}
 		}
-		this._data.addAll(loadedTasks);
-		this._dataManager.insertDataToFile(dataWithNullRemoved());
-		this._undoStack.push(commandLoadFromGoogle);
-		this._redoStack.clear();
-		return this._data;
 	}
 	
 	public boolean exeClear(CommandClear commandClear){
@@ -821,21 +827,25 @@ public class Action {
 		ArrayList<Task> listToSave = new ArrayList<Task>(this._data);
 		commandClear.setBeforeList(listToSave);
 		if(this._dataManager.isLogined()){
-			Task currentTask;
 			commandClear.setIsLoggedToGoogle();
-			for(int i = TRUE_START_ID; i<this._data.size(); i++){
-				currentTask = this._data.get(i);
-				if(currentTask == null || !hasEventId(currentTask)){
-					continue;
-				}
-				this._dataManager.deleteTaskFromGoogle(currentTask);
-			}
+			clearTasksFromGoogle();
 		}else{
 			this._data.clear();
 		}
 		this._dataManager.insertDataToFile(dataWithNullRemoved());
 		this._undoStack.push(commandClear);
 		return true;
+	}
+
+	private void clearTasksFromGoogle() {
+		Task currentTask;
+		for(int i = TRUE_START_ID; i<this._data.size(); i++){
+			currentTask = this._data.get(i);
+			if(currentTask == null || !hasEventId(currentTask)){
+				continue;
+			}
+			this._dataManager.deleteTaskFromGoogle(currentTask);
+		}
 	}
 	
 	/**

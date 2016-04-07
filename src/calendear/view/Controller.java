@@ -1,7 +1,6 @@
 package calendear.view;
 import calendear.action.CDLogic;
 import calendear.action.LogicException;
-
 import calendear.util.*;
 
 import java.util.Scanner;
@@ -118,15 +117,23 @@ public class Controller {
 	    				   View.displayDone(completedTask);
 	    				   break;
 	    				
-	    		case UNDO: _cdLogic.exeUndo();
-	    					break;
-	    				   
+	    		case UNDO: 
+	    			boolean undoSuccessful = _cdLogic.exeUndo();
+	    			
+	    			if(!undoSuccessful){
+	    				View.displayError("Error: nothing to undo");
+	    			}	   
+	    			break;
 	    		case EXIT:  View.displayExit();
 	    					System.exit(0);
 	    					break;
 	    					
-	    		case REDO: _cdLogic.exeRedo();
-	    					break;
+	    		case REDO: 
+	    			boolean redoSuccessful = _cdLogic.exeRedo();
+	    			if(!redoSuccessful){
+	    				View.displayError("Error: nothing to redo.");
+	    			}	
+	    			break;
 	    		
 	    		case SAVE:  String result = _cdLogic.exeSaveFile((CommandSave) command);
 	    					System.out.println(result);
