@@ -10,6 +10,11 @@ import java.text.ParseException;
 
 import calendear.util.Task;
 
+/**
+ * Tests DataManager at a high level for writing and reading data from file.
+ * @author Phang Chun Rong
+ *
+ */
 public class DataManagerTest {
 	
 	private DataManager _dataManager;

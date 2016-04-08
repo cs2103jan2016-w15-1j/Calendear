@@ -12,9 +12,7 @@ import java.util.ArrayList;
  *
  */
 public class DataManager {
-	
-	private boolean _isLogined = false;
-	
+		
 	/**
 	 * @return an ArrayList of tasks based on the stored file.
 	 */
@@ -34,11 +32,11 @@ public class DataManager {
 	 * Logs user into Google
 	 */
 	public void loginGoogle() {
-		_isLogined = GoogleIO.login();
+		GoogleIO.login();
 	}
 	
 	public boolean isLogined() {
-		return _isLogined;
+		return GoogleIO.isLogined();
 	}
 	
 	/**
