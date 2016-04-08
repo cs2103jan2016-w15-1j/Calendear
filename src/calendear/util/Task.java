@@ -342,7 +342,6 @@ public class Task {
 							break;
 				}
 			}
-			//Ugly repetition
 			else {
 				start = googleEvent.getStart();
 				end = googleEvent.getEnd();
