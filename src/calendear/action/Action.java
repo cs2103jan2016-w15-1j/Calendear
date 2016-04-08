@@ -49,12 +49,14 @@ public class Action {
 	static final int TAG_ID = 6;
 	static final int IMP_ID = 7;//important
 	static final int COMP_ID = 8;//finished
+	static final int TOTAL_LEN = 9;
 	
 	static final String TAG_SEPARATOR = " # ";
 	static final String NULL_STRING = "";
 	static final int TRUE_START_ID = 1;
 	
 	private final LogicException endTimeBeforeStartTime;
+	private final LogicException tryingToModifyDeletedTask;
 	
 	//constructor
 
@@ -70,6 +72,7 @@ public class Action {
 		this._data = _dataManager.getDataFromFile();
 		this._data.add(0, null);
 		this.endTimeBeforeStartTime = new LogicException("Error: end time before start time");
+		this.tryingToModifyDeletedTask = new LogicException("Error: trying to modify deleted task");
 	}
 
 	/**
@@ -139,11 +142,20 @@ public class Action {
 	 * @param commandDelete
 	 * @return
 	 */
-	public Task exeDelete(CommandDelete commandDelete){
+	public Task exeDelete(CommandDelete commandDelete) throws ArrayIndexOutOfBoundsException, LogicException{
 		assertCommandNotNull(commandDelete);
 		
 		int id = commandDelete.getIndex();
+		
+		if(id >= this._data.size()){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
 		Task taskToDelete = this._data.get(id);
+		
+		if(taskToDelete == null){
+			throw this.tryingToModifyDeletedTask;
+		}
 		
 		if(this._dataManager.isLogined() && hasEventId(taskToDelete)){
 			this._dataManager.deleteTaskFromGoogle(taskToDelete);
@@ -275,10 +287,20 @@ public class Action {
 	 * @param commandUpdate
 	 * @return
 	 */
-	public Task exeUpdate(CommandUpdate commandUpdate) throws LogicException{
+	public Task exeUpdate(CommandUpdate commandUpdate) throws LogicException, ArrayIndexOutOfBoundsException{
 		assertCommandNotNull(commandUpdate);
 		int changeId = commandUpdate.getIndex();
+		
+		if(changeId >= this._data.size()){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
 		Task toUpdate = _data.get(changeId);
+		
+		if(toUpdate == null){
+			throw this.tryingToModifyDeletedTask;
+		}
+		
 		updateInformation(commandUpdate, toUpdate);
 		if(this._dataManager.isLogined() && hasEventId(toUpdate)){
 			this._dataManager.updateTaskToGoogle(toUpdate);
@@ -474,6 +496,7 @@ public class Action {
 		assertCommandNotNull(commandSearch);
 		boolean[] toShow = commandSearch.getArrToShow();
 		Object[] searchWith = commandSearch.getArrSearchWith();
+		assert(toShow.length == TOTAL_LEN && searchWith.length == TOTAL_LEN) : "length of toshow and searchwith are not 8";
 		return displaySelectiveHelper(toShow, searchWith);
 	}
 	
@@ -719,11 +742,20 @@ public class Action {
 		}
 	}
 	
-	public Task exeTag(CommandTag commandTag){
+	public Task exeTag(CommandTag commandTag) throws LogicException{
 		assertCommandNotNull(commandTag);
 		
 		int toTagIndex = commandTag.getIndex();
+		if(toTagIndex >= this._data.size()){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
 		Task taskToTag = this._data.get(toTagIndex);
+		
+		if(taskToTag == null){
+			throw this.tryingToModifyDeletedTask;
+		}
+		
 		String tag = taskToTag.getTag();
 		if(tag == null || tag.equals("")){
 			taskToTag.setTag(commandTag.getTagName());
@@ -739,11 +771,21 @@ public class Action {
 		return taskToTag;
 	}
 	
-	public Task exeMarkImportance(CommandMark commandMark){
+	public Task exeMarkImportance(CommandMark commandMark) throws LogicException{
 		assertCommandNotNull(commandMark);
 		
 		int toMarkIndex = commandMark.getIndex();
+		
+		if(toMarkIndex >= this._data.size()){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
 		Task taskToMark = this._data.get(toMarkIndex);
+		
+		if(taskToMark == null){
+			throw this.tryingToModifyDeletedTask;
+		}
+		
 		boolean originalImportance = taskToMark.isImportant();
 		taskToMark.setIsImportant(commandMark.isImportant());
 		commandMark.setIsImportant(originalImportance);
@@ -756,11 +798,20 @@ public class Action {
 		return taskToMark;
 	}
 
-	public Task exeMarkDone(CommandDone commandDone){
+	public Task exeMarkDone(CommandDone commandDone) throws LogicException {
 		assertCommandNotNull(commandDone);
 		
 		int toMarkDoneIndex = commandDone.getIndex();
+		if(toMarkDoneIndex >= this._data.size()){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
 		Task taskToMarkDone = this._data.get(toMarkDoneIndex);
+		
+		if( taskToMarkDone == null){
+			throw this.tryingToModifyDeletedTask;
+		}
+		
 		boolean isOriginallyDone = taskToMarkDone.isFinished();
 		taskToMarkDone.setIsFinished(commandDone.isDone());
 		commandDone.setIsDone(isOriginallyDone);

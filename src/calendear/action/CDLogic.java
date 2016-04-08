@@ -38,17 +38,17 @@ public class CDLogic {
 		return task;
 	}
 	
-	public Task exeDelete(CommandDelete commandDelete) {
+	public Task exeDelete(CommandDelete commandDelete) throws LogicException{
 		Task task = _action.exeDelete(commandDelete);
 		return task;
 	}
 	
-	public Task exeMarkImportant(CommandMark commandMark){
+	public Task exeMarkImportant(CommandMark commandMark) throws LogicException{
 		Task task = _action.exeMarkImportance(commandMark);
 		return task;
 	}
 	
-	public Task exeMarkDone(CommandDone commandDone){
+	public Task exeMarkDone(CommandDone commandDone) throws LogicException{
 		Task task = _action.exeMarkDone(commandDone);
 		return task;
 	}
@@ -65,7 +65,7 @@ public class CDLogic {
 		return _action.exeRedo();
 	}
 	
-	public Task exeTag(CommandTag commandTag){
+	public Task exeTag(CommandTag commandTag) throws LogicException{
 		return _action.exeTag(commandTag);
 	}
 	

@@ -61,13 +61,28 @@ public class Controller {
 		    			break;
 		    		}
 		    				  
-	    		case DISPLAY: ArrayList<Task> tasks = _cdLogic.exeDisplay((CommandDisplay) command);
-	    					  View.displayDisplayInLine(tasks);
-	    					  break;
+	    		case DISPLAY: 
+	    			try{
+	    				ArrayList<Task> tasks = _cdLogic.exeDisplay((CommandDisplay) command);
+	    				View.displayDisplayInLine(tasks);
+	    			}
+	    			catch(ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
+	    			}
+	    				break;
 	    					  
-	    		case DELETE:  Task deletedTask = _cdLogic.exeDelete((CommandDelete) command);
-	    					  View.displayDelete(deletedTask);
-	    					  break;
+	    		case DELETE:  
+	    			try{
+	    				Task deletedTask = _cdLogic.exeDelete((CommandDelete) command);
+	    				View.displayDelete(deletedTask);
+	    			}
+	    			catch (ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
+	    			}
+	    			catch (LogicException e){
+	    				View.displayError(e.getMessage());
+	    			}
+	    			break;
 	    		
 	    		case UPDATE:  
 	    			try{
@@ -77,6 +92,10 @@ public class Controller {
 	    			}
 	    			catch (LogicException e){
 	    				View.displayError(e.getMessage());
+	    				break;
+	    			}
+	    			catch (ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
 	    				break;
 	    			}
 	    		
@@ -91,13 +110,31 @@ public class Controller {
 	    			}
 	    			break;
 	    		
-	    		case MARK:	Task markedImportanceTask = _cdLogic.exeMarkImportant((CommandMark) command);
-	    					View.displayMark(markedImportanceTask);
-	    					break;
+	    		case MARK:	
+	    			try{
+	    				Task markedImportanceTask = _cdLogic.exeMarkImportant((CommandMark) command);
+		    			View.displayMark(markedImportanceTask);
+	    			}
+	    			catch (ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
+	    			}
+	    			catch (LogicException e){
+	    				View.displayError(e.getMessage());
+	    			}
+	    				break;
 
-	    		case TAG:	Task taggedTag = _cdLogic.exeTag((CommandTag) command);
-	    					View.displayTag(taggedTag);
-	    					break;
+	    		case TAG:	
+	    			try{
+	    				Task taggedTag = _cdLogic.exeTag((CommandTag) command);
+	    				View.displayTag(taggedTag);
+	    			}
+	    			catch(ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
+	    			}
+	    			catch (LogicException e){
+	    				View.displayError(e.getMessage());
+	    			}
+	    				break;
 	    		
 	    		case LINK_GOOGLE: _cdLogic.exeLinkGoogle();
 	    						  break;
@@ -106,16 +143,25 @@ public class Controller {
 	    			try{
 	    				ArrayList<Task> resultingList =  _cdLogic.exeLoadTasksFromGoogle((CommandLoadFromGoogle) command);
 	    				View.displayDisplayInLine(resultingList);
-	    				break;
 	    			}
 	    			catch (LogicException logicException){
 	    				View.displayError(logicException.getMessage());
-	    				break;
+	    				
 	    			}
+	    			break;
 	    			
-	    		case DONE: Task completedTask = _cdLogic.exeMarkDone((CommandDone) command);
-	    				   View.displayDone(completedTask);
-	    				   break;
+	    		case DONE: 
+	    			try{
+	    				Task completedTask = _cdLogic.exeMarkDone((CommandDone) command);
+	    				View.displayDone(completedTask);
+	    			}
+	    			catch(ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
+	    			}
+	    			catch (LogicException e){
+	    				View.displayError(e.getMessage());
+	    			}
+	    				break;
 	    				
 	    		case UNDO: 
 	    			boolean undoSuccessful = _cdLogic.exeUndo();
