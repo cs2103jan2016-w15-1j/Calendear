@@ -139,16 +139,16 @@ public class Controller {
 	    		case LINK_GOOGLE: _cdLogic.exeLinkGoogle();
 	    						  break;
 	    						  
-	    		case LOAD_FROM_GOOGLE:  
-	    			try{
-	    				ArrayList<Task> resultingList =  _cdLogic.exeLoadTasksFromGoogle((CommandLoadFromGoogle) command);
-	    				View.displayDisplayInLine(resultingList);
-	    			}
-	    			catch (LogicException logicException){
-	    				View.displayError(logicException.getMessage());
-	    				
-	    			}
-	    			break;
+
+	    		case LOAD_FROM_GOOGLE:  try{
+	    									ArrayList<Task> resultingList =  _cdLogic.exeLoadTasksFromGoogle((CommandLoadFromGoogle) command);
+	    									View.displayDisplayInLine(resultingList);
+	    									break;
+	    								}
+	    								catch (LogicException logicException){
+	    									View.displayError(logicException.getMessage());
+	    									break;
+	    								}
 	    			
 	    		case DONE: 
 	    			try{
@@ -163,23 +163,22 @@ public class Controller {
 	    			}
 	    				break;
 	    				
-	    		case UNDO: 
-	    			boolean undoSuccessful = _cdLogic.exeUndo();
-	    			
-	    			if(!undoSuccessful){
-	    				View.displayError("Error: nothing to undo");
-	    			}	   
-	    			break;
+	    		case UNDO: boolean undoSuccessful = _cdLogic.exeUndo();
+	    				   if(!undoSuccessful){
+	    					   View.displayError("Error: nothing to undo");
+	    				   }	   
+	    				   break;
+	    				   
 	    		case EXIT:  View.displayExit();
 	    					System.exit(0);
 	    					break;
 	    					
-	    		case REDO: 
-	    			boolean redoSuccessful = _cdLogic.exeRedo();
-	    			if(!redoSuccessful){
-	    				View.displayError("Error: nothing to redo.");
-	    			}	
-	    			break;
+	    		case REDO: boolean redoSuccessful = _cdLogic.exeRedo();
+	    				   if(!redoSuccessful){
+	    					   View.displayError("Error: nothing to redo.");
+	    				   }
+	    				   
+	    				   break;
 	    		
 	    		case SAVE:  String result = _cdLogic.exeSaveFile((CommandSave) command);
 	    					System.out.println(result);
@@ -187,6 +186,9 @@ public class Controller {
 	    				
 	    		case CLEAR: _cdLogic.exeClear((CommandClear) command);
 	    				break;
+	    		
+	    		case HELP:	View.displayHelp();
+	    				    break;
 	    		default: 
 	    				break;
 	    	}
