@@ -34,6 +34,7 @@ public class View {
 	private static final String MSG_LINKGOOGLE ="Linked to google";
 	private static final String MSG_EXIT ="Exited";
 	private static final String MSG_INVALID ="Invalid command";
+	private static final String MSG_REDO ="Redo successfully.\n";
 	
 	private static final int ID_ADD = 0;
 	private static final int ID_DELETE = 1;
@@ -49,19 +50,15 @@ public class View {
 	private static final int ID_LINKGOOGLE =11;
 	private static final int ID_EXIT =12;
 	private static final int ID_INVALID =13;
+	private static final int ID_REDO =14;
 	
 	
 	private static final String[] MSG_ARR_N = {MSG_ADD,MSG_DELETE,MSG_UPDATE,MSG_MARK,MSG_TAG,MSG_DONE,
 		MSG_UNDO,MSG_DISPLAY,MSG_SORT,MSG_SEARCH,MSG_SEARCH_DONE,
-			MSG_LINKGOOGLE,MSG_EXIT,MSG_INVALID};
+			MSG_LINKGOOGLE,MSG_EXIT,MSG_INVALID,MSG_REDO};
 	
-	private static final String[] MSG_ARR = addColor(MSG_ARR_N);
-	
-	private static final String MSG_WELCOME = ANSI_PURPLE+"Welcome to calendear!"+ANSI_RESET;
+	private static final String[] MSG_ARR = addColor(MSG_ARR_N);	
 	private static final String MSG_COMMAND = ANSI_PURPLE+"Please enter command:"+ANSI_RESET;
-	private static final String MSG_YES = "Yes";
-	private static final String MSG_NO = "No";
-	
 	private static final int NOT_ARR_LIST = -1;
 	
 	private static String[] addColor(String[] arr){
@@ -128,10 +125,12 @@ public class View {
 		System.out.println(MSG_ARR[ID_DONE]+ Table.getSingleTask(task,NOT_ARR_LIST));
 	}
 	
-	public static void displayUndo(boolean successful){
-		if (successful){
-			System.out.println(MSG_ARR[ID_UNDO]);
-		}
+	public static void displayUndo(){
+		System.out.println(MSG_ARR[ID_UNDO]);
+	}
+	
+	public static void displayRedo(){
+		System.out.println(MSG_ARR[ID_REDO]);
 	}
 	
 	public static void displayDisplay(ArrayList<Task> taskArr){

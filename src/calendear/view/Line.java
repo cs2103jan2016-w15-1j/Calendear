@@ -17,8 +17,6 @@ public class Line {
 	private static final String BORDER_SIGN_DASH = "-";
 	private static final String BORDER_SIGN_EQUAL = "=";
 	
-	
-	private static String formatRed = ANSI_RED+"%s"+ANSI_RESET;
 	private static String formatYellow = ANSI_YELLOW+"%s"+ANSI_RESET;
 	private static String formatCyan = ANSI_CYAN+"%s"+ANSI_RESET;
 	private static String formatGreen = ANSI_GREEN+"%s"+ANSI_RESET;

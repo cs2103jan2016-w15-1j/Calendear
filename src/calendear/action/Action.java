@@ -85,7 +85,8 @@ public class Action {
 			infoList[TYPE_ID] = true;
 			newData[TYPE_ID] = TASK_TYPE.FLOATING;
 		}
-		exchangeInfo(toReturn, infoList, newData);
+		boolean isUndo = false;
+		exchangeInfo(toReturn, infoList, newData, isUndo);
 		return toReturn;
 	}
 	
@@ -178,7 +179,7 @@ public class Action {
 	 * @param newData
 	 */
 	//helper class to exchange contents of CommandUpdate and task
-	private void exchangeInfo(Task toUpdate, boolean[] infoList, Object[] newData){
+	private void exchangeInfo(Task toUpdate, boolean[] infoList, Object[] newData, boolean isUndo){
 		
 		try{
 			if(infoList[NAME_ID]){
@@ -198,16 +199,12 @@ public class Action {
 				GregorianCalendar oldStartTime = toUpdate.getStartTime();
 				toUpdate.setStartTime((GregorianCalendar) newData[STARTT_ID]);
 				newData[STARTT_ID] = (Object)oldStartTime;
-				toUpdate.setType(TASK_TYPE.EVENT);// only even tasks have start time
 			}
 			if(infoList[ENDT_ID]){
 				//end time
 				GregorianCalendar oldEndTime = toUpdate.getEndTime();
 				toUpdate.setEndTime((GregorianCalendar) newData[ENDT_ID]);
 				newData[ENDT_ID] = (Object)oldEndTime;
-				if(toUpdate.getType() == null || toUpdate.getType().equals(TASK_TYPE.FLOATING)){//originally float now deadline
-					toUpdate.setType(TASK_TYPE.DEADLINE);
-				}
 			}
 			if(infoList[LOCATION_ID]){
 				String newLoc = (String)newData[LOCATION_ID];
@@ -221,12 +218,20 @@ public class Action {
 			}
 			if(infoList[TAG_ID]){
 				String newTag = (String) newData[TAG_ID];
-				if(toUpdate.getTag() == null || toUpdate.getTag().equals("")){
+				String oldTag = toUpdate.getTag();
+				if(isUndo){
 					toUpdate.setTag(newTag);
 				}else{
-					toUpdate.setTag(toUpdate.getTag() + TAG_SEPARATOR + newTag);
+					
+					if(toUpdate.getTag() == null || toUpdate.getTag().equals("")){
+						toUpdate.setTag(newTag);
+					}else{
+						toUpdate.setTag(toUpdate.getTag() + TAG_SEPARATOR + newTag);
+					}
 				}
+				newData[TAG_ID] = oldTag;
 			}
+			
 			if(infoList[IMP_ID]){
 				boolean isImportant = (boolean)newData[IMP_ID];
 				newData[IMP_ID] = toUpdate.isImportant();
@@ -237,6 +242,8 @@ public class Action {
 				newData[COMP_ID] = toUpdate.isFinished();
 				toUpdate.setIsFinished(isFinished);
 			}
+			
+			
 		}catch (NullPointerException e){
 			e.printStackTrace();
 		}catch (ArrayIndexOutOfBoundsException e){
@@ -248,32 +255,33 @@ public class Action {
 	 * @param commandUpdate
 	 * @param toUpdate
 	 */
-	private void updateInformation(CommandUpdate commandUpdate, Task toUpdate) throws LogicException{
+	private void updateInformation(CommandUpdate commandUpdate, Task toUpdate, boolean isUndo) throws LogicException{
 		boolean[] infoList = commandUpdate.getChecklist();
 		Object[] newData = commandUpdate.getNewInfo();
-		
-		if(infoList[STARTT_ID] && infoList[ENDT_ID]){
-			GregorianCalendar startTime = (GregorianCalendar)newData[STARTT_ID];
-			GregorianCalendar endTime = (GregorianCalendar)newData[ENDT_ID];
-			if(endTime.compareTo(startTime) < 0){
-				throw endTimeBeforeStartTime;
-			}
-		} else if(infoList[STARTT_ID]){
-			GregorianCalendar startTime = (GregorianCalendar)newData[STARTT_ID];
-			GregorianCalendar endTime = toUpdate.getEndTime();
-			
-			if(endTime.compareTo(startTime) < 0){
-				throw endTimeBeforeStartTime;
-			}
-		} else if(infoList[ENDT_ID]){
-			GregorianCalendar startTime = toUpdate.getEndTime();
-			GregorianCalendar endTime = (GregorianCalendar)newData[ENDT_ID];
-			
-			if(endTime.compareTo(startTime) < 0){
-				throw endTimeBeforeStartTime;
+		if(!isUndo){
+			if(infoList[STARTT_ID] && infoList[ENDT_ID]){
+				GregorianCalendar startTime = (GregorianCalendar)newData[STARTT_ID];
+				GregorianCalendar endTime = (GregorianCalendar)newData[ENDT_ID];
+				if(endTime != null && startTime != null && endTime.compareTo(startTime) < 0){
+					throw endTimeBeforeStartTime;
+				}
+			} else if(infoList[STARTT_ID]){
+				GregorianCalendar startTime = (GregorianCalendar)newData[STARTT_ID];
+				GregorianCalendar endTime = toUpdate.getEndTime();
+				
+				if(endTime != null && startTime != null && endTime.compareTo(startTime) < 0){
+					throw endTimeBeforeStartTime;
+				}
+			} else if(infoList[ENDT_ID]){
+				GregorianCalendar startTime = toUpdate.getEndTime();
+				GregorianCalendar endTime = (GregorianCalendar)newData[ENDT_ID];
+				
+				if(endTime != null && startTime != null && endTime.compareTo(startTime) < 0){
+					throw endTimeBeforeStartTime;
+				}
 			}
 		}
-		exchangeInfo(toUpdate, infoList, newData);
+		exchangeInfo(toUpdate, infoList, newData, isUndo);
 	}
 	
 
@@ -296,8 +304,8 @@ public class Action {
 		if(toUpdate == null){
 			throw this.tryingToModifyDeletedTask;
 		}
-		
-		updateInformation(commandUpdate, toUpdate);
+		boolean isUndo = false;
+		updateInformation(commandUpdate, toUpdate, isUndo);
 		if(this._dataManager.isLogined() && hasEventId(toUpdate)){
 			this._dataManager.updateTaskToGoogle(toUpdate);
 		}
@@ -457,16 +465,19 @@ public class Action {
 	/**
 	 * determines if 2 strings can be considered similar
 	 * @param str1
-	 * @param str2
+	 * @param searchWith
 	 * @return
 	 */
-	private boolean withinDistance(String str1, String str2){
+	private boolean withinDistance(String str1, String searchWith){
 		final String splitWith = " ";
-		if(str1 == null || str2 == null){
+		if(str1 == null || searchWith == null){
 			return false;
 		}
+		if(str1.contains(searchWith)){
+			return true;
+		}
 		String[] strArr1 = str1.split(splitWith);
-		String[] strArr2 = str2.split(splitWith);
+		String[] strArr2 = searchWith.split(splitWith);
 		
 		for(int i = 0; i<strArr1.length; i++){
 			for(int j = 0; j<strArr2.length; j++){
@@ -581,8 +592,10 @@ public class Action {
 					CommandUpdate commandUpdate = (CommandUpdate) commandToUndo;
 					Task toUndoUpdate = this._data.get(commandUpdate.getIndex());
 					
+					boolean isUndo = true;
+					
 					try{
-						updateInformation(commandUpdate, toUndoUpdate);
+						updateInformation(commandUpdate, toUndoUpdate, isUndo);
 						
 						commandToUndo = commandUpdate;
 						
@@ -939,6 +952,7 @@ public class Action {
 			clearTasksFromGoogle();
 		}else{
 			this._data.clear();
+			this._data.add(null);
 		}
 		this._dataManager.insertDataToFile(dataWithNullRemoved());
 		this._undoStack.push(commandClear);
