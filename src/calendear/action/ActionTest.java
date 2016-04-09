@@ -38,6 +38,9 @@ public class ActionTest {
 	boolean finalImportance;
 	boolean finalDone;
 	
+	boolean[] chklst;
+	Object[] info;
+	
 	@Before
 	public void init(){
 		originalName = "task1";
@@ -95,6 +98,7 @@ public class ActionTest {
 	}
 	
 
+
 	@Test
 	public void testUndoDelete() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action2.txt");
@@ -103,18 +107,18 @@ public class ActionTest {
 		Task t1 = new Task("task2", originalTime);
 		CommandAdd cA = new CommandAdd(t1);
 		action1.exeAdd(cA);
-		int nextNextIndex = action1.getAmount(); 
+		
 		System.out.println(nextIndex + " ");
 		
 		action1.exeUndo();
 		assertEquals(t1.getEndTime(), originalTime);
 	}
+
 	
 
 	@Test
 	public void testSearchName() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action4.txt");
-		int nextIndex = action1.getAmount();
 		Task test1 = new Task("search test1 aaaa");
 		Task test2 = new Task("search Test2 bbbb");
 		Task test3 = new Task("search test3 cccc");
@@ -140,9 +144,9 @@ public class ActionTest {
 		
 		action1.exeClear(new CommandClear());
 	}
-	
+
 	//@@ Pan Jiyun
-	
+
 	@Test
 	public void testSearchStartTime() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action5.txt");

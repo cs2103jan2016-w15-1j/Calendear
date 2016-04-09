@@ -255,21 +255,21 @@ public class Action {
 		if(infoList[STARTT_ID] && infoList[ENDT_ID]){
 			GregorianCalendar startTime = (GregorianCalendar)newData[STARTT_ID];
 			GregorianCalendar endTime = (GregorianCalendar)newData[ENDT_ID];
-			if(endTime.compareTo(startTime) < 0){
+			if(endTime != null && startTime != null && endTime.compareTo(startTime) < 0){
 				throw endTimeBeforeStartTime;
 			}
 		} else if(infoList[STARTT_ID]){
 			GregorianCalendar startTime = (GregorianCalendar)newData[STARTT_ID];
 			GregorianCalendar endTime = toUpdate.getEndTime();
 			
-			if(endTime.compareTo(startTime) < 0){
+			if(endTime != null && startTime != null && endTime.compareTo(startTime) < 0){
 				throw endTimeBeforeStartTime;
 			}
 		} else if(infoList[ENDT_ID]){
 			GregorianCalendar startTime = toUpdate.getEndTime();
 			GregorianCalendar endTime = (GregorianCalendar)newData[ENDT_ID];
 			
-			if(endTime.compareTo(startTime) < 0){
+			if(endTime != null && startTime != null && endTime.compareTo(startTime) < 0){
 				throw endTimeBeforeStartTime;
 			}
 		}
