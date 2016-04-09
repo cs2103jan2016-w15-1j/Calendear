@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.text.ParseException;
 
 /**
- * @author Phang Chun Rong
  * Facade Class for Logic Component
+ * @author Phang Chun Rong
  */
 public class CDLogic {
 	

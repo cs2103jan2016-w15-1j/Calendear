@@ -971,7 +971,6 @@ public class Action {
 		}
 		
 		if (this._dataManager.isLogined()) {
-
 			exeAddAllToGoogle();
 		}
 	}
