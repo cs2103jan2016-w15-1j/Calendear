@@ -211,6 +211,9 @@ public class Controller {
 						if(!undoSuccessful){
 							View.displayError("Error: nothing to undo");
 						}
+						else{
+							View.displayUndo();
+						}
 				   	}
 					
 					catch(IOException ex) {
@@ -230,6 +233,9 @@ public class Controller {
 						if(!redoSuccessful){
     					   View.displayError("Error: nothing to redo.");
     				   }
+						else{
+							View.displayRedo();
+						}
 				   }
 				   catch(IOException ex) {
 					   View.displayError(MESSAGE_ERROR_GOOGLE);
