@@ -171,6 +171,10 @@ public class Task {
 		this.startTime = time;
 	}
 	
+	/**
+	 * @author Phang Chun Rong
+	 * @param startTime
+	 */
 	public void setStartTime(EventDateTime startTime) {
 		DateTime dateTime = startTime.getDateTime();
 		long timeValue;
@@ -188,11 +192,16 @@ public class Task {
 		cal.setTimeInMillis(timeValue);
 		this.startTime = cal;
 	}
+	//@@author
 	
 	public void setEndTime(GregorianCalendar time) {
 		this.endTime = time;
 	}
 	
+	/**
+	 * @author Phang Chun Rong
+	 * @param endTime
+	 */
 	public void setEndTime(EventDateTime endTime) {
 		DateTime dateTime = endTime.getDateTime();
 		long timeValue;
@@ -210,6 +219,7 @@ public class Task {
 		cal.setTimeInMillis(timeValue);
 		this.endTime = cal;
 	}
+	//author
 	
 	public void setType (TASK_TYPE type) {
 		this.type = type;
@@ -235,6 +245,10 @@ public class Task {
 		this.isFinished = isFinished;
 	}
 	
+	/**
+	 * @author Phang Chun Rong
+	 * @param strFinished
+	 */
 	public void setIsFinishedByString(String strFinished) {
 		if (strFinished.equals(FINISHED)) {
 			this.isFinished = true;
@@ -243,6 +257,7 @@ public class Task {
 			this.isFinished = false;
 		}
 	}
+	//@@author
 	
 	public String toSaveable() {
 		String res;
@@ -357,6 +372,7 @@ public class Task {
 		
 		return task;
 	}
+	//@author
 	
 	public static Task parseSaveable(String allString) throws ParseException {
 		String[] members = allString.split(PATTERN_OBJ_SEPERATOR);
