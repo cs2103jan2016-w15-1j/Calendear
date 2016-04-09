@@ -1,3 +1,4 @@
+// @@author Dinh Viet Thang
 package calendear.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -258,7 +259,8 @@ public class Task {
 		res += getFinishedStr() + OBJ_SEPERATOR;
 		return res;
 	}
-	
+	// @@author 
+
 	/**
 	 * @author Phang Chun Rong
 	 * @return Google Event
@@ -357,7 +359,8 @@ public class Task {
 		
 		return task;
 	}
-	
+
+	// @@author Dinh Viet Thang
 	public static Task parseSaveable(String allString) throws ParseException {
 		String[] members = allString.split(PATTERN_OBJ_SEPERATOR);
 		String typeStr = members[SAVING_INDEX_TYPE];

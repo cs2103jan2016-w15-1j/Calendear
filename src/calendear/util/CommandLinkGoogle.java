@@ -1,3 +1,4 @@
+// @@author Dinh Viet Thang
 package calendear.util;
 
 public class CommandLinkGoogle extends Command {

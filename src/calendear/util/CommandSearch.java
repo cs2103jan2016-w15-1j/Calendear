@@ -1,3 +1,4 @@
+// @@author Dinh Viet Thang
 package calendear.util;
 
 /**
@@ -11,7 +12,6 @@ package calendear.util;
 	String,
 	boolean,
 	boolean]
- * @author 
  *
  */
 public class CommandSearch extends Command {
