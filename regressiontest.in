@@ -1,4 +1,4 @@
-data1.txt
+data.txt
 add event1 from 2nd may 9pm to 3rd may 9am
 add deadline2 by 5th june 7pm
 add deadline3 by 5th may 2pm
@@ -22,14 +22,22 @@ redo
 add float5
 redo
 add float222222222222
+add event6 from 6th jun 9am to 8th jun 9am
+add event 7 from 8th aug 9am to 8th aug 10am
+add deadline 8 by 8th aug 11pm
 display
 search done
 search name float
 search name deadline
-search from 1st may 9am to 6th may 9am
-search from 2nd may 8pm
+search from 6th jun 9am to 8th jun 9am
+search from 6th jun 9am
+search to 8th aug 10am
+search by 5th may 2pm
+search float
 search tag tag1
+search tag tag2
 search tag tag
+search tag
 update 1 important
 update 1 done
 update 2 important
@@ -39,10 +47,14 @@ update 2 name other .name for deadline2
 update 2 from 8th aug to 9am 9th aug 9am
 update 2 tag newTag
 display
+update 3 important
+update 5 important
+update 5 done
 update 2 done
 add visit gardens .by the bay by saturday 9am
 display
 search important
 search done
 search invalidcommand
+search tag newTag
 exit
