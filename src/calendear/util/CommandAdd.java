@@ -1,7 +1,5 @@
 package calendear.util;
 
-import java.util.Arrays;
-
 public class CommandAdd extends Command {
 	
 	private Task task;

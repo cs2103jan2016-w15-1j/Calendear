@@ -14,7 +14,7 @@ public class Parser {
 	private static final String DELETE = "delete";
 	private static final String SEARCH = "search";
 	private static final String SORT = "sort";
-	private static final String CMD_STR_MARK = "mark";
+	private static final String CMD_STR_MARK = "important";
 	private static final String CMD_STR_DONE = "done";
 	private static final String UNDO = "undo";
 	private static final String CMD_STR_TAG = "tag";
@@ -59,7 +59,7 @@ public class Parser {
 	+ "|(?:(\\b" + TAG + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups tag and <newTag>
 	+ "|(?:(\\b" + IMPORTANT + "\\b) *()) *"									//represent the group important
 	+ "|(?:(\\b"+ DONE + "\\b) *()) *)+";										//represent the group done
-	private static final String PATTERN_ADD_FLOAT = "(\\badd\\b) +(.+)";
+	private static final String PATTERN_ADD_FLOAT = "(\\b" + ADD +"\\b) +(.+)";
 	private static final String PATTERN_UPDATE_BY_INDEX = 
 	"(\\bupdate\\b) +(\\d+) +"													//represent the groups update and <taskID>
 	+ "(?:(?:(\\b" + NAME + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
@@ -84,6 +84,7 @@ public class Parser {
 	+ "|(?:(\\b" + TAG + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups tag and <newTag>
 	+ "|(?:(\\b" + IMPORTANT + "\\b) *()) *"									//represent the group important
 	+ "|(?:(\\b"+ DONE + "\\b) *()) *)+";										//represent the group done
+	private static final String PATTERN_SAVE = "(\\b" + SAVE + "\\b) +(.+)";
 	
 	private static final int NUM_OF_UPDATE_KEYWORD = 10;
 	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
@@ -139,7 +140,14 @@ public class Parser {
 	
 	private static Command parseSave(String[] words, String rawInput) {
 		if (words.length<=2){
-			return new CommandSave(words[1]);
+			Pattern pattern = Pattern.compile(PATTERN_SAVE);
+			Matcher matcher = pattern.matcher(rawInput);
+			if (matcher.find()){
+				String filePath = matcher.group(2);
+				filePath = changeBackEscapeCharacter(filePath);
+				return new CommandSave(filePath);
+			}
+			return new CommandInvalid(rawInput);
 		} else {
 			return new CommandInvalid(rawInput);
 		}
@@ -357,6 +365,10 @@ public class Parser {
 	
 	private static String changeEscapeCharacter(String rawInput){
 		return rawInput.replaceAll(INPUT_ESCAPE_CHARACTER, PATTERN_ESCAPE_CHARACTER);
+	}
+	
+	private static String changeBackEscapeCharacter(String rawInput){
+		return rawInput.replaceAll(PATTERN_ESCAPE_CHARACTER, INPUT_ESCAPE_CHARACTER);
 	}
 	
 }
