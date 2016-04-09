@@ -86,13 +86,13 @@ public class ActionTest {
 		CommandUpdate commandUpdate = new CommandUpdate(nextIndex, chklst, info);
 		action1.exeUpdate(commandUpdate);
 		
-		assertEquals(task.getName(), finalName);
-		assertEquals(task.getType(), finalType);
-		assertEquals(task.getStartTime(), finalStartTime);
-		assertEquals(task.getEndTime(), finalEndTime);
-		assertEquals(task.getTag(), finalTag);
-		assertEquals(task.isImportant(), finalImportance);
-		assertEquals(task.isFinished(), finalDone);
+		assertEquals(finalName, task.getName() );
+		assertEquals(finalType,task.getType() );
+		assertEquals(finalStartTime,task.getStartTime() );
+		assertEquals(finalEndTime,task.getEndTime());
+		assertEquals(finalTag, task.getTag());
+		assertEquals(finalImportance,task.isImportant());
+		assertEquals(finalDone, task.isFinished() );
 		
 		action1.exeClear(new CommandClear());
 	}
@@ -111,7 +111,7 @@ public class ActionTest {
 		System.out.println(nextIndex + " ");
 		
 		action1.exeUndo();
-		assertEquals(t1.getEndTime(), originalTime);
+		assertEquals(originalTime, t1.getEndTime());
 	}
 
 	
@@ -140,7 +140,7 @@ public class ActionTest {
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
@@ -177,7 +177,7 @@ public class ActionTest {
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
@@ -213,7 +213,7 @@ public class ActionTest {
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
@@ -248,7 +248,7 @@ public class ActionTest {
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
@@ -282,7 +282,7 @@ public class ActionTest {
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
@@ -316,7 +316,7 @@ public class ActionTest {
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
@@ -344,13 +344,13 @@ public class ActionTest {
 		action1.exeUpdate(commandUpdate);
 		action1.exeUndo();
 		
-		assertEquals(task.getName(), originalName);
-		assertEquals(task.getType(), originalType);
-		assertEquals(task.getStartTime(), originalStartTime);
-		assertEquals(task.getEndTime(), originalEndTime);
-		assertEquals(task.getTag(), originalTag);
-		assertEquals(task.isImportant(), originalImportance);
-		assertEquals(task.isFinished(), originalDone);
+		assertEquals(originalName,task.getName() );
+		assertEquals(originalType,task.getType() );
+		assertEquals(originalStartTime,task.getStartTime());
+		assertEquals(originalEndTime,task.getEndTime());
+		assertEquals(originalTag,task.getTag());
+		assertEquals(originalImportance,task.isImportant());
+		assertEquals(originalDone,task.isFinished());
 		
 		action1.exeClear(new CommandClear());
 		
