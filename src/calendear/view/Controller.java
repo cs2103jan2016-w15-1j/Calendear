@@ -7,6 +7,8 @@ import java.util.Scanner;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import java.io.IOException;
+
 /**
  * 
  * @author Phang Chun Rong
@@ -14,12 +16,17 @@ import java.util.ArrayList;
  */
 public class Controller {
 	private static final int DONE_ID = 8;
+	private static final String MESSAGE_ERROR_GOOGLE = "Error Communicating with Google";
+	private static final String MESSAGE_ERROR_GOOGLE_LOGIN = "Error authenticating with Google";
+	private static final String MESSAGE_ERROR_INITIALISATION = "Error with file, please choose another file";
+	private static final String MESSAGE_ERROR_FILE_CREATION = "Cannot Create File";
 	
 	private Scanner _scanner;
 	private CDLogic _cdLogic;
 	
 	public static void main(String[] args) {
-		String nameOfFile = args[0];
+		String nameOfFile = getFileName();
+		
 		Controller controller = new Controller(nameOfFile);
 		controller.startApplication();
 	}
@@ -28,14 +35,17 @@ public class Controller {
 		try {
 			instantiateLogic(nameOfFile);
 		} catch (ParseException e) {
-			System.out.println(e);
-			System.out.println("file reading failed");
+			View.displayError(MESSAGE_ERROR_INITIALISATION);
+			System.exit(0);
 		}
-		
+		catch (IOException ex) {
+			View.displayError(MESSAGE_ERROR_INITIALISATION);
+			System.exit(0);
+		}
 		View.displayWelcome();
 	}
 	
-	public void instantiateLogic(String nameOfFile) throws ParseException {
+	public void instantiateLogic(String nameOfFile) throws ParseException, IOException {
 		_cdLogic = new CDLogic(nameOfFile);
 	}
 	
@@ -56,18 +66,39 @@ public class Controller {
 		    			View.displayAdd(addedTask);
 		    			break;
 		    		}
+		    		catch(IOException ex) {
+		    			View.displayError(MESSAGE_ERROR_GOOGLE);
+		    		}
 		    		catch(LogicException e){
 		    			View.displayError(e.getMessage());
 		    			break;
 		    		}
 		    				  
-	    		case DISPLAY: ArrayList<Task> tasks = _cdLogic.exeDisplay((CommandDisplay) command);
-	    					  View.displayDisplayInLine(tasks);
-	    					  break;
+	    		case DISPLAY: 
+	    			try{
+	    				ArrayList<Task> tasks = _cdLogic.exeDisplay((CommandDisplay) command);
+	    				View.displayDisplayInLine(tasks);
+	    			}
+	    			catch(ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
+	    			}
+	    				break;
 	    					  
-	    		case DELETE:  Task deletedTask = _cdLogic.exeDelete((CommandDelete) command);
-	    					  View.displayDelete(deletedTask);
-	    					  break;
+	    		case DELETE:  
+	    			try{
+	    				Task deletedTask = _cdLogic.exeDelete((CommandDelete) command);
+	    				View.displayDelete(deletedTask);
+	    			}
+	    			catch (ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
+	    			}
+	    			catch (IOException ex) {
+	    				View.displayError(MESSAGE_ERROR_GOOGLE);
+	    			}
+	    			catch (LogicException e){
+	    				View.displayError(e.getMessage());
+	    			}
+	    			break;
 	    		
 	    		case UPDATE:  
 	    			try{
@@ -77,6 +108,13 @@ public class Controller {
 	    			}
 	    			catch (LogicException e){
 	    				View.displayError(e.getMessage());
+	    				break;
+	    			}
+	    			catch (IOException ex) {
+	    				View.displayError(MESSAGE_ERROR_GOOGLE);
+	    			}
+	    			catch (ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
 	    				break;
 	    			}
 	    		
@@ -91,60 +129,150 @@ public class Controller {
 	    			}
 	    			break;
 	    		
-	    		case MARK:	Task markedImportanceTask = _cdLogic.exeMarkImportant((CommandMark) command);
-	    					View.displayMark(markedImportanceTask);
-	    					break;
+	    		case MARK:	
+	    			try{
+	    				Task markedImportanceTask = _cdLogic.exeMarkImportant((CommandMark) command);
+		    			View.displayMark(markedImportanceTask);
+	    			}
+	    			catch (ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
+	    			}
+	    			catch (IOException ex) {
+	    				View.displayError(MESSAGE_ERROR_GOOGLE);
+	    			}
+	    			catch (LogicException e){
+	    				View.displayError(e.getMessage());
+	    			}
+	    				break;
 
-	    		case TAG:	Task taggedTag = _cdLogic.exeTag((CommandTag) command);
-	    					View.displayTag(taggedTag);
-	    					break;
+	    		case TAG:	
+	    			try{
+	    				Task taggedTag = _cdLogic.exeTag((CommandTag) command);
+	    				View.displayTag(taggedTag);
+	    			}
+	    			catch(ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
+	    			}
+	    			catch(IOException ex) {
+	    				View.displayError(MESSAGE_ERROR_GOOGLE);
+	    			}
+	    			catch (LogicException e){
+	    				View.displayError(e.getMessage());
+	    			}
+	    				break;
 	    		
-	    		case LINK_GOOGLE: _cdLogic.exeLinkGoogle();
-	    						  break;
+	    		case LINK_GOOGLE: 
+	    			try {
+						_cdLogic.exeLinkGoogle();
+					}
+	    			
+	    			catch(IOException ex) {
+	    				View.displayError(MESSAGE_ERROR_GOOGLE);
+	    			}
+	    			catch(Exception ex) {
+	    				View.displayError(MESSAGE_ERROR_GOOGLE_LOGIN);
+	    			}
+				  break;
 	    						  
+
 	    		case LOAD_FROM_GOOGLE:  
 	    			try{
-	    				ArrayList<Task> resultingList =  _cdLogic.exeLoadTasksFromGoogle((CommandLoadFromGoogle) command);
-	    				View.displayDisplayInLine(resultingList);
-	    				break;
+						ArrayList<Task> resultingList =  _cdLogic.exeLoadTasksFromGoogle((CommandLoadFromGoogle) command);
+						View.displayDisplayInLine(resultingList);
+						break;
+					}
+	    			catch (IOException ex) {
+	    				View.displayError(MESSAGE_ERROR_GOOGLE);
 	    			}
-	    			catch (LogicException logicException){
-	    				View.displayError(logicException.getMessage());
-	    				break;
-	    			}
+					catch (LogicException logicException){
+						View.displayError(logicException.getMessage());
+						break;
+					}
 	    			
-	    		case DONE: Task completedTask = _cdLogic.exeMarkDone((CommandDone) command);
-	    				   View.displayDone(completedTask);
-	    				   break;
+	    		case DONE: 
+	    			try {
+					 	Task completedTask = _cdLogic.exeMarkDone((CommandDone) command);
+					 	View.displayDone(completedTask);
+				   	}
+	    			catch(ArrayIndexOutOfBoundsException e){
+	    				View.displayInvalid();
+	    			}
+	    			catch (IOException ex) {
+	    				View.displayError(MESSAGE_ERROR_GOOGLE);
+	    			}
+	    			catch (LogicException e){
+	    				View.displayError(e.getMessage());
+	    			}
+					break;
 	    				
 	    		case UNDO: 
-	    			boolean undoSuccessful = _cdLogic.exeUndo();
-	    			
-	    			if(!undoSuccessful){
-	    				View.displayError("Error: nothing to undo");
-	    			}	   
-	    			break;
-	    		case EXIT:  View.displayExit();
-	    					System.exit(0);
-	    					break;
+	    			try {
+						boolean undoSuccessful = _cdLogic.exeUndo();
+						if(!undoSuccessful){
+							View.displayError("Error: nothing to undo");
+						}
+				   	}
+					
+					catch(IOException ex) {
+						View.displayError(MESSAGE_ERROR_GOOGLE);
+					}
+				   	   
+				   break;
+	    				   
+	    		case EXIT:  
+	    			View.displayExit();
+					System.exit(0);
+					break;
 	    					
 	    		case REDO: 
-	    			boolean redoSuccessful = _cdLogic.exeRedo();
-	    			if(!redoSuccessful){
-	    				View.displayError("Error: nothing to redo.");
-	    			}	
-	    			break;
+	    			try {
+						boolean redoSuccessful = _cdLogic.exeRedo();
+						if(!redoSuccessful){
+    					   View.displayError("Error: nothing to redo.");
+    				   }
+				   }
+				   catch(IOException ex) {
+					   View.displayError(MESSAGE_ERROR_GOOGLE);
+				   }
+				   	   
+				   break;
 	    		
-	    		case SAVE:  String result = _cdLogic.exeSaveFile((CommandSave) command);
-	    					System.out.println(result);
-	    					break;
+	    		case SAVE:  
+	    			try {
+						_cdLogic.exeSaveFile((CommandSave) command);
+					}
+					catch (IOException ex) {
+						View.displayError(MESSAGE_ERROR_FILE_CREATION);
+					}
+					
+					break;
 	    				
-	    		case CLEAR: _cdLogic.exeClear((CommandClear) command);
-	    				break;
+	    		case CLEAR: 
+	    			try {
+						_cdLogic.exeClear((CommandClear) command);
+					}
+					catch(IOException ex) {
+						View.displayError(MESSAGE_ERROR_GOOGLE);
+					}
+					
+					break;
+	    		
+	    		case HELP:	
+	    			View.displayHelp();
+				    break;
+	    		
 	    		default: 
 	    				break;
 	    	}
 	    }
 	}
-
+	
+	private static String getFileName() {
+		Scanner sc = new Scanner(System.in);
+		View.displayFileNamePrompt();
+		String name = sc.nextLine();
+		sc.close();
+		
+		return name;
+	}
 }

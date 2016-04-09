@@ -23,6 +23,7 @@ public class Parser {
 	private static final String REDO = "redo";
 	private static final String CLEAR = "clear";
 	private static final String SAVE = "save";
+	private static final String HELP = "help";
 	private static final String LOAD_FROM_GOOGLE = "syncGoogle";
 	private static final String EMPTY = "";
 	//when using regex and regex-related methods like String.split() and String.replaceAll()
@@ -127,6 +128,8 @@ public class Parser {
 				return parseSave(words, rawInput);
 			case LOAD_FROM_GOOGLE:
 				return parseLoadToGoogleCmd(words, rawInput);
+			case HELP:
+				return parseHelpCmd(words, rawInput);
 			case EXIT:
 				return parseExitCmd(words, rawInput);
 			default:
@@ -334,6 +337,10 @@ public class Parser {
 	
 	private static Command parseLoadToGoogleCmd(String[] words, String rawInput){
 		return new CommandLoadFromGoogle();
+	}
+	
+	private static Command parseHelpCmd(String[] words, String rawInput){
+		return new CommandHelp();
 	}
 	
 	private static Command parseExitCmd(String[] words, String rawInput){

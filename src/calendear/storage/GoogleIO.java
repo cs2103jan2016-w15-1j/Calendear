@@ -32,7 +32,14 @@ import calendear.util.Task;
 public class GoogleIO {
 
 	  private static final String APPLICATION_NAME = "Calendear";
-	  private static final String MESSAGE_ERROR = "Exception Caught";
+	  private static final String MESSAGE_ENTER = "Enter";
+	  private static final String MESSAGE_ENTER_SPACE = "Enter ";
+	  private static final String MESSAGE_ERROR_CREDENTIALS = 
+			  "Enter Client ID and Secret from "
+			  + "https://code.google.com/apis/console/?api=calendar into "
+			  + "calendar-cmdline-sample/src/main/resources/client_secrets.json";
+	  
+	  private static final String SECRETS_DIRECTORY = "/libs/client_secrets.json";
 	  
 	  /** Global instance of the HTTP transport. */
 	  private static HttpTransport httpTransport;
@@ -45,16 +52,16 @@ public class GoogleIO {
 	  /** Google Calendar ID for Calendear*/
 	  private static String calendarID;
 	  
+	  private static boolean isLogined = false;
+	  
 	  /** Authorizes the installed application to access user's protected data. */
 	  private static Credential authorize() throws Exception {
 	    // load client secrets
 	    GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-	        new InputStreamReader(GoogleIO.class.getResourceAsStream("/libs/client_secrets.json")));
-	    if (clientSecrets.getDetails().getClientId().startsWith("Enter")
-	        || clientSecrets.getDetails().getClientSecret().startsWith("Enter ")) {
-	      System.out.println(
-	          "Enter Client ID and Secret from https://code.google.com/apis/console/?api=calendar "
-	          + "into calendar-cmdline-sample/src/main/resources/client_secrets.json");
+	        new InputStreamReader(GoogleIO.class.getResourceAsStream(SECRETS_DIRECTORY)));
+	    if (clientSecrets.getDetails().getClientId().startsWith(MESSAGE_ENTER)
+	        || clientSecrets.getDetails().getClientSecret().startsWith(MESSAGE_ENTER_SPACE)) {
+	      System.out.println(MESSAGE_ERROR_CREDENTIALS);
 	      System.exit(1);
 	    }
 	    // set up authorization code flow
@@ -66,111 +73,84 @@ public class GoogleIO {
 	    return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
 	  }
 	
-	  public static boolean login() {
-		  try {
-		      // initialize the transport
-		      httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+	  public static void login() throws IOException, Exception{
+		  // initialize the transport
+		  httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-		      // authorization
-		      Credential credential = authorize();
+		  // authorization
+		  Credential credential = authorize();
 
-		      // set up global Calendar instance
-		      client = new com.google.api.services.calendar.Calendar.Builder(
-		          httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
-		      
-		      //Link to Calendear
-		      calendarID = findOrCreateCalendar();
-		      
-		      return true;
+	      // set up global Calendar instance
+	      client = new com.google.api.services.calendar.Calendar.Builder(
+	          httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
+	      
+	      //Link to Calendear
+	      calendarID = findOrCreateCalendar();
+	      isLogined = true;
 
-		    } catch (IOException e) {
-		      System.err.println(e.getMessage());
-		      return false;
-		    } catch (Throwable t) {
-		      t.printStackTrace();
-		      return false;
-		    }
 	  }
 	  
+	  public static boolean isLogined() {
+		  return isLogined;
+	  }
 	  
+	  public static String addEvent(Task task) throws IOException {
+		  assert(isLogined == true);
+		  
+		  Event event = task.toGoogleEvent();
+		  Event result = client.events().insert(calendarID, event).execute();
+		  return result.getId();
 	  
-	  public static String addEvent(Task task) {
-		  try {
-			  Event event = task.toGoogleEvent();
-			  Event result = client.events().insert(calendarID, event).execute();
-			  return result.getId();
-			}
-		  catch (IOException ex) {
-			  System.out.println(ex);
-			  return MESSAGE_ERROR;
+		}
+		
+	  public static void updateEvent(Task task) throws IOException{
+		  assert(isLogined == true);
+		  
+		  String eventId = task.getEventId();
+		  Event event = task.toGoogleEvent();
+		  client.events().update(calendarID, eventId, event).execute();
+	  }
+		
+	  public static void deleteEvent(Task task) throws IOException {
+		  assert(isLogined == true);
+		  
+		  String eventId = task.getEventId();
+		  client.events().delete(calendarID, eventId).execute();
+	  }
+		
+	  public static ArrayList<Task> loadTasksFromGoogle() throws IOException {
+		  assert(isLogined == true);
+		  
+		  ArrayList<Task> tasks = new ArrayList<Task>();
+		  Events feed = client.events().list(calendarID).execute();
+		  Iterable<Event> listOfEvents = feed.getItems();
+		  for (Event event: listOfEvents) {
+			  Task newTask = Task.parseGoogleEvent(event);
+			  tasks.add(newTask);
 		  }
-		}
-		
-	  public static void updateEvent(Task task) {
-			try {
-				String eventId = task.getEventId();
-				Event event = task.toGoogleEvent();
-				client.events().update(calendarID, eventId, event).execute();
-			}
-			catch (IOException ex) {
-				System.out.println(ex);
-			}
-		}
-		
-		public static void deleteEvent(Task task) {
-			try {
-				String eventId = task.getEventId();
-				client.events().delete(calendarID, eventId).execute();
-			}
-			catch (IOException ex) {
-				System.out.println(ex);
-			}
-		}
-		
-		public static ArrayList<Task> loadTasksFromGoogle() {
-			ArrayList<Task> tasks = new ArrayList<Task>();
-			try {
-			    Events feed = client.events().list(calendarID).execute();
-			    Iterable<Event> listOfEvents = feed.getItems();
-				for (Event event: listOfEvents) {
-					Task newTask = Task.parseGoogleEvent(event);
-					tasks.add(newTask);
-				}
-			    
-				return tasks;
-			}
-			catch (IOException ex) {
-				return tasks;
-			}
-			
+		    
+		  return tasks;
 		}
 		  
-		private static String findOrCreateCalendar() throws IOException {
-			CalendarList request = client.calendarList().list().execute();
-			Iterator<CalendarListEntry> iter = request.getItems().iterator();
-			while (iter.hasNext()) {
-				CalendarListEntry entry = iter.next();
-				String summary = entry.getSummary();
-				if (summary.equals(APPLICATION_NAME)) {
-					return entry.getId();
-				}
-			}
+	  private static String findOrCreateCalendar() throws IOException {
+		  CalendarList request = client.calendarList().list().execute();
+		  Iterator<CalendarListEntry> iter = request.getItems().iterator();
+		  while (iter.hasNext()) {
+			  CalendarListEntry entry = iter.next();
+			  String summary = entry.getSummary();
+			  if (summary.equals(APPLICATION_NAME)) {
+				  return entry.getId();
+			  }
+		  }
 			
-			return createCalendar();
-		}
+		  return createCalendar();
+	  }
 		
-		private static String createCalendar() {
-			try {
-				Calendar entry = new Calendar();
-				entry.setSummary(APPLICATION_NAME);
-				Calendar result = client.calendars().insert(entry).execute();
-				return result.getId();
-			}
-			catch (IOException ex) {
-				System.out.println(MESSAGE_ERROR);
-				return null;
-			}
-			
-		}
+	  private static String createCalendar() throws IOException {
+		  Calendar entry = new Calendar();
+		  entry.setSummary(APPLICATION_NAME);
+		  Calendar result = client.calendars().insert(entry).execute();
+		  return result.getId();			
+	  }
 	  
 }

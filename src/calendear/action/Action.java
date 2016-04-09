@@ -7,8 +7,10 @@ import java.util.Stack;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.IOException;
 import calendear.util.*;
 import calendear.storage.DataManager;
+
 /**
  * 
  * @author Wu XiaoXiao
@@ -49,12 +51,14 @@ public class Action {
 	static final int TAG_ID = 6;
 	static final int IMP_ID = 7;//important
 	static final int COMP_ID = 8;//finished
+	static final int TOTAL_LEN = 9;
 	
 	static final String TAG_SEPARATOR = " # ";
 	static final String NULL_STRING = "";
 	static final int TRUE_START_ID = 1;
 	
 	private final LogicException endTimeBeforeStartTime;
+	private final LogicException tryingToModifyDeletedTask;
 	
 	//constructor
 
@@ -63,13 +67,14 @@ public class Action {
 	 * @param nameOfFile
 	 * @throws ParseException
 	 */
-	public Action(String nameOfFile) throws ParseException {
+	public Action(String nameOfFile) throws ParseException, IOException {
 		this._undoStack = new Stack<Command>();
 		this._redoStack = new Stack<Command>();
 		this._dataManager = new DataManager(nameOfFile);
 		this._data = _dataManager.getDataFromFile();
 		this._data.add(0, null);
 		this.endTimeBeforeStartTime = new LogicException("Error: end time before start time");
+		this.tryingToModifyDeletedTask = new LogicException("Error: trying to modify deleted task");
 	}
 
 	/**
@@ -97,7 +102,7 @@ public class Action {
 	 * @param commandAdd
 	 * @return task added to storage
 	 */
-	public Task exeAdd(CommandAdd commandAdd) throws LogicException{
+	public Task exeAdd(CommandAdd commandAdd) throws LogicException, IOException {
 		assertCommandNotNull(commandAdd);
 		String eventId; 
 		Task addedTask = addWithoutSave(commandAdd);
@@ -139,11 +144,21 @@ public class Action {
 	 * @param commandDelete
 	 * @return
 	 */
-	public Task exeDelete(CommandDelete commandDelete){
+	public Task exeDelete(CommandDelete commandDelete) throws ArrayIndexOutOfBoundsException, 
+														LogicException, IOException{
 		assertCommandNotNull(commandDelete);
 		
 		int id = commandDelete.getIndex();
+		
+		if(id >= this._data.size()){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
 		Task taskToDelete = this._data.get(id);
+		
+		if(taskToDelete == null){
+			throw this.tryingToModifyDeletedTask;
+		}
 		
 		if(this._dataManager.isLogined() && hasEventId(taskToDelete)){
 			this._dataManager.deleteTaskFromGoogle(taskToDelete);
@@ -171,7 +186,6 @@ public class Action {
 	 */
 	//helper class to exchange contents of CommandUpdate and task
 	private void exchangeInfo(Task toUpdate, boolean[] infoList, Object[] newData){
-		
 		
 		try{
 			if(infoList[NAME_ID]){
@@ -275,10 +289,21 @@ public class Action {
 	 * @param commandUpdate
 	 * @return
 	 */
-	public Task exeUpdate(CommandUpdate commandUpdate) throws LogicException{
+	public Task exeUpdate(CommandUpdate commandUpdate) throws LogicException, 
+									ArrayIndexOutOfBoundsException, IOException {
 		assertCommandNotNull(commandUpdate);
 		int changeId = commandUpdate.getIndex();
+		
+		if(changeId >= this._data.size()){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
 		Task toUpdate = _data.get(changeId);
+		
+		if(toUpdate == null){
+			throw this.tryingToModifyDeletedTask;
+		}
+		
 		updateInformation(commandUpdate, toUpdate);
 		if(this._dataManager.isLogined() && hasEventId(toUpdate)){
 			this._dataManager.updateTaskToGoogle(toUpdate);
@@ -474,6 +499,7 @@ public class Action {
 		assertCommandNotNull(commandSearch);
 		boolean[] toShow = commandSearch.getArrToShow();
 		Object[] searchWith = commandSearch.getArrSearchWith();
+		assert(toShow.length == TOTAL_LEN && searchWith.length == TOTAL_LEN) : "length of toshow and searchwith are not 8";
 		return displaySelectiveHelper(toShow, searchWith);
 	}
 	
@@ -511,7 +537,7 @@ public class Action {
 	 * TAG: -
 	 */
 	
-	public boolean exeUndo(){
+	public boolean exeUndo() throws IOException {
 		try{
 			Command commandToUndo = this._undoStack.pop();
 			CMD_TYPE commandType = commandToUndo.getType();
@@ -651,7 +677,7 @@ public class Action {
 	/**
 	 * execute each command for the user.
 	 */
-	public boolean exeRedo(){
+	public boolean exeRedo() throws IOException {
 		try{
 			Command commandToRedo = this._redoStack.pop();
 			CMD_TYPE commandType = commandToRedo.getType();
@@ -719,11 +745,20 @@ public class Action {
 		}
 	}
 	
-	public Task exeTag(CommandTag commandTag){
+	public Task exeTag(CommandTag commandTag) throws LogicException, IOException {
 		assertCommandNotNull(commandTag);
 		
 		int toTagIndex = commandTag.getIndex();
+		if(toTagIndex >= this._data.size()){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
 		Task taskToTag = this._data.get(toTagIndex);
+		
+		if(taskToTag == null){
+			throw this.tryingToModifyDeletedTask;
+		}
+		
 		String tag = taskToTag.getTag();
 		if(tag == null || tag.equals("")){
 			taskToTag.setTag(commandTag.getTagName());
@@ -739,11 +774,21 @@ public class Action {
 		return taskToTag;
 	}
 	
-	public Task exeMarkImportance(CommandMark commandMark){
+	public Task exeMarkImportance(CommandMark commandMark) throws LogicException, IOException{
 		assertCommandNotNull(commandMark);
 		
 		int toMarkIndex = commandMark.getIndex();
+		
+		if(toMarkIndex >= this._data.size()){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
 		Task taskToMark = this._data.get(toMarkIndex);
+		
+		if(taskToMark == null){
+			throw this.tryingToModifyDeletedTask;
+		}
+		
 		boolean originalImportance = taskToMark.isImportant();
 		taskToMark.setIsImportant(commandMark.isImportant());
 		commandMark.setIsImportant(originalImportance);
@@ -756,11 +801,20 @@ public class Action {
 		return taskToMark;
 	}
 
-	public Task exeMarkDone(CommandDone commandDone){
+	public Task exeMarkDone(CommandDone commandDone) throws LogicException, IOException {
 		assertCommandNotNull(commandDone);
 		
 		int toMarkDoneIndex = commandDone.getIndex();
+		if(toMarkDoneIndex >= this._data.size()){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
 		Task taskToMarkDone = this._data.get(toMarkDoneIndex);
+		
+		if( taskToMarkDone == null){
+			throw this.tryingToModifyDeletedTask;
+		}
+		
 		boolean isOriginallyDone = taskToMarkDone.isFinished();
 		taskToMarkDone.setIsFinished(commandDone.isDone());
 		commandDone.setIsDone(isOriginallyDone);
@@ -775,7 +829,7 @@ public class Action {
 	}
 	
 	
-	private void exeAddAllToGoogle(){
+	private void exeAddAllToGoogle() throws IOException {
 		assert(this._dataManager.isLogined()): "called exeAddAllToGoogle without logging in\n";
 
 		for(int i = DATA_START_INDEX; i<this._data.size(); i++){
@@ -790,7 +844,8 @@ public class Action {
 		this._dataManager.insertDataToFile(dataWithNullRemoved());
 	}
 
-	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle commandLoadFromGoogle) throws LogicException{
+	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle commandLoadFromGoogle) 
+			throws LogicException, IOException {
 		if(!this._dataManager.isLogined()){
 			throw new LogicException("user is not logged in");
 		}
@@ -822,7 +877,7 @@ public class Action {
 		}
 	}
 	
-	public boolean exeClear(CommandClear commandClear){
+	public boolean exeClear(CommandClear commandClear) throws IOException {
 		assertCommandNotNull(commandClear);
 		
 		ArrayList<Task> listToSave = new ArrayList<Task>(this._data);
@@ -838,7 +893,7 @@ public class Action {
 		return true;
 	}
 
-	private void clearTasksFromGoogle() {
+	private void clearTasksFromGoogle() throws IOException {
 		Task currentTask;
 		for(int i = TRUE_START_ID; i<this._data.size(); i++){
 			currentTask = this._data.get(i);
@@ -852,7 +907,7 @@ public class Action {
 	/**
 	 * @author Phang Chun Rong
 	 */
-	public void exeLinkGoogle() {
+	public void exeLinkGoogle() throws IOException,Exception  {
 		if (!this._dataManager.isLogined()) {
 			this._dataManager.loginGoogle();
 		}
@@ -861,19 +916,17 @@ public class Action {
 			Thread.sleep(300);
 		}
 		catch (InterruptedException ex) {
-			System.out.println(ex);
 		}
 		
 		if (this._dataManager.isLogined()) {
-			System.out.println("logging in");
 			exeAddAllToGoogle();
 		}
 	}
 	
-	public String exeSaveFile(CommandSave commandSave) {
+	public void exeSaveFile(CommandSave commandSave) throws IOException {
 		System.out.println("Saving...");
 		String path = commandSave.getPath();
-		return this._dataManager.changeFilePath(path);
+		this._dataManager.changeFilePath(path);
 	}
 	
 	

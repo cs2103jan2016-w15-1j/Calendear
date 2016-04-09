@@ -4,6 +4,7 @@ import calendear.action.Action;
 import calendear.parser.Parser;
 import calendear.util.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.text.ParseException;
 
@@ -15,7 +16,7 @@ public class CDLogic {
 	
 	private Action _action;
 	
-	public CDLogic(String nameOfFile) throws ParseException {
+	public CDLogic(String nameOfFile) throws ParseException, IOException {
 		_action = new Action(nameOfFile);
 	}
 	
@@ -23,7 +24,7 @@ public class CDLogic {
 		return Parser.parse(userInput);
 	}
 	
-	public Task exeAdd(CommandAdd commandAdd) throws LogicException{
+	public Task exeAdd(CommandAdd commandAdd) throws LogicException, IOException {
 		Task addedTask = _action.exeAdd(commandAdd);
 		return addedTask;
 	}
@@ -33,39 +34,39 @@ public class CDLogic {
 		return tasks;
 	}
 	
-	public Task exeUpdate(CommandUpdate commandUpdate) throws LogicException{
+	public Task exeUpdate(CommandUpdate commandUpdate) throws LogicException, IOException {
 		Task task = _action.exeUpdate(commandUpdate);
 		return task;
 	}
 	
-	public Task exeDelete(CommandDelete commandDelete) {
+	public Task exeDelete(CommandDelete commandDelete) throws LogicException, IOException {
 		Task task = _action.exeDelete(commandDelete);
 		return task;
 	}
 	
-	public Task exeMarkImportant(CommandMark commandMark){
+	public Task exeMarkImportant(CommandMark commandMark) throws LogicException, IOException {
 		Task task = _action.exeMarkImportance(commandMark);
 		return task;
 	}
 	
-	public Task exeMarkDone(CommandDone commandDone){
+	public Task exeMarkDone(CommandDone commandDone) throws LogicException, IOException{
 		Task task = _action.exeMarkDone(commandDone);
 		return task;
 	}
 	
-	public void exeLinkGoogle() {
+	public void exeLinkGoogle() throws IOException, Exception {
 		_action.exeLinkGoogle();
 	}
 	
-	public boolean exeUndo(){
+	public boolean exeUndo() throws IOException{
 		return _action.exeUndo();
 	}
 	
-	public boolean exeRedo(){
+	public boolean exeRedo() throws IOException{
 		return _action.exeRedo();
 	}
 	
-	public Task exeTag(CommandTag commandTag){
+	public Task exeTag(CommandTag commandTag) throws LogicException, IOException {
 		return _action.exeTag(commandTag);
 	}
 	
@@ -73,15 +74,16 @@ public class CDLogic {
 		return _action.exeSearch(commandSearch);
 	}
 	
-	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle commandLoadFromGoogle) throws LogicException{
+	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle commandLoadFromGoogle) 
+			throws LogicException, IOException {
 		return _action.exeLoadTasksFromGoogle(commandLoadFromGoogle);
 	}
 	
-	public String exeSaveFile(CommandSave commandSave) {
-		return _action.exeSaveFile(commandSave);
+	public void exeSaveFile(CommandSave commandSave) throws IOException {
+		_action.exeSaveFile(commandSave);
 	}
 	
-	public boolean exeClear(CommandClear commandClear){
+	public boolean exeClear(CommandClear commandClear) throws IOException {
 		return _action.exeClear(commandClear);
 	}
 }
