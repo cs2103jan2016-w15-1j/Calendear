@@ -1,3 +1,5 @@
+//@@author Phang Chun Rong
+
 package calendear.view;
 import calendear.action.CDLogic;
 import calendear.action.LogicException;
@@ -11,7 +13,7 @@ import java.io.IOException;
 
 /**
  * Controller for User Interaction
- * @@author Phang Chun Rong
+ * @author Phang Chun Rong
  */
 public class Controller {
 	private static final int DONE_ID = 8;
@@ -82,7 +84,7 @@ public class Controller {
 	    			catch(ArrayIndexOutOfBoundsException e){
 	    				View.displayInvalid();
 	    			}
-	    				break;
+	    			break;
 	    					  
 	    		case DELETE:  
 	    			try{
@@ -267,6 +269,10 @@ public class Controller {
 	    			View.displayHelp();
 				    break;
 	    		
+	    		case INVALID:
+	    			View.displayInvalid();
+	    			break;
+	    			
 	    		default: 
 	    				break;
 	    	}
