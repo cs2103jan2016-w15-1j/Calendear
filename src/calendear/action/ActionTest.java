@@ -47,9 +47,9 @@ public class ActionTest {
 		originalType = TASK_TYPE.DEADLINE;
 		originalStartTime = null;
 		originalEndTime = new GregorianCalendar( 2016,4,2,15,0);
-		originalLocation = null;
-		originalNote = null;
-		originalTag = null;
+		originalLocation = "";
+		originalNote = "";
+		originalTag = "";
 		originalImportance = false;
 		originalDone = false;
 		
@@ -68,6 +68,7 @@ public class ActionTest {
 	public void testUpdate() throws ParseException, LogicException, IOException{
 
 		Action action1 = new Action("action1.txt");
+		action1.exeClear(new CommandClear());
 		int nextIndex = action1.getAmount();
 		
 		Task task = new Task();
@@ -102,13 +103,11 @@ public class ActionTest {
 	@Test
 	public void testUndoDelete() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action2.txt");
-		int nextIndex = action1.getAmount();
+		action1.exeClear(new CommandClear());
 		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
 		Task t1 = new Task("task2", originalTime);
 		CommandAdd cA = new CommandAdd(t1);
 		action1.exeAdd(cA);
-		
-		System.out.println(nextIndex + " ");
 		
 		action1.exeUndo();
 		assertEquals(originalTime, t1.getEndTime());
@@ -119,6 +118,7 @@ public class ActionTest {
 	@Test
 	public void testSearchName() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action4.txt");
+		action1.exeClear(new CommandClear());
 		Task test1 = new Task("search test1 aaaa");
 		Task test2 = new Task("search Test2 bbbb");
 		Task test3 = new Task("search test3 cccc");
@@ -150,6 +150,7 @@ public class ActionTest {
 	@Test
 	public void testSearchStartTime() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action5.txt");
+		action1.exeClear(new CommandClear());
 		Task test1 = new Task("search startTime1", 
 				new GregorianCalendar( 2016,4,2,13,0),
 				new GregorianCalendar( 2016,4,2,15,0));
@@ -186,6 +187,7 @@ public class ActionTest {
 
 	public void testSearchEndTime() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action6.txt");
+		action1.exeClear(new CommandClear());
 		Task test1 = new Task("search startTime1", 
 				new GregorianCalendar( 2016,4,2,13,0),
 				new GregorianCalendar( 2016,4,2,15,0));
@@ -221,6 +223,7 @@ public class ActionTest {
 	@Test
 	public void testSearchStartAndEndTime() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action7.txt");
+		action1.exeClear(new CommandClear());
 		Task test1 = new Task("search startTime1", 
 				new GregorianCalendar( 2016,1,1,13,0),
 				new GregorianCalendar( 2016,1,30,15,0));
@@ -256,6 +259,7 @@ public class ActionTest {
 	@Test
 	public void testSearchTag() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action8.txt");
+		action1.exeClear(new CommandClear());
 		Task test1 = new Task("tag test1");
 		Task test2 = new Task("tag test2");
 		Task test3 = new Task("tag test3");
@@ -290,6 +294,7 @@ public class ActionTest {
 	@Test
 	public void testSearchLocation() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action9.txt");
+		action1.exeClear(new CommandClear());
 		Task test1 = new Task("location test1");
 		Task test2 = new Task("location test2");
 		Task test3 = new Task("location test3");
@@ -325,6 +330,7 @@ public class ActionTest {
 	@Test
 	public void testUndoUpdate() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action10.txt");
+		action1.exeClear(new CommandClear());
 		int nextIndex = action1.getAmount();
 		
 		Task task = new Task();
@@ -353,6 +359,50 @@ public class ActionTest {
 		assertEquals(originalDone,task.isFinished());
 		
 		action1.exeClear(new CommandClear());
+		
+	}
+	
+	@Test
+	public void testRedoUpdate() throws ParseException, LogicException, IOException{
+		Action action1 = new Action("action10.txt");
+		action1.exeClear(new CommandClear());
+		int nextIndex = action1.getAmount();
+		
+		Task task = new Task();
+		task.setName(originalName);
+		task.setType(originalType);
+		task.setStartTime(originalStartTime);
+		task.setEndTime(originalEndTime);
+		task.setTag(originalTag);
+		task.setIsImportant(originalImportance);
+		task.setIsFinished(originalDone);
+		
+		action1.exeAdd(new CommandAdd(task));
+		boolean[] chklst = {true, true, true, true, true, true, true, true, true};
+		Object[] info = {finalName, finalType, finalStartTime, finalEndTime, finalLocation, finalNote, 
+				finalTag, finalImportance, finalDone};
+		CommandUpdate commandUpdate = new CommandUpdate(nextIndex, chklst, info);
+		action1.exeUpdate(commandUpdate);
+		action1.exeUndo();
+		
+		
+		assertEquals(originalName,task.getName() );
+		assertEquals(originalType,task.getType() );
+		assertEquals(originalStartTime,task.getStartTime());
+		assertEquals(originalEndTime,task.getEndTime());
+		assertEquals(originalTag,task.getTag());
+		assertEquals(originalImportance,task.isImportant());
+		assertEquals(originalDone,task.isFinished());
+		
+		action1.exeRedo();
+		
+		assertEquals(finalName, task.getName() );
+		assertEquals(finalType,task.getType() );
+		assertEquals(finalStartTime,task.getStartTime() );
+		assertEquals(finalEndTime,task.getEndTime());
+		assertEquals(finalTag, task.getTag());
+		assertEquals(finalImportance,task.isImportant());
+		assertEquals(finalDone, task.isFinished() );
 		
 	}
 }
