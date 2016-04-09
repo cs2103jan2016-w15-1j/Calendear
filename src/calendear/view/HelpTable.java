@@ -1,6 +1,10 @@
 package calendear.view;
 
-//@@author Pan Jiyun
+/**
+ * Table containing command instructions for display
+ * @@author Pan Jiyun 
+ *
+ */
 
 public class HelpTable {
 	private static int LEN_SEG1 = 24;

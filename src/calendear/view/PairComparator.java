@@ -4,7 +4,13 @@ import java.util.Comparator;
 import calendear.util.TASK_TYPE;
 import calendear.util.Task;
 
-//@@author Pan Jiyun
+
+
+/**
+ * Comparator for sorting Pairs
+ * @@author Pan Jiyun
+ * 
+ */
 
 /**order of display:
  * incomplete important event with early start time
