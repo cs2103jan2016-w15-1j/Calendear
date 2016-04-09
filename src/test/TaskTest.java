@@ -1,4 +1,4 @@
-package calendear.util;
+package test;
 
 import static org.junit.Assert.*;
 
@@ -7,7 +7,7 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.client.util.DateTime;
 import java.util.GregorianCalendar;
-
+import calendear.util.*;
 /**
  * Unit Tests for Task
  * @author Phang Chun Rong
