@@ -2,6 +2,7 @@ package calendear.action;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
@@ -14,11 +15,12 @@ public class ActionTest {
 	/**[0:name][1:type][2:start time]
 	[3:end time][4:location][5:note]
 	[6:tag][7:important][8:finished]
+	 * @throws IOException 
 */
 
 
 	@Test
-	public void testUpdate() throws ParseException, LogicException{
+	public void testUpdate() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action1.txt");
 		int nextIndex = action1.getAmount();
 		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
@@ -37,7 +39,7 @@ public class ActionTest {
 	}
 	
 	@Test
-	public void testUndo() throws ParseException, LogicException{
+	public void testUndo() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action2.txt");
 		int nextIndex = action1.getAmount();
 		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
@@ -57,7 +59,7 @@ public class ActionTest {
 	}
 	
 	@Test
-	public void testUndoDelete() throws ParseException, LogicException{
+	public void testUndoDelete() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action2.txt");
 		int nextIndex = action1.getAmount();
 		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
@@ -72,7 +74,7 @@ public class ActionTest {
 	}
 
 	@Test
-	public void testRedo() throws ParseException, LogicException{
+	public void testRedo() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action3.txt");
 		int nextIndex = action1.getAmount();
 		GregorianCalendar originalTime = new GregorianCalendar(01, 01, 2001);
@@ -94,7 +96,7 @@ public class ActionTest {
 	}
 	
 	@Test
-	public void testSearchName() throws ParseException, LogicException{
+	public void testSearchName() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action4.txt");
 		int nextIndex = action1.getAmount();
 		Task test1 = new Task("search test1 aaaa");
@@ -127,7 +129,7 @@ public class ActionTest {
 	}
 	
 	@Test
-	public void testSearchStartTime() throws ParseException, LogicException{
+	public void testSearchStartTime() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action5.txt");
 		Task test1 = new Task("search startTime1", 
 				new GregorianCalendar( 2016,4,2,13,0),
@@ -166,7 +168,7 @@ public class ActionTest {
 	}
 	
 	@Test
-	public void testSearchStartAndEndTime() throws ParseException, LogicException{
+	public void testSearchStartAndEndTime() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action6.txt");
 		Task test1 = new Task("search startTime1", 
 				new GregorianCalendar( 2016,1,1,13,0),
@@ -205,7 +207,7 @@ public class ActionTest {
 	}
 	
 	@Test
-	public void testSearchTag() throws ParseException, LogicException{
+	public void testSearchTag() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action7.txt");
 		Task test1 = new Task("tag test1");
 		Task test2 = new Task("tag test2");
