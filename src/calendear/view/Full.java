@@ -12,14 +12,25 @@ public class Full {
 	private static final String HEADER_STARTTIME = "Start time:";
 	private static final String HEADER_ENDTIME = "End time:";
 	private static final String HEADER_DUETIME = "Due time:";
-	private static final String HEADER_RECURRING_ENDTIME = "Next due time:";
 	private static final String HEADER_LOCATION = "Location:";
 	private static final String HEADER_NOTE = "Note:";
 	private static final String HEADER_IMPORTANCE = "Important:";
 	private static final String HEADER_FINISHED = "Finished:";
 	private static final String[] HEADERS_ARR_N = {HEADER_IMPORTANCE,HEADER_FINISHED,HEADER_NAME, 
 			HEADER_TAG, HEADER_STARTTIME,HEADER_DUETIME,HEADER_ENDTIME,HEADER_LOCATION,HEADER_NOTE};
-	private static final String S = " ";
+	
+	private static final int ID_IMPO=0;
+	private static final int ID_FINI=1;
+	private static final int ID_NAME=2;
+	private static final int ID_TAG=3;
+	private static final int ID_STIME=4;
+	private static final int ID_DTIME=5;
+	private static final int ID_ETIME=6;
+//	private static final int ID_LOCA=7;
+//	private static final int ID_NOTE=8;
+	
+	
+	
 	
 	public static final String ANSI_RESET = "\u001B[0m";
 	public static final String ANSI_RED = "\u001B[31m";
@@ -58,37 +69,37 @@ public class Full {
 	public static String getTask(Task task){
 		String details="";
 		if(task.getName()!=null){
-			details+=HEADERS_ARR[2]+task.getName()+"\n";
+			details+=HEADERS_ARR[ID_NAME]+task.getName()+"\n";
 		}
 		if(task.getTag()!=null){
-			details+=HEADERS_ARR[3]+task.getTag()+"\n";
+			details+=HEADERS_ARR[ID_TAG]+task.getTag()+"\n";
 		}	
 		if((task.getStartTimeStr()!=null)&&
 				(!task.getType().equals(TASK_TYPE.DEADLINE))){
-			details+=HEADERS_ARR[4]+task.getStartTimeStr()+"\n";
+			details+=HEADERS_ARR[ID_STIME]+task.getStartTimeStr()+"\n";
 		}
 		if(task.getEndTimeStr()!=null){
 			if(task.getType().equals(TASK_TYPE.DEADLINE)){
-				details+=HEADERS_ARR[5]+task.getEndTimeStr()+"\n";
+				details+=HEADERS_ARR[ID_DTIME]+task.getEndTimeStr()+"\n";
 			}
 			else{
-				details+=HEADERS_ARR[6]+task.getEndTimeStr()+"\n";
+				details+=HEADERS_ARR[ID_ETIME]+task.getEndTimeStr()+"\n";
 			}
 		}
 	/*	if(task.getLocation()!=null){
-			details+=HEADERS_ARR[7]+task.getLocation()+"\n";
+			details+=HEADERS_ARR[ID_LOCA]+task.getLocation()+"\n";
 		}
 		if(task.getNote()!=null){
-			details+=HEADERS_ARR[8]+task.getNote()+"\n";
+			details+=HEADERS_ARR[ID_NOTE]+task.getNote()+"\n";
 		} */
 		if(task.isImportant()){
-			details+=HEADERS_ARR[0]+ MSG_YES+ "\n";
+			details+=HEADERS_ARR[ID_IMPO]+ MSG_YES+ "\n";
 		}
 		if(task.isFinished()){
-			details+=HEADERS_ARR[1]+MSG_YES+"\n";
+			details+=HEADERS_ARR[ID_FINI]+MSG_YES+"\n";
 		}
 		else if(!task.isFinished()){
-			details+=HEADERS_ARR[1]+MSG_NO+"\n";
+			details+=HEADERS_ARR[ID_FINI]+MSG_NO+"\n";
 		}
 		return details;
 	}
