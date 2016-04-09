@@ -13,7 +13,7 @@ import java.io.IOException;
 
 /**
  * Controller for User Interaction
- * @author Phang Chun Rong
+ * @@author Phang Chun Rong
  */
 public class Controller {
 	private static final int DONE_ID = 8;
