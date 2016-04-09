@@ -465,16 +465,19 @@ public class Action {
 	/**
 	 * determines if 2 strings can be considered similar
 	 * @param str1
-	 * @param str2
+	 * @param searchWith
 	 * @return
 	 */
-	private boolean withinDistance(String str1, String str2){
+	private boolean withinDistance(String str1, String searchWith){
 		final String splitWith = " ";
-		if(str1 == null || str2 == null){
+		if(str1 == null || searchWith == null){
 			return false;
 		}
+		if(str1.contains(searchWith)){
+			return true;
+		}
 		String[] strArr1 = str1.split(splitWith);
-		String[] strArr2 = str2.split(splitWith);
+		String[] strArr2 = searchWith.split(splitWith);
 		
 		for(int i = 0; i<strArr1.length; i++){
 			for(int j = 0; j<strArr2.length; j++){
