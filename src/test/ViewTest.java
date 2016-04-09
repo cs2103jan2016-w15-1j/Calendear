@@ -1,11 +1,9 @@
-
 package test;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import calendear.view.*;
 import org.junit.Test;
 
 import calendear.util.TASK_TYPE;
