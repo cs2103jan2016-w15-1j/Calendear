@@ -74,94 +74,63 @@ public class GoogleIO {
 	    return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
 	  }
 	
-	  public static boolean login() {
-		  try {
-		      // initialize the transport
-		      httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+	  public static void login() throws IOException, Exception{
+		  // initialize the transport
+		  httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-		      // authorization
-		      Credential credential = authorize();
+		  // authorization
+		  Credential credential = authorize();
 
-		      // set up global Calendar instance
-		      client = new com.google.api.services.calendar.Calendar.Builder(
-		          httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
-		      
-		      //Link to Calendear
-		      calendarID = findOrCreateCalendar();
-		      
-		      isLogined = true;
-		      
-		      return true;
+	      // set up global Calendar instance
+	      client = new com.google.api.services.calendar.Calendar.Builder(
+	          httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
+	      
+	      //Link to Calendear
+	      calendarID = findOrCreateCalendar();
+	      isLogined = true;
 
-		    } catch (IOException e) {
-		      System.err.println(e.getMessage());
-		      return false;
-		    } catch (Throwable t) {
-		      t.printStackTrace();
-		      return false;
-		    }
 	  }
 	  
 	  public static boolean isLogined() {
 		  return isLogined;
 	  }
 	  
-	  public static String addEvent(Task task) {
+	  public static String addEvent(Task task) throws IOException {
 		  assert(isLogined == true);
 		  
-		  try {
-			  Event event = task.toGoogleEvent();
-			  Event result = client.events().insert(calendarID, event).execute();
-			  return result.getId();
-			}
-		  catch (IOException ex) {
-			  System.out.println(ex);
-			  return MESSAGE_ERROR;
-		  }
+		  Event event = task.toGoogleEvent();
+		  Event result = client.events().insert(calendarID, event).execute();
+		  return result.getId();
+	  
 		}
 		
-	  public static void updateEvent(Task task) {
+	  public static void updateEvent(Task task) throws IOException{
 		  assert(isLogined == true);
 		  
-		  try {
-			  String eventId = task.getEventId();
-			  Event event = task.toGoogleEvent();
-			  client.events().update(calendarID, eventId, event).execute();
-		  }
-		  catch (IOException ex) {
-			  System.out.println(ex);
-		  }
+		  String eventId = task.getEventId();
+		  Event event = task.toGoogleEvent();
+		  client.events().update(calendarID, eventId, event).execute();
 	  }
 		
-	  public static void deleteEvent(Task task) {
+	  public static void deleteEvent(Task task) throws IOException {
 		  assert(isLogined == true);
 		  
-		  try {
-			  String eventId = task.getEventId();
-			  client.events().delete(calendarID, eventId).execute();
-		  }
-		  catch (IOException ex) {
-			  System.out.println(ex);
-		  }
+		  String eventId = task.getEventId();
+		  client.events().delete(calendarID, eventId).execute();
 	  }
 		
-	  public static ArrayList<Task> loadTasksFromGoogle() {
+	  public static ArrayList<Task> loadTasksFromGoogle() throws IOException {
 		  assert(isLogined == true);
+		  
 		  ArrayList<Task> tasks = new ArrayList<Task>();
-		  try {
-			  Events feed = client.events().list(calendarID).execute();
-			  Iterable<Event> listOfEvents = feed.getItems();
-			  for (Event event: listOfEvents) {
-				  Task newTask = Task.parseGoogleEvent(event);
-				  tasks.add(newTask);
-			  }
-			    
-			  return tasks;
+		  Events feed = client.events().list(calendarID).execute();
+		  Iterable<Event> listOfEvents = feed.getItems();
+		  for (Event event: listOfEvents) {
+			  Task newTask = Task.parseGoogleEvent(event);
+			  tasks.add(newTask);
 		  }
-		  catch (IOException ex) {
-			  return tasks;
-		  }
-			
+		    
+		  return tasks;
 		}
 		  
 	  private static String findOrCreateCalendar() throws IOException {
@@ -178,18 +147,11 @@ public class GoogleIO {
 		  return createCalendar();
 	  }
 		
-	  private static String createCalendar() {
-		  try {
-			  Calendar entry = new Calendar();
-			  entry.setSummary(APPLICATION_NAME);
-			  Calendar result = client.calendars().insert(entry).execute();
-			  return result.getId();
-		  }
-		  catch (IOException ex) {
-			  System.out.println(MESSAGE_ERROR);
-			  return null;
-		  }
-			
+	  private static String createCalendar() throws IOException {
+		  Calendar entry = new Calendar();
+		  entry.setSummary(APPLICATION_NAME);
+		  Calendar result = client.calendars().insert(entry).execute();
+		  return result.getId();			
 	  }
 	  
 }

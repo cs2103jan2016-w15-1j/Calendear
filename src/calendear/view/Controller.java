@@ -180,8 +180,8 @@ public class Controller {
 	    				   
 	    				   break;
 	    		
-	    		case SAVE:  String result = _cdLogic.exeSaveFile((CommandSave) command);
-	    					System.out.println(result);
+	    		case SAVE:  _cdLogic.exeSaveFile((CommandSave) command);
+	    					
 	    					break;
 	    				
 	    		case CLEAR: _cdLogic.exeClear((CommandClear) command);

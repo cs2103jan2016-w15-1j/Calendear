@@ -2,8 +2,8 @@ package calendear.storage;
 
 import calendear.util.Task;
 
-
 import java.text.ParseException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +16,7 @@ public class DataManager {
 	/**
 	 * @return an ArrayList of tasks based on the stored file.
 	 */
-	public ArrayList<Task> getDataFromFile() throws ParseException {
+	public ArrayList<Task> getDataFromFile() throws ParseException, IOException {
 		return FileIO.buildData();
 	}
 
@@ -24,14 +24,14 @@ public class DataManager {
 	 * Writes Tasks to File
 	 * @param tasksList
 	 */
-	public void insertDataToFile(ArrayList<Task> tasksList) {
+	public void insertDataToFile(ArrayList<Task> tasksList) throws IOException {
 		FileIO.updateData(tasksList);
 	}
 
 	/**
 	 * Logs user into Google
 	 */
-	public void loginGoogle() {
+	public void loginGoogle() throws IOException, Exception {
 		GoogleIO.login();
 	}
 	
@@ -44,7 +44,7 @@ public class DataManager {
 	 * @param task
 	 * @return eventId
 	 */
-	public String addTaskToGoogle(Task task) {
+	public String addTaskToGoogle(Task task) throws IOException {
 		return GoogleIO.addEvent(task);
 	}
 	
@@ -52,7 +52,7 @@ public class DataManager {
 	 * Update Calendear Task to Google using GoogleIO.
 	 * @param task
 	 */
-	public void updateTaskToGoogle(Task task) {
+	public void updateTaskToGoogle(Task task) throws IOException {
 		GoogleIO.updateEvent(task);
 	}
 	
@@ -60,7 +60,7 @@ public class DataManager {
 	 * Delete Calendear Task to Google using GoogleIO.
 	 * @param task
 	 */
-	public void deleteTaskFromGoogle(Task task) {
+	public void deleteTaskFromGoogle(Task task) throws IOException {
 		GoogleIO.deleteEvent(task);
 	}
 	
@@ -68,7 +68,7 @@ public class DataManager {
 	 * Get Tasks that are saved in Google
 	 * @return Tasks
 	 */
-	public ArrayList<Task> getTasksFromGoogle() {
+	public ArrayList<Task> getTasksFromGoogle() throws IOException {
 		return GoogleIO.loadTasksFromGoogle();
 	}
 	
@@ -77,15 +77,15 @@ public class DataManager {
 	 * @param path
 	 * @return 
 	 */
-	public String changeFilePath(String path) {
-		return FileIO.changeFilePath(path);
+	public void changeFilePath(String path) throws IOException {
+		FileIO.changeFilePath(path);
 	}
 	
 	/**
 	 * DataManager constructor
 	 * @param fileName
 	 */
-	public DataManager(String fileName) {
+	public DataManager(String fileName) throws IOException{
 		FileIO.createFile(fileName);
 	}
 

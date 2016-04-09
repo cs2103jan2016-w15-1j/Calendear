@@ -18,42 +18,30 @@ import calendear.util.Task;
  */
 public class FileIO {
 	
-	private static final String MESSAGE_FILE_ERROR = "File Creation failed.";
-	private static final String MESSAGE_FILE_SUCCESS = "File Created";
-	
 	private static String nameOfFile;
 	private static File file;
 	
 	
-	public static void createFile(String fileName) {
-		try {
-			nameOfFile = fileName;
-			file = new File(nameOfFile);
-			file.createNewFile();
-	    }
-	    catch(IOException ex) {
-	    	System.out.println(MESSAGE_FILE_ERROR);
-	    }		
+	public static void createFile(String fileName) throws IOException {
+		nameOfFile = fileName;
+		file = new File(nameOfFile);
+		file.createNewFile();
+	    		
 	}
 
-	public static ArrayList<Task> buildData() throws ParseException {
+	public static ArrayList<Task> buildData() throws ParseException, IOException {
 		ArrayList<Task> tasks = new ArrayList<Task>();
-		try {
-			FileReader fileReader = new FileReader(file);
+		FileReader fileReader = new FileReader(file);
 
-			BufferedReader bufferedReader = 
-                new BufferedReader(fileReader);
-			
-			String line = null;
-            while((line = bufferedReader.readLine()) != null) {
-                Task newTask = Task.parseSaveable(line);
-                tasks.add(newTask);
-            }   
-			fileReader.close();
-		}
-		catch(IOException ex) {
-	    	System.out.println(ex);
-		}
+		BufferedReader bufferedReader = new BufferedReader(fileReader);	
+		String line = null;
+		while((line = bufferedReader.readLine()) != null) {
+			Task newTask = Task.parseSaveable(line);
+			tasks.add(newTask);
+		}   
+		
+		fileReader.close();
+
 		return tasks;
 	}
 	
@@ -61,42 +49,29 @@ public class FileIO {
 	 * Takes in an ArrayList of Tasks and saves it into the database.
 	 * @param tasksList
 	 */
-	public static void updateData(ArrayList<Task> tasksList) {
+	public static void updateData(ArrayList<Task> tasksList) throws IOException {
 		wipeFile(); // Clears file content first
 		
-		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+		BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
 
-			for (int i=0; i < tasksList.size(); i++) {
-				Task currentTask = tasksList.get(i);
+		for (int i=0; i < tasksList.size(); i++) {
+			Task currentTask = tasksList.get(i);
 
-				bw.write(currentTask.toSaveable());
-				bw.newLine();
-			}
+			bw.write(currentTask.toSaveable());
+			bw.newLine();
+		}
 
-			bw.close();
-	    }
-	    catch (IOException ex) {
-	    	System.out.println(ex);
-	    }
+		bw.close();
 	}
 	
-	public static String changeFilePath(String path) {
-		try {
-			File newFile = new File(path);
-			newFile.createNewFile();
+	public static void changeFilePath(String path) throws IOException {
+		File newFile = new File(path);
+		newFile.createNewFile();
 			
-			copyData(newFile);
+		copyData(newFile);
 			
-			nameOfFile = path;
-			file = newFile;
-			
-			return MESSAGE_FILE_SUCCESS;
-		}
-		catch(IOException ex) {
-			return MESSAGE_FILE_ERROR;
-		}
-		
+		nameOfFile = path;
+		file = newFile;
 	}
 	
 	private static void copyData(File newFile) throws IOException {
@@ -116,14 +91,9 @@ public class FileIO {
 		bufferedReader.close();
 	}
 	
-	private static void wipeFile() {
-		try {
-			FileWriter fileWriter = new FileWriter(file);
-			fileWriter.write("");
-			fileWriter.close();
-		}
-		catch(IOException ex) {
-			System.out.println(ex);
-		}	
+	private static void wipeFile() throws IOException {
+		FileWriter fileWriter = new FileWriter(file);
+		fileWriter.write("");
+		fileWriter.close();
 	}
 }

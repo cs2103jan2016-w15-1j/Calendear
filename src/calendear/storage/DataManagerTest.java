@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.text.ParseException;
 
@@ -22,17 +23,22 @@ public class DataManagerTest {
 	
 	@Before
 	public void setUpNewFile() {
-		_dataManager = new DataManager("test_file.txt");
-		
-		_testTasks = new ArrayList<Task>();
-		_testTasks.add(new Task("first task"));
-		_testTasks.add(new Task("second task"));
-		_testTasks.add(new Task("third task"));
-		_dataManager.insertDataToFile(_testTasks);
+		try {
+			_dataManager = new DataManager("test_file.txt");
+			
+			_testTasks = new ArrayList<Task>();
+			_testTasks.add(new Task("first task"));
+			_testTasks.add(new Task("second task"));
+			_testTasks.add(new Task("third task"));
+			_dataManager.insertDataToFile(_testTasks);
+		}
+		catch (IOException ex) {
+			System.out.println(ex);
+		}
 	}
 	
 	@Test
-	public void testFileRead() throws ParseException {
+	public void testFileRead() throws ParseException, IOException {
 		ArrayList<Task> tasksRead = _dataManager.getDataFromFile();
 		assertEquals(tasksRead.size(), _testTasks.size());
 	}
