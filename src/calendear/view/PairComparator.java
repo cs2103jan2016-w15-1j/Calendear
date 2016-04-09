@@ -23,9 +23,9 @@ import calendear.util.Task;
 
 
 
-public class PairComparator implements Comparator<Pair> {
+public class PairComparator implements Comparator<Pair<Integer,Task>> {
 	@Override
-	public int compare(Pair p1,Pair p2){
+	public int compare(Pair<Integer,Task> p1,Pair<Integer,Task> p2){
 		return compareComplete((Task)p1.getTask(),(Task)p2.getTask());
 	}
 	
@@ -42,7 +42,6 @@ public class PairComparator implements Comparator<Pair> {
 	}
 	
 	private int compareImportance(Task t1,Task t2){
-		int i;
 		if(t1.isImportant()&&!t2.isImportant()){
 			return -1;
 		}
