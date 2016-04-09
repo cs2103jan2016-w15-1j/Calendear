@@ -8,6 +8,9 @@ import java.text.ParseException;
 
 public class Parser {
 	
+	private static final int SECOND_WORD_INDEX = 1;
+	private static final int FIRST_WORD_INDEX = 0;
+	private static final String PATTERN_SPACES = " +";
 	private static final String ADD = "add";
 	private static final String DISPLAY = "display";
 	private static final String UPDATE = "update";
@@ -48,7 +51,7 @@ public class Parser {
 	+ "\\b|\\b" + FLOAT + "\\b|\\b" + AT + "\\b|\\b" + NOTE + "\\b|\\b"+ TAG 
 	+"\\b|\\b"+ IMPORTANT +"\\b|\\b"+ DONE +"\\b))+)";
 	private static final String PATTERN_ADD = 
-	"(\\b" + ADD + "\\b) +" + NEGATIVE_LOOKAHEAD_KEYWORDS + " +"				//represent the groups update and <taskID>
+	"(\\b" + ADD + "\\b) +" + NEGATIVE_LOOKAHEAD_KEYWORDS + PATTERN_SPACES
 	+ "(?:(?:(\\b" + NAME + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
 	+ "|(?:(\\b" + BY + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups by and <dateAndTime>
 	+ "|(?:(\\b" + FROM + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups from and <dateAndTime>
@@ -92,13 +95,13 @@ public class Parser {
 	public static Command parse(String rawInput){	
 		rawInput = rawInput.trim();
 		rawInput = changeEscapeCharacter(rawInput);
-		String[] words = rawInput.split(" +");
+		String[] words = rawInput.split(PATTERN_SPACES);
 		return parseCommand(words, rawInput);
 	}
 	
 	private static Command parseCommand(String[] words, String rawInput){
 		
-		switch (words[0]){
+		switch (words[FIRST_WORD_INDEX]){
 			case ADD:
 				return parseAddCmd(words, rawInput);
 			case DISPLAY:
@@ -285,7 +288,7 @@ public class Parser {
 	}
 	
 	private static Command parseDeleteCmd(String[] words, String rawInput){
-		int index = Integer.parseInt(words[1]);
+		int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
 		return new CommandDelete(index);
 	}
 	
@@ -372,69 +375,3 @@ public class Parser {
 	}
 	
 }
-
-/** 
- *  parseUpdateCmd2 by Jiyun
- * 
- **/
-//.update <index> <header1:content\\r\\n header2:content\\r\\n ...>
-//private static Command parseUpdateCmd2(String[] words, String rawInput){
-//		Pattern pattern = Pattern.compile(PATTERN_UPDATE_NAME_BY_INDEX);
-//		Matcher matcher = pattern.matcher(rawInput);
-//		if (matcher.find()){
-//			try {	
-//				int index = Integer.parseInt(matcher.group(2));
-//				String newInfo = matcher.group(3);
-//				int[] updateChecklist = new int[NUM_OF_TASK_ATTRIBUTES];
-//				String[] newInfoContentOnly = new String[NUM_OF_TASK_ATTRIBUTES];
-//				String[] newInfoArr = newInfo.split("\\r?\\n");
-//				for(int i=0;i<newInfoArr.length;i++){
-//					String[] line = newInfoArr[i].split(":");
-//					if(line[0].equalsIgnoreCase("name")){
-//						updateChecklist[0]=1;
-//						newInfoContentOnly[0]= line[1];
-//					}
-//					else if(line[0].equalsIgnoreCase("type")){
-//						updateChecklist[1]=1;
-//						newInfoContentOnly[1]= line[1];
-//					}
-//					else if(line[0].equalsIgnoreCase("starttime")){
-//						updateChecklist[2]=1;
-//						newInfoContentOnly[2]= line[1];
-//					}
-//					else if(line[0].equalsIgnoreCase("endtime")){
-//						updateChecklist[3]=1;
-//						newInfoContentOnly[3]= line[1];
-//					}
-//					else if(line[0].equalsIgnoreCase("location")){
-//						updateChecklist[4]=1;
-//						newInfoContentOnly[4]= line[1];
-//					}
-//					else if(line[0].equalsIgnoreCase("note")){
-//						updateChecklist[5]=1;
-//						newInfoContentOnly[5]= line[1];
-//					}
-//					else if(line[0].equalsIgnoreCase("tag")){
-//						updateChecklist[6]=1;
-//						newInfoContentOnly[6]= line[1];
-//					}
-//					else if(line[0].equalsIgnoreCase("important")){
-//						updateChecklist[7]=1;
-//						newInfoContentOnly[7]= line[1];
-//					}
-//					else if(line[0].equalsIgnoreCase("finished")){
-//						updateChecklist[8]=1;
-//						newInfoContentOnly[8]= line[1];
-//					}
-//				
-//					
-//				}
-//				return new CommandUpdate(index, updateChecklist, newInfoContentOnly);
-//			}
-//			catch (NumberFormatException e){
-//				return new CommandInvalid(rawInput);
-//			}
-//		}
-//		
-//		return new CommandInvalid(rawInput);
-//	}

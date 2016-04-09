@@ -1,6 +1,11 @@
 package calendear.view;
 
-//@@author Pan Jiyun
+
+/**
+ * Different styles of lines for display
+ * @@author Pan Jiyun
+ *
+ */
 
 public class Line {
 	public static final String ANSI_RESET = "\u001B[0m";

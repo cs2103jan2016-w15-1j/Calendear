@@ -2,7 +2,12 @@ package calendear.view;
 import java.util.ArrayList;
 import calendear.util.Task;
 
-//@@author Pan Jiyun
+
+/**
+ * View containing methods to be called for display
+ * @@author Pan Jiyun
+ *
+ */
 
 public class View {
 	
