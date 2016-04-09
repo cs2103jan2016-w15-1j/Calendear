@@ -13,11 +13,10 @@ import calendear.storage.DataManager;
 
 /**
  * 
- * @author Wu XiaoXiao
+ * @@author Wu XiaoXiao
  * Class for taking care of main logic
  *
  */
-
 
 public class Action {
 	private static final int DATA_START_INDEX = 1;
@@ -969,9 +968,10 @@ public class Action {
 			this._dataManager.deleteTaskFromGoogle(currentTask);
 		}
 	}
+	//@@author
 	
 	/**
-	 * @author Phang Chun Rong
+	 * @@author Phang Chun Rong
 	 */
 	public void exeLinkGoogle() throws IOException,Exception  {
 		if (!this._dataManager.isLogined()) {
@@ -996,7 +996,7 @@ public class Action {
 		this._dataManager.changeFilePath(path);
 	}
 	
-	
+	//@@author Wu XiaoXiao
 	//--------------------------------------------------------------------------
 	//helper
 	/**
@@ -1051,7 +1051,6 @@ public class Action {
 		String eventId = task.getEventId();
 		return eventId != null && !eventId.equals(EMPTY_STRING) && !eventId.equals(NULL_STRING);
 	}
-	
 	
 }
 
