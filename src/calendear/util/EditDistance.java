@@ -1,10 +1,8 @@
+// @@author Dinh Viet Thang
 package calendear.util;
 
 public class EditDistance {
-	private static int minimum(int a, int b, int c) {                            
-        return Math.min(Math.min(a, b), c);                                      
-    }                                                                            
-    
+	
 	/**
 	 * 
 	 * Compute the LevenshteinDistance between 2 CharSequence. 
@@ -49,5 +47,10 @@ public class EditDistance {
         }
                 
         return distance[string1.length()][string2.length()];                           
-    }             
+    }
+    
+    private static int minimum(int a, int b, int c) {                            
+        return Math.min(Math.min(a, b), c);                                      
+    }                                                                            
+    
 }

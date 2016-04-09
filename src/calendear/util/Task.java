@@ -1,3 +1,4 @@
+// @@author Dinh Viet Thang
 package calendear.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -172,7 +173,7 @@ public class Task {
 	}
 	
 	/**
-	 * @author Phang Chun Rong
+	 * @@author Phang Chun Rong
 	 * @param startTime
 	 */
 	public void setStartTime(EventDateTime startTime) {
@@ -192,14 +193,14 @@ public class Task {
 		cal.setTimeInMillis(timeValue);
 		this.startTime = cal;
 	}
-	//@@author
+	//@@author Dinh Viet Thang
 	
 	public void setEndTime(GregorianCalendar time) {
 		this.endTime = time;
 	}
 	
 	/**
-	 * @author Phang Chun Rong
+	 * @@author Phang Chun Rong
 	 * @param endTime
 	 */
 	public void setEndTime(EventDateTime endTime) {
@@ -219,7 +220,7 @@ public class Task {
 		cal.setTimeInMillis(timeValue);
 		this.endTime = cal;
 	}
-	//author
+	//@@author Dinh Viet Thang
 	
 	public void setType (TASK_TYPE type) {
 		this.type = type;
@@ -246,7 +247,7 @@ public class Task {
 	}
 	
 	/**
-	 * @author Phang Chun Rong
+	 * @@author Phang Chun Rong
 	 * @param strFinished
 	 */
 	public void setIsFinishedByString(String strFinished) {
@@ -257,7 +258,7 @@ public class Task {
 			this.isFinished = false;
 		}
 	}
-	//@@author
+	//@@author Dinh Viet Thang
 	
 	public String toSaveable() {
 		String res;
@@ -273,9 +274,10 @@ public class Task {
 		res += getFinishedStr() + OBJ_SEPERATOR;
 		return res;
 	}
-	
+	// @@author 
+
 	/**
-	 * @author Phang Chun Rong
+	 * @@author Phang Chun Rong
 	 * @return Google Event
 	 */
 	public Event toGoogleEvent() {
@@ -372,8 +374,9 @@ public class Task {
 		
 		return task;
 	}
-	//@author
+	// @@author
 	
+	// @@author Dinh Viet Thang
 	public static Task parseSaveable(String allString) throws ParseException {
 		String[] members = allString.split(PATTERN_OBJ_SEPERATOR);
 		String typeStr = members[SAVING_INDEX_TYPE];
