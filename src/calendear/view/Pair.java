@@ -1,6 +1,13 @@
 package calendear.view;
 
-//@@author Pan Jiyun
+
+/**
+ * Pair of index and task
+ * @@author Pan Jiyun
+ *
+ * @param <T>
+ * @param <Task>
+ */
 
 public class Pair<T,Task> {
 	private  Integer id;

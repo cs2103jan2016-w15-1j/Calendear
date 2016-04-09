@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import calendear.util.TASK_TYPE;
 import calendear.util.Task;
 
-//@@author Pan Jiyun
+
+/**
+ * Full attributes of tasks for display
+ * @@author Pan Jiyun
+ *
+ */
 public class Full {
 	
 	private static final String HEADER_NAME = "Task name:";

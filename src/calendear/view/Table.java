@@ -6,7 +6,12 @@ import java.util.Collections;
 
 import calendear.util.Task;
 
-//@@author Pan Jiyun
+
+/**
+ * Tables containing tasks for display
+ * @@author Pan Jiyun
+ * 
+ */
 
 /**
  * functions:
