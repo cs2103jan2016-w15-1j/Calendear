@@ -6,7 +6,7 @@ import calendear.util.Task;
 
 //@@author Pan Jiyun
 
-/* order of display:
+/**order of display:
  * incomplete important event with early start time
  * incomplete important deadline task with early end time
  * incomplete important floating task
