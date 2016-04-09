@@ -8,7 +8,8 @@ import calendear.util.Task;
 
 //@@author Pan Jiyun
 
-/**functions:
+/**
+ * functions:
  * 1. return full table 
  * 2. return table with incomplete tasks only
  * 3. return table with completed tasks only
@@ -101,7 +102,9 @@ public class Table {
 
 	
 	
-	/** 1. return full table 
+	/** 
+	 * 1. return full table 
+	 * @param taskArr
 	 */ 
 	public static String getMultipleTasksInFull(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
@@ -112,7 +115,9 @@ public class Table {
 	}
 	
 	
-	/** 2. return table with incomplete tasks only
+	/** 
+	 *  2. return table with incomplete tasks only
+	 *  @param taskArr
 	 */		
 	public static String getMultipleTasksIncomplete(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
@@ -121,7 +126,9 @@ public class Table {
 	}
 	
 	
-	/** 3. return table with completed tasks only
+	/** 
+	 *  3. return table with completed tasks only
+	 *  @param taskArr
 	 */
 	public static String getMultipleTasksComplete(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
@@ -177,7 +184,9 @@ public class Table {
 	}
 	
 	
-	/** 4. return sorted array list of pairs
+	/** 
+	 *  4. return sorted array list of pairs
+	 *  @param taskArr
 	 */
 	public static ArrayList<Pair<Integer, Task>> getSortedList(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer, Task>> pairArr = formPairArr(taskArr);
@@ -186,7 +195,10 @@ public class Table {
 	}
 	
 	
-	/** 5. return table format of one single task
+	/** 
+	 *  5. return table format of one single task
+	 *  @param task
+	 *  @param id
 	 */
 	public static String getSingleTask(Task task,int id){
 		ArrayList<String> detailsInArray = getDetailsArr(task);
@@ -197,7 +209,9 @@ public class Table {
 	}
 	
 	
-	/** 6. return attributes of one single task in an array list
+	/** 
+	 *  6. return attributes of one single task in an array list
+	 *  @param task
 	 */
 	public static ArrayList<String> getDetailsArr(Task task){
 		ArrayList<String> details= new ArrayList<String>();
@@ -205,10 +219,10 @@ public class Table {
 			details.add("");
 		}
 		if(task.isImportant()){
-			details.set(ID_IMPO, "Yes");
+			details.set(ID_IMPO, MSG_YES);
 		}
 		if(task.isFinished()){
-			details.set(ID_FINI, "Yes");
+			details.set(ID_FINI, MSG_YES);
 		}
 		details.set(ID_NAME, task.getName());
 		details.set(ID_TAG, task.getTag());

@@ -93,6 +93,9 @@ public class ActionTest {
 		assertEquals(t1.getEndTime(), newTime);
 	}
 	
+	
+	//@@ Pan Jiyun
+	
 	@Test
 	public void testSearchName() throws ParseException, LogicException{
 		Action action1 = new Action("action4.txt");
@@ -295,5 +298,5 @@ public class ActionTest {
 		
 		action1.exeClear(new CommandClear());
 	}
-
+    
 }
