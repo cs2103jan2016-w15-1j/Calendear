@@ -84,7 +84,7 @@ public class Controller {
 	    			catch(ArrayIndexOutOfBoundsException e){
 	    				View.displayInvalid();
 	    			}
-	    				break;
+	    			break;
 	    					  
 	    		case DELETE:  
 	    			try{
@@ -269,6 +269,10 @@ public class Controller {
 	    			View.displayHelp();
 				    break;
 	    		
+	    		case INVALID:
+	    			View.displayInvalid();
+	    			break;
+	    			
 	    		default: 
 	    				break;
 	    	}
