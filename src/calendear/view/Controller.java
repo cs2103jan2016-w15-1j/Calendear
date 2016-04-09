@@ -242,7 +242,7 @@ public class Controller {
 						_cdLogic.exeSaveFile((CommandSave) command);
 					}
 					catch (IOException ex) {
-						View.displayError(MESSAGE_ERROR_GOOGLE);
+						View.displayError(MESSAGE_ERROR_FILE_CREATION);
 					}
 					
 					break;
