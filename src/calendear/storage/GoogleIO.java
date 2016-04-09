@@ -32,7 +32,6 @@ import calendear.util.Task;
 public class GoogleIO {
 
 	  private static final String APPLICATION_NAME = "Calendear";
-	  private static final String MESSAGE_ERROR = "Exception Caught";
 	  private static final String MESSAGE_ENTER = "Enter";
 	  private static final String MESSAGE_ENTER_SPACE = "Enter ";
 	  private static final String MESSAGE_ERROR_CREDENTIALS = 

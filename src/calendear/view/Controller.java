@@ -21,7 +21,6 @@ public class Controller {
 	private static final String MESSAGE_ERROR_INITIALISATION = "Error with file, please choose another file";
 	private static final String MESSAGE_ERROR_FILE_CREATION = "Cannot Create File";
 	
-	
 	private Scanner _scanner;
 	private CDLogic _cdLogic;
 	
