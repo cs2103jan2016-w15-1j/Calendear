@@ -75,12 +75,12 @@ public class Full {
 				details+=HEADERS_ARR[6]+task.getEndTimeStr()+"\n";
 			}
 		}
-		if(task.getLocation()!=null){
+	/*	if(task.getLocation()!=null){
 			details+=HEADERS_ARR[7]+task.getLocation()+"\n";
 		}
 		if(task.getNote()!=null){
 			details+=HEADERS_ARR[8]+task.getNote()+"\n";
-		}
+		} */
 		if(task.isImportant()){
 			details+=HEADERS_ARR[0]+ MSG_YES+ "\n";
 		}

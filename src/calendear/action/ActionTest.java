@@ -150,7 +150,9 @@ public class ActionTest {
 		action1.exeRedo();
 		assertEquals(t1.getEndTime(), newTime);
 	}
-//
+
+	//@@ Pan Jiyun
+
 	@Test
 	public void testSearchName() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action4.txt");
@@ -175,13 +177,10 @@ public class ActionTest {
 		expectedResult.add(null);
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);
-		for(int i = 0; i< testResult.size(); i++){
-			if(testResult.get(i) == null){
-				continue;
-			}
-			System.out.println(i + " " + testResult.get(i).getName());
-		}
+
 		assertEquals(testResult,expectedResult);
+		
+		action1.exeClear(new CommandClear());
 	}
 	
 	@Test
@@ -214,18 +213,50 @@ public class ActionTest {
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
-		for(int i=0;i< testResult.size();i++){
-			if(testResult.get(i)!=null){
-				System.out.println(i + " " + testResult.get(i).getName());
-			}
-		}
+		assertEquals(testResult,expectedResult);
+		
+		action1.exeClear(new CommandClear());
+	}
+	
+	@Test
+
+	public void testSearchEndTime() throws ParseException, LogicException, IOException{
+		Action action1 = new Action("action6.txt");
+		Task test1 = new Task("search startTime1", 
+				new GregorianCalendar( 2016,4,2,13,0),
+				new GregorianCalendar( 2016,4,2,15,0));
+		Task test2 = new Task("search startTime2", 
+				new GregorianCalendar( 2016,4,2,12,0),
+				new GregorianCalendar( 2016,4,2,16,0));
+		Task test3 = new Task("search startTime3", 
+				new GregorianCalendar( 2016,4,1,13,0),
+				new GregorianCalendar( 2016,4,2,15,0));
+		
+		action1.exeAdd(new CommandAdd(test1));
+		action1.exeAdd(new CommandAdd(test2));
+		action1.exeAdd(new CommandAdd(test3));
+		
+		boolean[] toShow = {false, false, false, true, false, false, false, false, false};
+		Object[] searchWith = {null, null, null, new GregorianCalendar( 2016,4,2,15,30), null, null, null, null};
+		
+		CommandSearch commandSearch = new CommandSearch(toShow, searchWith);
+		
+		ArrayList<Task> expectedResult = new ArrayList<Task>();
+		expectedResult.add(null);
+		expectedResult.add(test1);
+		expectedResult.add(null);
+		expectedResult.add(test3);
+		
+		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
 		assertEquals(testResult,expectedResult);
+		
+		action1.exeClear(new CommandClear());
 	}
 	
 	@Test
 	public void testSearchStartAndEndTime() throws ParseException, LogicException, IOException{
-		Action action1 = new Action("action6.txt");
+		Action action1 = new Action("action7.txt");
 		Task test1 = new Task("search startTime1", 
 				new GregorianCalendar( 2016,1,1,13,0),
 				new GregorianCalendar( 2016,1,30,15,0));
@@ -253,18 +284,14 @@ public class ActionTest {
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
-		for(int i=0;i< testResult.size();i++){
-			if(testResult.get(i)!=null){
-				System.out.println(i + " " + testResult.get(i).getName());
-			}
-		}
-
 		assertEquals(testResult,expectedResult);
+		
+		action1.exeClear(new CommandClear());
 	}
 	
 	@Test
 	public void testSearchTag() throws ParseException, LogicException, IOException{
-		Action action1 = new Action("action7.txt");
+		Action action1 = new Action("action8.txt");
 		Task test1 = new Task("tag test1");
 		Task test2 = new Task("tag test2");
 		Task test3 = new Task("tag test3");
@@ -290,13 +317,44 @@ public class ActionTest {
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
-		for(int i=0;i< testResult.size();i++){
-			if(testResult.get(i)!=null){
-				System.out.println(i + " " + testResult.get(i).getName());
-			}
-		}
 
 		assertEquals(testResult,expectedResult);
+		
+		action1.exeClear(new CommandClear());
 	}
+	
+	@Test
+	public void testSearchLocation() throws ParseException, LogicException, IOException{
+		Action action1 = new Action("action9.txt");
+		Task test1 = new Task("location test1");
+		Task test2 = new Task("location test2");
+		Task test3 = new Task("location test3");
+		
+		test1.setLocation("school");
+		test2.setLocation("home");
+		test3.setLocation("shopping mall");
+		
+		action1.exeAdd(new CommandAdd(test1));
+		action1.exeAdd(new CommandAdd(test2));
+		action1.exeAdd(new CommandAdd(test3));
+		
+		boolean[] toShow = {false, false, false, false, true, false, false, false, false};
+		Object[] searchWith = {null, null, null, null, "school", null, null, null};
+		
+		CommandSearch commandSearch = new CommandSearch(toShow, searchWith);
+		
+		ArrayList<Task> expectedResult = new ArrayList<Task>();
+		expectedResult.add(null);
+		expectedResult.add(test1);
+		expectedResult.add(null);
+		expectedResult.add(null);
+		
+		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
+
+		assertEquals(testResult,expectedResult);
+		
+		action1.exeClear(new CommandClear());
+	}
+    
 }

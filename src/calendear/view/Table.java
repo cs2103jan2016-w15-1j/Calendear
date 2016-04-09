@@ -8,6 +8,16 @@ import calendear.util.Task;
 
 //@@author Pan Jiyun
 
+/**
+ * functions:
+ * 1. return full table 
+ * 2. return table with incomplete tasks only
+ * 3. return table with completed tasks only
+ * 4. return sorted array list of pairs
+ * 5. return table format of one single task
+ * 6. return attributes of one single task in an array list
+ */
+
 public class Table {
 	
 	public static final String ANSI_RESET = "\u001B[0m";
@@ -89,46 +99,13 @@ public class Table {
 								//	"|%9$-"+LEN_NOTE+"s"+
 									"|\n";
 	
+
 	
-	private static String getHeaderString(String[] arr){
-		String headerString= "|    ";
-		for(int i=0;i<arr.length;i++){
-			headerString += ("|"+ANSI_CYAN+arr[i]+ANSI_RESET+addSpace(LEN_TITLE_ARR[i]));
-		}
-		headerString+="|\n";
-		return headerString;
-	}
 	
-	private static String addSpace(int n){
-		String space="";
-		for(int i=0;i<n;i++){
-			space +=" ";
-		}
-		return space;
-	}
-	
-	public static ArrayList<String> getDetailsArr(Task task){
-		ArrayList<String> details= new ArrayList<String>();
-		for(int i=0;i<NUM_OF_ATTRI;i++){
-			details.add("");
-		}
-		if(task.isImportant()){
-			details.set(ID_IMPO, "Yes");
-		}
-		if(task.isFinished()){
-			details.set(ID_FINI, "Yes");
-		}
-		details.set(ID_NAME, task.getName());
-		details.set(ID_TAG, task.getTag());
-		details.set(ID_STIME, task.getStartTimeStr());
-		details.set(ID_ETIME, task.getEndTimeStr());
-		details.set(ID_LOCA, task.getLocation()) ;
-		details.set(ID_NOTE, task.getNote());
-		
-		return details;
-	}
- 	
-	
+	/** 
+	 * 1. return full table 
+	 * @param taskArr
+	 */ 
 	public static String getMultipleTasksInFull(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
 		String output = titleLine()+Line.borderLineStar()
@@ -137,18 +114,29 @@ public class Table {
 		return output;
 	}
 	
+	
+	/** 
+	 *  2. return table with incomplete tasks only
+	 *  @param taskArr
+	 */		
 	public static String getMultipleTasksIncomplete(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
 		String output = titleLine()+Line.borderLineStar()+getIncompleteTaskStr(pairArr);
 		return output;
 	}
 	
+	
+	/** 
+	 *  3. return table with completed tasks only
+	 *  @param taskArr
+	 */
 	public static String getMultipleTasksComplete(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer,Task>> pairArr= getSortedList(taskArr);
 		String output =titleLine()+Line.borderLineStar()+getCompletedTaskStr(pairArr);
 		return output;
 	}
 	
+	// to prepare strings of completed tasks and borderlines
 	private static String getCompletedTaskStr(ArrayList<Pair<Integer,Task>> pairArr){
 		String outputLower =Line.borderLineWithWordsStarYellow(BORDER_COMPLETE);
 		String outputComplete="";
@@ -166,6 +154,7 @@ public class Table {
 		return outputLower+outputComplete;
 	}
 	
+	// to prepare strings of incomplete tasks and borderlines
 	private static String getIncompleteTaskStr(ArrayList<Pair<Integer,Task>> pairArr){
 		String outputUpper =Line.borderLineWithWordsStarYellow(BORDER_INCOMPLETE);
 		String outputIncomplete="";
@@ -183,9 +172,7 @@ public class Table {
 		return outputUpper+outputIncomplete;
 	}
 	
-
-
-
+	// to prepare pair arrays for sorting
 	private static ArrayList<Pair<Integer, Task>> formPairArr(ArrayList<Task> taskArr) {
 		ArrayList<Pair<Integer, Task>> pairArr = new ArrayList<Pair<Integer, Task>>();
 		for(int i=0;i<taskArr.size();i++){
@@ -196,12 +183,23 @@ public class Table {
 		return pairArr;
 	}
 	
+	
+	/** 
+	 *  4. return sorted array list of pairs
+	 *  @param taskArr
+	 */
 	public static ArrayList<Pair<Integer, Task>> getSortedList(ArrayList<Task> taskArr){
 		ArrayList<Pair<Integer, Task>> pairArr = formPairArr(taskArr);
 		Collections.sort(pairArr,new PairComparator());
 		return pairArr;
 	}
 	
+	
+	/** 
+	 *  5. return table format of one single task
+	 *  @param task
+	 *  @param id
+	 */
 	public static String getSingleTask(Task task,int id){
 		ArrayList<String> detailsInArray = getDetailsArr(task);
 		ArrayList<ArrayList<String>> arrayOfAttributesArr = formArrayOfAttributesArr(detailsInArray);
@@ -210,6 +208,33 @@ public class Table {
 		return taskInLine;
 	}
 	
+	
+	/** 
+	 *  6. return attributes of one single task in an array list
+	 *  @param task
+	 */
+	public static ArrayList<String> getDetailsArr(Task task){
+		ArrayList<String> details= new ArrayList<String>();
+		for(int i=0;i<NUM_OF_ATTRI;i++){
+			details.add("");
+		}
+		if(task.isImportant()){
+			details.set(ID_IMPO, MSG_YES);
+		}
+		if(task.isFinished()){
+			details.set(ID_FINI, MSG_YES);
+		}
+		details.set(ID_NAME, task.getName());
+		details.set(ID_TAG, task.getTag());
+		details.set(ID_STIME, task.getStartTimeStr());
+		details.set(ID_ETIME, task.getEndTimeStr());
+		details.set(ID_LOCA, task.getLocation()) ;
+		details.set(ID_NOTE, task.getNote());
+		
+		return details;
+	}
+	
+	// divide each attribute in to segments to fit the space of table 
 	private static ArrayList<ArrayList<String>> 
 		formArrayOfAttributesArr( ArrayList<String> details){
 		ArrayList<ArrayList<String>> arrayOfAttributesArr = new ArrayList<ArrayList<String>>();
@@ -228,6 +253,8 @@ public class Table {
 		return arrayOfAttributesArr;
 	}
 	
+	
+	// to ensure words are splited according to spaces
 	private static ArrayList<String> 
 		formAttributesArr(int len, String text){
 		ArrayList<String> attriArr = new ArrayList<String>();
@@ -261,6 +288,8 @@ public class Table {
 		
 	}
 	
+	
+	// to ensure the height of table is set according to the longest attributes
 	private static ArrayList<ArrayList<String>> 
 		formLineArr( ArrayList<ArrayList<String>> details){
 		int[] colLen = new int[NUM_OF_ATTRI];
@@ -290,16 +319,16 @@ public class Table {
 		return lineBlock;
 	}
 
-	
+	// to form all the lines of a table
 	private static String 
 		formLineString(ArrayList<ArrayList<String>> arr,int id){
 		String taskInLine ="";
-		if(id == NOT_ARR_LIST){
+		if(id == NOT_ARR_LIST){  // to form the first line with index number
 			taskInLine += String.format(format,S,arr.get(0).get(ID_IMPO)/*,arr.get(0).get(ID_FINI)*/
 				,arr.get(0).get(ID_NAME),arr.get(0).get(ID_TAG),arr.get(0).get(ID_STIME)
 				,arr.get(0).get(ID_ETIME)/*,arr.get(0).get(ID_LOCA),arr.get(0).get(ID_NOTE)*/);
 		}
-		else{
+		else{                   // to form the first line without index number
 			taskInLine += String.format(format,id+".",arr.get(0).get(ID_IMPO)/*,arr.get(0).get(ID_FINI)*/
 					,arr.get(0).get(ID_NAME),arr.get(0).get(ID_TAG),arr.get(0).get(ID_STIME)
 					,arr.get(0).get(ID_ETIME)/*,arr.get(0).get(ID_LOCA),arr.get(0).get(ID_NOTE)*/);
@@ -321,6 +350,22 @@ public class Table {
 		return titleLine;
 	}
 	
+	private static String getHeaderString(String[] arr){
+		String headerString= "|    ";
+		for(int i=0;i<arr.length;i++){
+			headerString += ("|"+ANSI_CYAN+arr[i]+ANSI_RESET+addSpace(LEN_TITLE_ARR[i]));
+		}
+		headerString+="|\n";
+		return headerString;
+	}
+	
+	private static String addSpace(int n){
+		String space="";
+		for(int i=0;i<n;i++){
+			space +=" ";
+		}
+		return space;
+	}
 	
 	
 	private static String welcomeString(String s){
