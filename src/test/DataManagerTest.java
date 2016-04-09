@@ -1,4 +1,4 @@
-package calendear.storage;
+package test;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.text.ParseException;
 
 import calendear.util.Task;
+import calendear.storage.*;
 
 /**
  * Tests DataManager at a high level for writing and reading data from file.

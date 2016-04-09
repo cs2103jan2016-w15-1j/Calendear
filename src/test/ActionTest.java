@@ -1,11 +1,11 @@
-package calendear.action;
+package test;
 
 import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
-
+import calendear.action.*;
 import org.junit.Before;
 import org.junit.Test;
 

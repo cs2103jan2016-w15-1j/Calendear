@@ -17,7 +17,7 @@ public class Parser {
 	private static final String DELETE = "delete";
 	private static final String SEARCH = "search";
 	private static final String SORT = "sort";
-	private static final String CMD_STR_MARK = "mark";
+	private static final String CMD_STR_MARK = "important";
 	private static final String CMD_STR_DONE = "done";
 	private static final String UNDO = "undo";
 	private static final String CMD_STR_TAG = "tag";
