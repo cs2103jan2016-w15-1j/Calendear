@@ -1,3 +1,4 @@
+//@@author Phang Chun Rong
 package calendear.storage;
 
 import calendear.util.Task;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 
 /**
  * Facade Class to manage IO requirements. Depends on GoogleIO and FileIO.
- * @author Phang Chun Rong A0139060M
+ * @author Phang Chun Rong
  *
  */
 public class DataManager {

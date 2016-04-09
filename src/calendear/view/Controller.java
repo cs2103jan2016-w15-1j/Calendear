@@ -1,3 +1,5 @@
+//@@author Phang Chun Rong
+
 package calendear.view;
 import calendear.action.CDLogic;
 import calendear.action.LogicException;

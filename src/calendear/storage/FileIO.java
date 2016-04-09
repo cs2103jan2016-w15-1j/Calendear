@@ -1,3 +1,4 @@
+//@@author Phang Chun Rong
 package calendear.storage;
 
 import java.io.BufferedReader;
@@ -13,7 +14,7 @@ import calendear.util.Task;
 
 /**
  * 
- * @author Phang Chun Rong A0139060M
+ * @author Phang Chun Rong
  *
  */
 public class FileIO {
