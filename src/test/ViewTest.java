@@ -1,5 +1,5 @@
 
-package calendear.view;
+package test;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import calendear.util.TASK_TYPE;
 import calendear.util.Task;
+import calendear.view.Pair;
+import calendear.view.Table;
 
 //@@author Pan Jiyun
 
