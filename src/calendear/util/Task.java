@@ -2,10 +2,7 @@ package calendear.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
-import java.util.Scanner;
 import java.util.Date;
-
-import org.ocpsoft.prettytime.shade.edu.emory.mathcs.backport.java.util.Arrays;
 
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
