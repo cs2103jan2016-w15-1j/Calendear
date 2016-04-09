@@ -10,9 +10,8 @@ import java.util.ArrayList;
 import java.io.IOException;
 
 /**
- * 
- * @author Phang Chun Rong
  * Controller for User Interaction
+ * @author Phang Chun Rong
  */
 public class Controller {
 	private static final int DONE_ID = 8;
@@ -21,10 +20,12 @@ public class Controller {
 	private static final String MESSAGE_ERROR_INITIALISATION = "Error with file, please choose another file";
 	private static final String MESSAGE_ERROR_FILE_CREATION = "Cannot Create File";
 	
-	private Scanner _scanner;
+	private static Scanner _scanner;
 	private CDLogic _cdLogic;
 	
 	public static void main(String[] args) {
+		_scanner = new Scanner(System.in);
+		
 		String nameOfFile = getFileName();
 		
 		Controller controller = new Controller(nameOfFile);
@@ -50,7 +51,6 @@ public class Controller {
 	}
 	
 	private void startApplication() {
-	    _scanner = new Scanner(System.in);
 	    while(true) {
 	    	
 	    	View.displayRequestForInput();
@@ -268,10 +268,8 @@ public class Controller {
 	}
 	
 	private static String getFileName() {
-		Scanner sc = new Scanner(System.in);
 		View.displayFileNamePrompt();
-		String name = sc.nextLine();
-		sc.close();
+		String name = _scanner.nextLine();
 		
 		return name;
 	}
