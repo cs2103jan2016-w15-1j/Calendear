@@ -17,6 +17,7 @@ public class View {
 	public static final String ANSI_WHITE = "\u001B[37m";
 	
 	private static String formatRed = ANSI_RED+"%s"+ANSI_RESET;
+	private static String formatYellow = ANSI_YELLOW+"%s"+ANSI_RESET;
 	
 	private static final String MSG_ADD = "Added task:\n";
 	private static final String MSG_DELETE = "Deleted task:\n";
@@ -177,7 +178,7 @@ public class View {
 	}
 	
 	public static void displayError(String msg){
-		System.out.println(msg);
+		System.out.println(String.format(formatYellow,msg));
 	}
 	
 	public static void displayHelp(){
