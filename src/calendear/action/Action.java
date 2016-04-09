@@ -16,19 +16,6 @@ import calendear.storage.DataManager;
  * @author Wu XiaoXiao
  * Class for taking care of main logic
  *
- *methods in Action:
- *1. exeAdd: functioning
- *2. exeDelete: functioning
- *3. exeUpdate: functioning
- *4. exeDisplay: functioning
- *5. exeSearch: in progress
- *6. exeUndo: finished except for undo tag
- *7. exeRedo: finished except for undo tag
- *8. exeTag: done, but currently there's no way to save previous tag
- *9. exeToggleImportance: functioning
- *10. exeToggleDone: functioning
- *12. exeLinkGoogle: done and functioning
- *13. exeClear: in construction
  */
 
 
@@ -54,16 +41,20 @@ public class Action {
 	static final int TOTAL_LEN = 9;
 	
 	static final String TAG_SEPARATOR = " # ";
-	static final String NULL_STRING = "";
+	static final String EMPTY_STRING = "";
 	static final int TRUE_START_ID = 1;
+	static final String NULL_STRING = "null";
 	
 	private final LogicException endTimeBeforeStartTime;
 	private final LogicException tryingToModifyDeletedTask;
+	private final LogicException userIsNotLoggedIn;
+	
 	
 	//constructor
 
 	/**
-	 * constructor, takes in nameOfFile to store data in, nameOfFile should end with .txt
+	 * a constructor to create a new Action object with nameOfFile as the file to store the new data in
+	 * nameOfFile should end with .txt
 	 * @param nameOfFile
 	 * @throws ParseException
 	 */
@@ -75,12 +66,13 @@ public class Action {
 		this._data.add(0, null);
 		this.endTimeBeforeStartTime = new LogicException("Error: end time before start time");
 		this.tryingToModifyDeletedTask = new LogicException("Error: trying to modify deleted task");
+		this.userIsNotLoggedIn = new LogicException("user is not logged in");
 	}
 
 	/**
-	 * helper,
-	 * returns the task that was added.
-	 * id is arrayList.size() - 1
+	 * 
+	 * this function takes a commandAdd that contains no task and only information in it 
+	 * and creates the task that should be added, adds the task, and returns the task
 	 * @param commandAdd
 	 * @return task to be added
 	 */
@@ -98,7 +90,7 @@ public class Action {
 	}
 	
 	/**
-	 * called by CDLogic
+	 * a public method that adds a task into the action object
 	 * @param commandAdd
 	 * @return task added to storage
 	 */
@@ -124,8 +116,9 @@ public class Action {
 		return addedTask;
 	}
 	/**
-	 * helper,
-	 * add to _data, but not storage
+	 * 
+	 * takes a commandAdd, decide if the new task is already present in commandAdd or information should 
+	 * be used to create the task, add the task, and returns the task
 	 * @param commandAdd
 	 * @return added task
 	 */
@@ -140,7 +133,7 @@ public class Action {
 		return addedTask;
 	}
 	/**
-	 * delete task with id
+	 * delete task with information in commandDelete
 	 * @param commandDelete
 	 * @return
 	 */
@@ -179,7 +172,7 @@ public class Action {
 		[6:tag][7:important][8:finished]
 	*/
 	/**
-	 * update contents of toUpdate with infoList and newData
+	 * update contents of toUpdate(Task) with infoList and newData
 	 * @param toUpdate
 	 * @param infoList
 	 * @param newData
@@ -251,7 +244,7 @@ public class Action {
 		}
 	}
 	/**
-	 * updates toUpdate with cmd
+	 * updates toUpdate with commandUpdate
 	 * @param commandUpdate
 	 * @param toUpdate
 	 */
@@ -285,7 +278,7 @@ public class Action {
 	
 
 	/**
-	 * executes cmd (a command update)
+	 * executes a command update and returns the task that was updated
 	 * @param commandUpdate
 	 * @return
 	 */
@@ -315,7 +308,7 @@ public class Action {
 	}
 	
 	/**
-	 * only display tasks which are not finished
+	 * display tasks which are not finished
 	 * arrayList containing tasks to show, all null elements should not be shown
 	 * @param commandDisplay
 	 * @return ArrayList<Task>
@@ -336,7 +329,7 @@ public class Action {
 	 * @param searchWith
 	 * @return ArrayList<Task>
 	 */
-	private ArrayList<Task> displaySelectiveHelper(boolean[] toShow, Object[] searchWith){
+	private ArrayList<Task> displaySelectiveHelper(boolean[] toShow, Object[] searchWith) {
 		
 		ArrayList<Task> toDisplay = new ArrayList<Task>();
 		toDisplay.addAll(this._data);
@@ -402,9 +395,9 @@ public class Action {
 					toDisplay.set(i, null);
 				}
 			}catch (NullPointerException e){
-				e.printStackTrace();
+				assert(false): "null pointer in searchWith when toShow with the coresponding index is true\n";
 			}catch (ArrayIndexOutOfBoundsException e){
-				e.printStackTrace();
+				assert(false): "toShow and/or searchWith arrays are not the right size\n";
 			}
 		}
 		
@@ -421,7 +414,12 @@ public class Action {
 		}
 		return isTagged;
 	}
-	
+	/**
+	 * determines if start time of task is after startTimeToCompare
+	 * @param task
+	 * @param startTimeToCompare
+	 * @return
+	 */
 	private boolean isStartTimeWithinRange(Task task, GregorianCalendar startTimeToCompare){
 		if(task == null){
 			return false;
@@ -441,7 +439,12 @@ public class Action {
 		} 
 		return false;
 	}
-	
+	/**
+	 * determines if the endtime of the task is before endTimeToCompare
+	 * @param task
+	 * @param endTimeToCompare
+	 * @return
+	 */
 	private boolean isEndTimeWithinRange(Task task, GregorianCalendar endTimeToCompare){
 		if(task == null || task.getEndTime() == null){
 			return false;
@@ -451,7 +454,12 @@ public class Action {
 		}
 		return false;
 	}
-	
+	/**
+	 * determines if 2 strings can be considered similar
+	 * @param str1
+	 * @param str2
+	 * @return
+	 */
 	private boolean withinDistance(String str1, String str2){
 		final String splitWith = " ";
 		if(str1 == null || str2 == null){
@@ -471,7 +479,7 @@ public class Action {
 	}
 	
 	/**
-	 * returns arraylist with !<isImportant> importance tasks as null
+	 * returns arraylist with !<isImportant> importance tasks and replace them with null
 	 * @param isImportant
 	 * @param dataToFilter
 	 * @return
@@ -495,6 +503,11 @@ public class Action {
 		return filterWithImportance(false, this._data);
 	}
 
+	/**
+	 * searchs the data with commandSearch and returns results
+	 * @param commandSearch
+	 * @return
+	 */
 	public ArrayList<Task> exeSearch(CommandSearch commandSearch){
 		assertCommandNotNull(commandSearch);
 		boolean[] toShow = commandSearch.getArrToShow();
@@ -504,7 +517,7 @@ public class Action {
 	}
 	
 	/**
-	 * replaces !<isDone> completeness tasks with null
+	 * replaces tasks that are !<isDone> with null
 	 * @param isDone
 	 * @param dataToFilter
 	 * @return
@@ -536,7 +549,12 @@ public class Action {
 	 * DONE: toggle done-tag of task
 	 * TAG: -
 	 */
-	
+
+
+	/**
+	 * undos the previous command, returns true if successful
+	 * @return
+	 */
 	public boolean exeUndo() throws IOException {
 		try{
 			Command commandToUndo = this._undoStack.pop();
@@ -677,6 +695,11 @@ public class Action {
 	/**
 	 * execute each command for the user.
 	 */
+
+	/**
+	 * redos the previously undone command, returns true if successful
+	 * @return
+	 */
 	public boolean exeRedo() throws IOException {
 		try{
 			Command commandToRedo = this._redoStack.pop();
@@ -745,6 +768,13 @@ public class Action {
 		}
 	}
 	
+
+	/**
+	 * tags a task using commandTag
+	 * @param commandTag
+	 * @return
+	 * @throws LogicException
+	 */
 	public Task exeTag(CommandTag commandTag) throws LogicException, IOException {
 		assertCommandNotNull(commandTag);
 		
@@ -773,7 +803,13 @@ public class Action {
 		this._redoStack.clear();
 		return taskToTag;
 	}
-	
+
+	/**
+	 * mark a task as important with commandMark
+	 * @param commandMark
+	 * @return
+	 * @throws LogicException
+	 */
 	public Task exeMarkImportance(CommandMark commandMark) throws LogicException, IOException{
 		assertCommandNotNull(commandMark);
 		
@@ -801,6 +837,13 @@ public class Action {
 		return taskToMark;
 	}
 
+
+	/**
+	 * mark a task as done with commandDone
+	 * @param commandDone
+	 * @return
+	 * @throws LogicException
+	 */
 	public Task exeMarkDone(CommandDone commandDone) throws LogicException, IOException {
 		assertCommandNotNull(commandDone);
 		
@@ -836,7 +879,6 @@ public class Action {
 			Task currentTask = this._data.get(i);
 			if(currentTask != null 
 					&& !hasEventId(currentTask)){
-				//System.out.println("Trying to Add: " + i);
 				String newEventId = this._dataManager.addTaskToGoogle(currentTask);
 				currentTask.setEventId(newEventId);
 			}
@@ -844,10 +886,17 @@ public class Action {
 		this._dataManager.insertDataToFile(dataWithNullRemoved());
 	}
 
+
+	/**
+	 * loads all tasks to google if user is logged in
+	 * @param commandLoadFromGoogle
+	 * @return
+	 * @throws LogicException
+	 */
 	public ArrayList<Task> exeLoadTasksFromGoogle(CommandLoadFromGoogle commandLoadFromGoogle) 
 			throws LogicException, IOException {
 		if(!this._dataManager.isLogined()){
-			throw new LogicException("user is not logged in");
+			throw this.userIsNotLoggedIn;
 		}
 		ArrayList<Task> originalTaskList = new ArrayList<Task>(this._data);
 		commandLoadFromGoogle.setUndoList(originalTaskList);
@@ -860,6 +909,9 @@ public class Action {
 		return this._data;
 	}
 
+	/**
+	 * update tasks in calendear with tasks from google
+	 */
 	private void updateLocalTasks(ArrayList<Task> loadedTasks) {
 		for(int i = DATA_START_INDEX; i< this._data.size(); i++){
 			Task currentTask = this._data.get(i);
@@ -919,12 +971,13 @@ public class Action {
 		}
 		
 		if (this._dataManager.isLogined()) {
+
 			exeAddAllToGoogle();
 		}
 	}
 	
+
 	public void exeSaveFile(CommandSave commandSave) throws IOException {
-		System.out.println("Saving...");
 		String path = commandSave.getPath();
 		this._dataManager.changeFilePath(path);
 	}
@@ -949,7 +1002,7 @@ public class Action {
 	}
 	
 	/**
-	 * assert that cmd is not null
+	 * assert that a command is not null
 	 * @param command
 	 */
 	private void assertCommandNotNull(Command command){
@@ -978,20 +1031,11 @@ public class Action {
 			taggedTask.setTag(newTag);
 		}
 	}
-	//testing function
-	public void showData(){
-		for(int i = 0; i< this._data.size(); i++){
-			if(this._data.get(i) == null){
-				System.out.println("null");
-			}else{
-				System.out.println(this._data.get(i).getName());
-			}
-		}
-	}
+
 	
 	private boolean hasEventId(Task task){
 		String eventId = task.getEventId();
-		return eventId != null && !eventId.equals("") && !eventId.equals("null");
+		return eventId != null && !eventId.equals(EMPTY_STRING) && !eventId.equals(NULL_STRING);
 	}
 	
 	
