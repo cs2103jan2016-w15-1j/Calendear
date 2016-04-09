@@ -218,6 +218,7 @@ public class Action {
 			}
 			if(infoList[TAG_ID]){
 				String newTag = (String) newData[TAG_ID];
+				String oldTag = toUpdate.getTag();
 				if(isUndo){
 					toUpdate.setTag(newTag);
 				}else{
@@ -228,6 +229,7 @@ public class Action {
 						toUpdate.setTag(toUpdate.getTag() + TAG_SEPARATOR + newTag);
 					}
 				}
+				newData[TAG_ID] = oldTag;
 			}
 			
 			if(infoList[IMP_ID]){
@@ -947,6 +949,7 @@ public class Action {
 			clearTasksFromGoogle();
 		}else{
 			this._data.clear();
+			this._data.add(null);
 		}
 		this._dataManager.insertDataToFile(dataWithNullRemoved());
 		this._undoStack.push(commandClear);
