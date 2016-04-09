@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import calendear.util.TASK_TYPE;
 import calendear.util.Task;
+import calendear.view.Pair;
+import calendear.view.Table;
 
 
 /**

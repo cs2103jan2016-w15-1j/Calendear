@@ -12,7 +12,9 @@ import org.junit.Test;
 import calendear.util.*;
 
 public class ActionTest {
-	
+	/**
+	 * @@author Wu XiaoXiao
+	 */
 	/**[0:name][1:type][2:start time]
 	[3:end time][4:location][5:note]
 	[6:tag][7:important][8:finished]
@@ -145,7 +147,8 @@ public class ActionTest {
 		action1.exeClear(new CommandClear());
 	}
 
-	//@@ Pan Jiyun
+
+	//@@author Pan Jiyun
 
 	@Test
 	public void testSearchStartTime() throws ParseException, LogicException, IOException{
