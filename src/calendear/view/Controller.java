@@ -25,7 +25,8 @@ public class Controller {
 	private CDLogic _cdLogic;
 	
 	public static void main(String[] args) {
-		String nameOfFile = args[0];
+		String nameOfFile = getFileName();
+		
 		Controller controller = new Controller(nameOfFile);
 		controller.startApplication();
 	}
@@ -265,5 +266,13 @@ public class Controller {
 	    	}
 	    }
 	}
-
+	
+	private static String getFileName() {
+		Scanner sc = new Scanner(System.in);
+		View.displayFileNamePrompt();
+		String name = sc.nextLine();
+		sc.close();
+		
+		return name;
+	}
 }

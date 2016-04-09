@@ -18,6 +18,7 @@ public class View {
 	
 	private static String formatRed = ANSI_RED+"%s"+ANSI_RESET;
 	
+	private static final String MSG_FILENAME_PROMPT = "Enter Filename: ";
 	private static final String MSG_ADD = "Added task:\n";
 	private static final String MSG_DELETE = "Deleted task:\n";
 	private static final String MSG_UPDATE ="Updated task:\n";
@@ -184,5 +185,8 @@ public class View {
 		System.out.println(HelpTable.getHelpTable());
 	}
 	
+	public static void displayFileNamePrompt() {
+		System.out.print(MSG_FILENAME_PROMPT);
+	}
 
 }
