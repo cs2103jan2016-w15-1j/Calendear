@@ -86,19 +86,19 @@ public class ActionTest {
 		CommandUpdate commandUpdate = new CommandUpdate(nextIndex, chklst, info);
 		action1.exeUpdate(commandUpdate);
 		
-		assertEquals(task.getName(), finalName);
-		assertEquals(task.getType(), finalType);
-		assertEquals(task.getStartTime(), finalStartTime);
-		assertEquals(task.getEndTime(), finalEndTime);
-		assertEquals(task.getTag(), finalTag);
-		assertEquals(task.isImportant(), finalImportance);
-		assertEquals(task.isFinished(), finalDone);
+		assertEquals(finalName, task.getName() );
+		assertEquals(finalType,task.getType() );
+		assertEquals(finalStartTime,task.getStartTime() );
+		assertEquals(finalEndTime,task.getEndTime());
+		assertEquals(finalTag, task.getTag());
+		assertEquals(finalImportance,task.isImportant());
+		assertEquals(finalDone, task.isFinished() );
 		
 		action1.exeClear(new CommandClear());
 	}
 	
 
-	
+
 	@Test
 	public void testUndoDelete() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action2.txt");
@@ -111,10 +111,8 @@ public class ActionTest {
 		System.out.println(nextIndex + " ");
 		
 		action1.exeUndo();
-		assertEquals(t1.getEndTime(), originalTime);
+		assertEquals(originalTime, t1.getEndTime());
 	}
-
-
 
 	
 
@@ -142,11 +140,13 @@ public class ActionTest {
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
+
 	//@@ Pan Jiyun
+
 	@Test
 	public void testSearchStartTime() throws ParseException, LogicException, IOException{
 		Action action1 = new Action("action5.txt");
@@ -177,7 +177,7 @@ public class ActionTest {
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
@@ -213,7 +213,7 @@ public class ActionTest {
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
@@ -248,7 +248,7 @@ public class ActionTest {
 		
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
@@ -282,7 +282,7 @@ public class ActionTest {
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
@@ -316,9 +316,43 @@ public class ActionTest {
 		ArrayList<Task> testResult = action1.exeSearch(commandSearch);	
 
 
-		assertEquals(testResult,expectedResult);
+		assertEquals(expectedResult,testResult);
 		
 		action1.exeClear(new CommandClear());
 	}
     
+	
+	@Test
+	public void testUndoUpdate() throws ParseException, LogicException, IOException{
+		Action action1 = new Action("action10.txt");
+		int nextIndex = action1.getAmount();
+		
+		Task task = new Task();
+		task.setName(originalName);
+		task.setType(originalType);
+		task.setStartTime(originalStartTime);
+		task.setEndTime(originalEndTime);
+		task.setTag(originalTag);
+		task.setIsImportant(originalImportance);
+		task.setIsFinished(originalDone);
+		
+		action1.exeAdd(new CommandAdd(task));
+		boolean[] chklst = {true, true, true, true, true, true, true, true, true};
+		Object[] info = {finalName, finalType, finalStartTime, finalEndTime, finalLocation, finalNote, 
+				finalTag, finalImportance, finalDone};
+		CommandUpdate commandUpdate = new CommandUpdate(nextIndex, chklst, info);
+		action1.exeUpdate(commandUpdate);
+		action1.exeUndo();
+		
+		assertEquals(originalName,task.getName() );
+		assertEquals(originalType,task.getType() );
+		assertEquals(originalStartTime,task.getStartTime());
+		assertEquals(originalEndTime,task.getEndTime());
+		assertEquals(originalTag,task.getTag());
+		assertEquals(originalImportance,task.isImportant());
+		assertEquals(originalDone,task.isFinished());
+		
+		action1.exeClear(new CommandClear());
+		
+	}
 }
