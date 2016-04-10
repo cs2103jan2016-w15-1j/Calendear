@@ -44,14 +44,14 @@ update 2 important
 update 2 done
 update 100 important
 update 2 name other .name for deadline2
-update 2 from 8th aug to 9am 9th aug 9am
+update 2 from 8th aug 9am to 9th aug 9am
 update 2 tag newTag
 display
 update 3 important
 update 5 important
 update 5 done
 update 2 done
-add visit gardens .by the bay by saturday 9am
+add visit gardens .by the bay by 04/30/16 9am
 display
 search important
 search done
