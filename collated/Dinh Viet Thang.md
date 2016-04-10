@@ -898,6 +898,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Date;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -932,7 +934,6 @@ public class Task {
 	private static final int SAVING_INDEX_IMPORTANT = 8;
 	private static final int SAVING_INDEX_FINISHED = 9;
 	
-	private static final long NUMBER_MILLISECOND_EIGHT_HOURS = 28800000;
 	private String name;
 	private String googleEventId;
 	private TASK_TYPE type;
@@ -1205,7 +1206,6 @@ public class Task {
 		return new Task(name);
 	}
 	
-}
 ```
 ###### /src/calendear/util/TASK_TYPE.java
 ``` java

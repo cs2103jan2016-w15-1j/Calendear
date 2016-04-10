@@ -493,7 +493,7 @@ public class GoogleIO {
 		}
 		else {
 			dateTime = startTime.getDate();
-			timeValue = dateTime.getValue() - NUMBER_MILLISECOND_EIGHT_HOURS;
+			timeValue = convertTimeZone(dateTime.getValue());
 		}
 		
 		GregorianCalendar cal = new GregorianCalendar();
@@ -514,8 +514,9 @@ public class GoogleIO {
 
 		}
 		else {
+			
 			dateTime = endTime.getDate();
-			timeValue = dateTime.getValue() - NUMBER_MILLISECOND_EIGHT_HOURS;
+			timeValue = convertTimeZone(dateTime.getValue());
 		}
 		
 		GregorianCalendar cal = new GregorianCalendar();
@@ -634,6 +635,17 @@ public class GoogleIO {
 		
 		return task;
 	}
+```
+###### /src/calendear/util/Task.java
+``` java
+	private static long convertTimeZone(long currentTime) {
+		Calendar now = Calendar.getInstance();
+		TimeZone timeZone = now.getTimeZone();
+		
+		return currentTime - timeZone.getRawOffset();
+	}
+	
+}
 ```
 ###### /src/calendear/view/Controller.java
 ``` java
