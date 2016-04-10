@@ -272,7 +272,7 @@ public class Action {
 					throw endTimeBeforeStartTime;
 				}
 			} else if(infoList[ENDT_ID]){
-				GregorianCalendar startTime = toUpdate.getEndTime();
+				GregorianCalendar startTime = toUpdate.getStartTime();
 				GregorianCalendar endTime = (GregorianCalendar)newData[ENDT_ID];
 				
 				if(endTime != null && startTime != null && endTime.compareTo(startTime) < 0){
