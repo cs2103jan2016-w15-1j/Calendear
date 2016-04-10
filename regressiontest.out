@@ -403,7 +403,7 @@ Enter Filename: [35m>>>>>>>>>>>>>>>>>>>>>>>>>>>>Welcome to Calendear!<<<<<<<<<<
 [31;1mUpdated task:
 [0m[36mTask name:[0mother name for deadline2
 [36mTag:[0mtag2
-[36mStart time:[0mMon, 08 Aug 2016, 19:56
+[36mStart time:[0mMon, 08 Aug 2016, 09:00
 [36mEnd time:[0mTue, 09 Aug 2016, 09:00
 [36mImportant:[0mYes
 [36mFinished:[0mYes
@@ -412,7 +412,7 @@ Enter Filename: [35m>>>>>>>>>>>>>>>>>>>>>>>>>>>>Welcome to Calendear!<<<<<<<<<<
 [31;1mUpdated task:
 [0m[36mTask name:[0mother name for deadline2
 [36mTag:[0mtag2 # newTag
-[36mStart time:[0mMon, 08 Aug 2016, 19:56
+[36mStart time:[0mMon, 08 Aug 2016, 09:00
 [36mEnd time:[0mTue, 09 Aug 2016, 09:00
 [36mImportant:[0mYes
 [36mFinished:[0mYes
@@ -473,7 +473,7 @@ Enter Filename: [35m>>>>>>>>>>>>>>>>>>>>>>>>>>>>Welcome to Calendear!<<<<<<<<<<
 [31;1mUpdated task:
 [0m[36mTask name:[0mother name for deadline2
 [36mTag:[0mtag2 # newTag
-[36mStart time:[0mMon, 08 Aug 2016, 19:56
+[36mStart time:[0mMon, 08 Aug 2016, 09:00
 [36mEnd time:[0mTue, 09 Aug 2016, 09:00
 [36mImportant:[0mYes
 [36mFinished:[0mYes
@@ -482,7 +482,7 @@ Enter Filename: [35m>>>>>>>>>>>>>>>>>>>>>>>>>>>>Welcome to Calendear!<<<<<<<<<<
 [31;1mAdded task:
 [0m[36mTask name:[0mvisit gardens by the bay
 [36mTag:[0m
-[36mDue time:[0mSat, 16 Apr 2016, 09:00
+[36mDue time:[0mSat, 30 Apr 2016, 09:00
 [36mFinished:[0mNo
 
 [35mPlease enter command:[0m
@@ -500,7 +500,7 @@ Enter Filename: [35m>>>>>>>>>>>>>>>>>>>>>>>>>>>>Welcome to Calendear!<<<<<<<<<<
 [0m|8.  |          |event 7         |                |Mon, 08 Aug |Mon, 08 Aug |
 |    |          |                |                | 2016, 09:00| 2016, 10:00|
 [32m*****************************************************************************
-[0m|10. |          |visit gardens by|                |            |Sat, 16 Apr |
+[0m|10. |          |visit gardens by|                |            |Sat, 30 Apr |
 |    |          | the bay        |                |            | 2016, 09:00|
 [32m*****************************************************************************
 [0m|9.  |          |deadline 8      |                |            |Mon, 08 Aug |
@@ -523,7 +523,7 @@ Enter Filename: [35m>>>>>>>>>>>>>>>>>>>>>>>>>>>>Welcome to Calendear!<<<<<<<<<<
 [32m*****************************************************************************
 [0m[33m**********************************Completed**********************************
 [0m|2.  |Yes       |other name for  |tag2 # newTag   |Mon, 08 Aug |Tue, 09 Aug |
-|    |          | deadline2      |                | 2016, 19:56| 2016, 09:00|
+|    |          | deadline2      |                | 2016, 09:00| 2016, 09:00|
 [32m*****************************************************************************
 [0m|5.  |Yes       |float5          |                |            |            |
 [32m*****************************************************************************
@@ -535,7 +535,7 @@ Enter Filename: [35m>>>>>>>>>>>>>>>>>>>>>>>>>>>>Welcome to Calendear!<<<<<<<<<<
 [32m*****************************************************************************
 [0m[33m**********************************Completed**********************************
 [0m|2.  |Yes       |other name for  |tag2 # newTag   |Mon, 08 Aug |Tue, 09 Aug |
-|    |          | deadline2      |                | 2016, 19:56| 2016, 09:00|
+|    |          | deadline2      |                | 2016, 09:00| 2016, 09:00|
 [32m*****************************************************************************
 [0m|5.  |Yes       |float5          |                |            |            |
 [32m*****************************************************************************
@@ -552,7 +552,7 @@ Enter Filename: [35m>>>>>>>>>>>>>>>>>>>>>>>>>>>>Welcome to Calendear!<<<<<<<<<<
 [32m*****************************************************************************
 [0m[33m**********************************Completed**********************************
 [0m|2.  |Yes       |other name for  |tag2 # newTag   |Mon, 08 Aug |Tue, 09 Aug |
-|    |          | deadline2      |                | 2016, 19:56| 2016, 09:00|
+|    |          | deadline2      |                | 2016, 09:00| 2016, 09:00|
 [32m*****************************************************************************
 [0m
 [35mPlease enter command:[0m
