@@ -6,3 +6,7 @@
 /bin
 *.txt
 /target
+
+/collated/
+!\regressiontest.in
+!\regressiontest.out
