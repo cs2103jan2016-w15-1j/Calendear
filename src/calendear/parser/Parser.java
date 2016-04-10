@@ -9,21 +9,19 @@ import java.text.ParseException;
 
 public class Parser {
 	
-	private static final String ERROR_WRONG_CMD_TYPE = "Wrong command type";
-	private static final String ERROR_WRONG_CMD_FORMAT = "invalid command format";
-	private static final int FORTH_GROUP = 4;
-	private static final int THIRD_GROUP = 3;
-	private static final String ERROR_WRONG_NUMBER_FORMAT = "Please enter the task id as a number";
-	private static final int TWO = 2;
-	private static final int THIRD_WORD_INDEX = 2;
-	private static final int ONE = 1;
-	private static final String ERROR_DELETE_INDEX_NOT_SPECIFIED = "Please provide task index to delete";
-	private static final String ERROR_MARK_INDEX_NOT_SPECIFIED = "Please provide task index to mark";
-	private static final int SECOND_GROUP = 2;
-	private static final int SECOND_WORD_INDEX = 1;
 	private static final int FIRST_WORD_INDEX = 0;
-	private static final String PATTERN_SPACES = " +";
+	private static final int SECOND_WORD_INDEX = 1;
+	private static final int THIRD_WORD_INDEX = 2;
 	
+	private static final int SECOND_GROUP = 2;
+	private static final int THIRD_GROUP = 3;
+	private static final int FORTH_GROUP = 4;
+	
+	private static final int ONE = 1;
+	private static final int TWO = 2;
+	private static final int NUM_OF_UPDATE_KEYWORD = 10;
+	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
+		
 	private static final String CMD_STR_ADD = "add";
 	private static final String CMD_STR_DISPLAY = "display";
 	private static final String CMD_STR_UPDATE = "update";
@@ -40,12 +38,7 @@ public class Parser {
 	private static final String CMD_STR_CLEAR = "clear";
 	private static final String CMD_STR_SAVE = "save";
 	private static final String CMD_STR_HELP = "help";
-	private static final String LOAD_FROM_GOOGLE = "syncGoogle";
-	private static final String EMPTY = "";
-	//when using regex and regex-related methods like String.split() and String.replaceAll()
-	//the "." is treated as metacharacter so you have to include the escape character "\\"
-	private static final String INPUT_ESCAPE_CHARACTER = "\\.";
-	private static final String PATTERN_ESCAPE_CHARACTER = "_";
+	private static final String CMD_STR_LOAD_FROM_GOOGLE = "syncGoogle";
 	
 	private static final String IMPORTANT = "important";
 	private static final String NAME = "name";
@@ -59,6 +52,19 @@ public class Parser {
 	private static final String MARK = "important";
 	private static final String DONE = "done";
 	
+	private static final String ERROR_WRONG_CMD_TYPE = "Wrong command type";
+	private static final String ERROR_WRONG_CMD_FORMAT = "invalid command format";
+	private static final String ERROR_WRONG_NUMBER_FORMAT = "Please enter the task id as a number";
+	private static final String ERROR_DELETE_INDEX_NOT_SPECIFIED = "Please provide task index to delete";
+	private static final String ERROR_MARK_INDEX_NOT_SPECIFIED = "Please provide task index to mark";
+	
+	//when using regex and regex-related methods like String.split() and String.replaceAll()
+	//the "." is treated as metacharacter so you have to include the escape character "\\"
+	private static final String INPUT_ESCAPE_CHARACTER = "\\.";
+	private static final String PATTERN_ESCAPE_CHARACTER = "_";
+	private static final String EMPTY = "";
+	
+	private static final String PATTERN_SPACES = " +";
 	private static final String NEGATIVE_LOOKAHEAD_KEYWORDS = 
 	"((?:.(?!\\b" + NAME + "\\b|\\b" + BY + "\\b|\\b" + FROM + "\\b|\\b" + TO 
 	+ "\\b|\\b" + FLOAT + "\\b|\\b" + AT + "\\b|\\b" + NOTE + "\\b|\\b"+ TAG 
@@ -89,7 +95,7 @@ public class Parser {
 	+ "|(?:(\\b" + IMPORTANT + "\\b) *()) *"									//represent the group important
 	+ "|(?:(\\b"+ DONE + "\\b) *()) *)+";										//represent the group done
 	private static final String PATTERN_SEARCH = 
-	"(\\bsearch\\b) +()"				//represent the groups update and <taskID>
+	"(\\bsearch\\b) +()"														//represent the groups update and <taskID>
 	+ "(?:(?:(\\b" + NAME + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
 	+ "|(?:(\\b" + BY + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups by and <dateAndTime>
 	+ "|(?:(\\b" + FROM + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups from and <dateAndTime>
@@ -102,14 +108,15 @@ public class Parser {
 	+ "|(?:(\\b"+ DONE + "\\b) *()) *)+";										//represent the group done
 	private static final String PATTERN_SAVE = "(\\b" + CMD_STR_SAVE + "\\b) +(.+)";
 	
-	private static final int NUM_OF_UPDATE_KEYWORD = 10;
-	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
-	
 	
 	public static Command parse(String rawInput){	
 		rawInput = rawInput.trim();
 		rawInput = changeEscapeCharacter(rawInput);
 		String[] words = rawInput.split(PATTERN_SPACES);
+		return parseTrimedRawInput(rawInput, words);
+	}
+
+	private static Command parseTrimedRawInput(String rawInput, String[] words) {
 		try {
 			return parseCommand(words, rawInput);
 		}
@@ -149,7 +156,7 @@ public class Parser {
 				return parseLinkGoogleCmd(words, rawInput);
 			case CMD_STR_SAVE:
 				return parseSave(words, rawInput);
-			case LOAD_FROM_GOOGLE:
+			case CMD_STR_LOAD_FROM_GOOGLE:
 				return parseLoadToGoogleCmd(words, rawInput);
 			case CMD_STR_HELP:
 				return parseHelpCmd(words, rawInput);
