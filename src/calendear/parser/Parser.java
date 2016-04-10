@@ -213,7 +213,7 @@ public class Parser {
 		Matcher matcher = pattern.matcher(rawInput);
 		if (matcher.find()){
 			try {	
-				int index = Integer.parseInt(matcher.group(FORTH_GROUP));
+				int index = Integer.parseInt(matcher.group(SECOND_GROUP));
 				boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
 				Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
 				makeCheckList(matcher, checkList, newInfo);
