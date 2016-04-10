@@ -9,6 +9,7 @@ import java.text.ParseException;
 
 public class Parser {
 	
+	private static final String ERROR_WRONG_CMD_FORMAT = "invalid command format";
 	private static final int FORTH_GROUP = 4;
 	private static final int THIRD_GROUP = 3;
 	private static final String ERROR_WRONG_NUMBER_FORMAT = "Please enter the task id as a number";
@@ -227,7 +228,7 @@ public class Parser {
 			}
 		}
 		
-		return new CommandInvalid(rawInput);
+		return new CommandInvalid(ERROR_WRONG_CMD_FORMAT);
 	}
 	
 	private static void makeCheckList(Matcher matcher, boolean[] checkList, Object[] newInfo) 

@@ -16,6 +16,12 @@ import calendear.util.Command;
 import calendear.util.CommandAdd;
 import calendear.util.CommandDelete;
 import calendear.util.CommandDisplay;
+import calendear.util.CommandExit;
+import calendear.util.CommandInvalid;
+import calendear.util.CommandLinkGoogle;
+import calendear.util.CommandLoadFromGoogle;
+import calendear.util.CommandRedo;
+import calendear.util.CommandUndo;
 import calendear.util.CommandUpdate;
 import calendear.util.TASK_TYPE;
 
@@ -45,7 +51,7 @@ public class ParserTest {
 	public void setUp() throws Exception {
 		addCaseAddDeadline();
 		addCaseAddDeadlineWithOptions();
-		addCaseAddInvalid();
+		addCaseInvalidAdd();
 		addCaseAddEvent();
 		addCaseAddEventWithOptions();
 		addCaseAddFloat();
@@ -56,21 +62,69 @@ public class ParserTest {
 		addCaseUpdateToDeadline();
 		addCaseUpdateToEvent();
 		addCaseUpdateToFloat();
+		addCaseInvalidUpdate();
 		addCaseDelete();
+		addCaseInvalidDelete();
+		addCaseExit();
+		addCaseLinkGoogle();
+		addCaseInvalidLinkGoogle();
+		addCaseSyncGoogle();
+		addCaseUndo();
+		addCaseRedo();
 	}
 
-	private void addCaseAddInvalid() {
-		// TODO Auto-generated method stub
-		caseDescriptions.add("add floating task with minimum parameter");
-		rawInputs.add("add read the lord of the ring");
-		String name = "read the lord of the ring";
-		boolean[] checklist = new boolean[CHECKLIST_SIZE];
-		Object[] newInfo = new Object[CHECKLIST_SIZE];
-		checklist[INDEX_NAME] = true;
-		newInfo[INDEX_NAME] = name;
-		checklist[INDEX_TYPE] = true;
-		newInfo[INDEX_TYPE] = TASK_TYPE.FLOATING;
-		expectedOutputs.add(new CommandAdd(name, checklist, newInfo));
+	private void addCaseInvalidLinkGoogle() {
+		caseDescriptions.add("linkGoogle");
+		rawInputs.add(" linkgoogle ");
+		expectedOutputs.add(new CommandInvalid("linkgoogle"));
+	}
+
+	private void addCaseRedo() {
+		caseDescriptions.add("redo");
+		rawInputs.add("  redo");
+		expectedOutputs.add(new CommandRedo());
+	}
+
+	private void addCaseUndo() {
+		caseDescriptions.add("undo");
+		rawInputs.add("undo ");
+		expectedOutputs.add(new CommandUndo());
+	}
+
+	private void addCaseSyncGoogle() {
+		caseDescriptions.add("syncGoogle");
+		rawInputs.add(" syncGoogle ");
+		expectedOutputs.add(new CommandLoadFromGoogle());
+	}
+
+	private void addCaseLinkGoogle() {
+		caseDescriptions.add("linkGoogle");
+		rawInputs.add(" linkGoogle ");
+		expectedOutputs.add(new CommandLinkGoogle());
+	}
+
+	private void addCaseExit() {
+		caseDescriptions.add("exit with some white spaces");
+		rawInputs.add(" exit ");
+		expectedOutputs.add(new CommandExit());
+	}
+
+	private void addCaseInvalidUpdate() {
+		caseDescriptions.add("update without task id");
+		rawInputs.add("update something with wrong date by tomorrow");
+		expectedOutputs.add(new CommandInvalid("invalid command format"));
+	}
+
+	private void addCaseInvalidDelete() {
+		caseDescriptions.add("delete with invalid parameter");
+		rawInputs.add("delete bla");
+		expectedOutputs.add(new CommandInvalid("Please enter the task id as a number"));
+	}
+
+	private void addCaseInvalidAdd() {
+		caseDescriptions.add("add floating task with wrong datetime description");
+		rawInputs.add("add something with wrong date by qwert");
+		expectedOutputs.add(new CommandInvalid("add something with wrong date by qwert"));
 	}
 
 	private void addCaseAddDeadline() {
@@ -169,8 +223,20 @@ public class ParserTest {
 	}
 
 	private void addCaseAddFloatwithOption() {
-		// TODO Auto-generated method stub
-		
+		caseDescriptions.add("add floating task with options");
+		rawInputs.add("add visit friends at garden .by the bay note bring cakes important");
+		String name = "visit friends";
+		boolean[] checklist = new boolean[CHECKLIST_SIZE];
+		Object[] newInfo = new Object[CHECKLIST_SIZE];
+		checklist[INDEX_NAME] = true;
+		newInfo[INDEX_NAME] = name ;
+		checklist[INDEX_IMPORTANT] = true;
+		newInfo[INDEX_IMPORTANT] = true;
+		checklist[INDEX_LOCATION] = true;
+		newInfo[INDEX_LOCATION] = "garden by the bay";
+		checklist[INDEX_NOTE] = true;
+		newInfo[INDEX_NOTE] = "bring cakes";
+		expectedOutputs.add(new CommandAdd(name, checklist, newInfo));
 	}
 
 	private void addCaseDisplay() {
@@ -304,13 +370,43 @@ public class ParserTest {
 				case EXIT:
 					assertExitCmd(i, description);
 					break;
+				case UNDO:
+					assertUndoCmd(i, description);
+					break;
+				case REDO:
+					assertRedoCmd(i, description);
+					break;
+				case LINK_GOOGLE:
+					assertLinkGoogleCmd(i, description);
+					break;
+				case LOAD_FROM_GOOGLE:
+					assertLoadFromGoogleCmd(i, description);
+					break;
 				case INVALID:
 					assertInvalidCmd(i, description);
 					break;
-
-
 			}
 		}
+	}
+
+	private void assertLoadFromGoogleCmd(int i, String description) {
+		Command actual = Parser.parse(rawInputs.get(i));
+		assertTrue(actual instanceof CommandLoadFromGoogle);
+	}
+
+	private void assertLinkGoogleCmd(int i, String description) {
+		Command actual = Parser.parse(rawInputs.get(i));
+		assertTrue(actual instanceof CommandLinkGoogle);
+	}
+
+	private void assertRedoCmd(int i, String description) {
+		Command actual = Parser.parse(rawInputs.get(i));
+		assertTrue(actual instanceof CommandRedo);
+	}
+
+	private void assertUndoCmd(int i, String description) {
+		Command actual = Parser.parse(rawInputs.get(i));
+		assertTrue(actual instanceof CommandUndo);
 	}
 
 	private void assertAddCmd(int i, String description) throws ArrayComparisonFailure {
@@ -348,13 +444,14 @@ public class ParserTest {
 	}
 
 	private void assertExitCmd(int i, String description) {
-		// TODO Auto-generated method stub
-		
+		Command actual = Parser.parse(rawInputs.get(i));
+		assertTrue(actual instanceof CommandExit);
 	}
 
 	private void assertInvalidCmd(int i, String description) {
-		// TODO Auto-generated method stub
-		
+		CommandInvalid expected = (CommandInvalid) expectedOutputs.get(i);
+		CommandInvalid actual = (CommandInvalid) Parser.parse(rawInputs.get(i));
+		assertEquals(description, expected.getErrorMessage(), actual.getErrorMessage());
 	}
 
 }
