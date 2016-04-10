@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Date;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -38,7 +40,6 @@ public class Task {
 	private static final int SAVING_INDEX_IMPORTANT = 8;
 	private static final int SAVING_INDEX_FINISHED = 9;
 	
-	private static final long NUMBER_MILLISECOND_EIGHT_HOURS = 28800000;
 	private String name;
 	private String googleEventId;
 	private TASK_TYPE type;
@@ -186,7 +187,7 @@ public class Task {
 		}
 		else {
 			dateTime = startTime.getDate();
-			timeValue = dateTime.getValue() - NUMBER_MILLISECOND_EIGHT_HOURS;
+			timeValue = convertTimeZone(dateTime.getValue());
 		}
 		
 		GregorianCalendar cal = new GregorianCalendar();
@@ -212,8 +213,9 @@ public class Task {
 
 		}
 		else {
+			
 			dateTime = endTime.getDate();
-			timeValue = dateTime.getValue() - NUMBER_MILLISECOND_EIGHT_HOURS;
+			timeValue = convertTimeZone(dateTime.getValue());
 		}
 		
 		GregorianCalendar cal = new GregorianCalendar();
@@ -454,6 +456,14 @@ public class Task {
 	private static Task parseFloat(String[] members) {
 		String name = members[SAVING_INDEX_NAME];
 		return new Task(name);
+	}
+	
+	//@@author Phang Chun Rong
+	private static long convertTimeZone(long currentTime) {
+		Calendar now = Calendar.getInstance();
+		TimeZone timeZone = now.getTimeZone();
+		
+		return currentTime - timeZone.getRawOffset();
 	}
 	
 }
