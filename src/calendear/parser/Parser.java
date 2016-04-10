@@ -9,6 +9,7 @@ import java.text.ParseException;
 
 public class Parser {
 	
+	private static final String ERROR_WRONG_CMD_TYPE = "Wrong command type";
 	private static final String ERROR_WRONG_CMD_FORMAT = "invalid command format";
 	private static final int FORTH_GROUP = 4;
 	private static final int THIRD_GROUP = 3;
@@ -22,22 +23,23 @@ public class Parser {
 	private static final int SECOND_WORD_INDEX = 1;
 	private static final int FIRST_WORD_INDEX = 0;
 	private static final String PATTERN_SPACES = " +";
-	private static final String ADD = "add";
-	private static final String DISPLAY = "display";
-	private static final String UPDATE = "update";
-	private static final String DELETE = "delete";
-	private static final String SEARCH = "search";
-	private static final String SORT = "sort";
+	
+	private static final String CMD_STR_ADD = "add";
+	private static final String CMD_STR_DISPLAY = "display";
+	private static final String CMD_STR_UPDATE = "update";
+	private static final String CMD_STR_DELETE = "delete";
+	private static final String CMD_STR_SEARCH = "search";
+	private static final String CMD_STR_SORT = "sort";
 	private static final String CMD_STR_MARK = "important";
 	private static final String CMD_STR_DONE = "done";
-	private static final String UNDO = "undo";
+	private static final String CMD_STR_UNDO = "undo";
 	private static final String CMD_STR_TAG = "tag";
-	private static final String LINK_GOOGLE = "linkGoogle";
-	private static final String EXIT = "exit";
-	private static final String REDO = "redo";
-	private static final String CLEAR = "clear";
-	private static final String SAVE = "save";
-	private static final String HELP = "help";
+	private static final String CMD_STR_LINK_GOOGLE = "linkGoogle";
+	private static final String CMD_STR_EXIT = "exit";
+	private static final String CMD_STR_REDO = "redo";
+	private static final String CMD_STR_CLEAR = "clear";
+	private static final String CMD_STR_SAVE = "save";
+	private static final String CMD_STR_HELP = "help";
 	private static final String LOAD_FROM_GOOGLE = "syncGoogle";
 	private static final String EMPTY = "";
 	//when using regex and regex-related methods like String.split() and String.replaceAll()
@@ -62,7 +64,7 @@ public class Parser {
 	+ "\\b|\\b" + FLOAT + "\\b|\\b" + AT + "\\b|\\b" + NOTE + "\\b|\\b"+ TAG 
 	+"\\b|\\b"+ IMPORTANT +"\\b|\\b"+ DONE +"\\b))+)";
 	private static final String PATTERN_ADD = 
-	"(\\b" + ADD + "\\b) +" + NEGATIVE_LOOKAHEAD_KEYWORDS + PATTERN_SPACES
+	"(\\b" + CMD_STR_ADD + "\\b) +" + NEGATIVE_LOOKAHEAD_KEYWORDS + PATTERN_SPACES
 	+ "(?:(?:(\\b" + NAME + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
 	+ "|(?:(\\b" + BY + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups by and <dateAndTime>
 	+ "|(?:(\\b" + FROM + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups from and <dateAndTime>
@@ -73,7 +75,7 @@ public class Parser {
 	+ "|(?:(\\b" + TAG + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups tag and <newTag>
 	+ "|(?:(\\b" + IMPORTANT + "\\b) *()) *"									//represent the group important
 	+ "|(?:(\\b"+ DONE + "\\b) *()) *)+";										//represent the group done
-	private static final String PATTERN_ADD_FLOAT = "(\\b" + ADD +"\\b) +(.+)";
+	private static final String PATTERN_ADD_FLOAT = "(\\b" + CMD_STR_ADD +"\\b) +(.+)";
 	private static final String PATTERN_UPDATE_BY_INDEX = 
 	"(\\bupdate\\b) +(\\d+) +"													//represent the groups update and <taskID>
 	+ "(?:(?:(\\b" + NAME + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"		//represent the groups name and <newName>
@@ -98,7 +100,7 @@ public class Parser {
 	+ "|(?:(\\b" + TAG + "\\b) *"+ NEGATIVE_LOOKAHEAD_KEYWORDS +") *"			//represent the groups tag and <newTag>
 	+ "|(?:(\\b" + IMPORTANT + "\\b) *()) *"									//represent the group important
 	+ "|(?:(\\b"+ DONE + "\\b) *()) *)+";										//represent the group done
-	private static final String PATTERN_SAVE = "(\\b" + SAVE + "\\b) +(.+)";
+	private static final String PATTERN_SAVE = "(\\b" + CMD_STR_SAVE + "\\b) +(.+)";
 	
 	private static final int NUM_OF_UPDATE_KEYWORD = 10;
 	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
@@ -119,39 +121,39 @@ public class Parser {
 	private static Command parseCommand(String[] words, String rawInput) throws NumberFormatException {
 		
 		switch (words[FIRST_WORD_INDEX]){
-			case ADD:
+			case CMD_STR_ADD:
 				return parseAddCmd(words, rawInput);
-			case DISPLAY:
+			case CMD_STR_DISPLAY:
 				return parseDisplayCmd(words, rawInput);
-			case UPDATE:
+			case CMD_STR_UPDATE:
 				return parseUpdateCmd(words, rawInput);
-			case DELETE:
+			case CMD_STR_DELETE:
 				return parseDeleteCmd(words, rawInput);
-			case SEARCH:
+			case CMD_STR_SEARCH:
 				return parseSearchCmd(words, rawInput);
-			case SORT:
+			case CMD_STR_SORT:
 				return parseSortCmd(words, rawInput);
 			case CMD_STR_MARK:
 				return parseMarkCmd(words, rawInput);
 			case CMD_STR_DONE:
 				return parseDoneCmd(words, rawInput);
-			case UNDO:
+			case CMD_STR_UNDO:
 				return parseUndoCmd(words, rawInput);
-			case REDO:
+			case CMD_STR_REDO:
 				return parseRedoCmd(words, rawInput);
-			case CLEAR:
+			case CMD_STR_CLEAR:
 				return parseClearCmd(words, rawInput);
 			case CMD_STR_TAG:
 				return parseTagCmd(words, rawInput);
-			case LINK_GOOGLE:
+			case CMD_STR_LINK_GOOGLE:
 				return parseLinkGoogleCmd(words, rawInput);
-			case SAVE:
+			case CMD_STR_SAVE:
 				return parseSave(words, rawInput);
 			case LOAD_FROM_GOOGLE:
 				return parseLoadToGoogleCmd(words, rawInput);
-			case HELP:
+			case CMD_STR_HELP:
 				return parseHelpCmd(words, rawInput);
-			case EXIT:
+			case CMD_STR_EXIT:
 				return parseExitCmd(words, rawInput);
 			default:
 				return parseInvalidCmd(words, rawInput);
@@ -334,8 +336,12 @@ public class Parser {
 	
 	private static Command parseMarkCmd(String[] words, String rawInput) {
 		if (words.length > ONE) {
-			int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
-			return new CommandMark(index);
+			try {	
+				int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
+				return new CommandMark(index);
+			} catch (NumberFormatException e){
+				return new CommandInvalid(ERROR_WRONG_NUMBER_FORMAT);
+			}
 		} else {
 			return new CommandInvalid(ERROR_MARK_INDEX_NOT_SPECIFIED);
 		}	
@@ -343,8 +349,12 @@ public class Parser {
 	
 	private static Command parseDoneCmd(String[] words, String rawInput){
 		if (words.length > ONE) {
-			int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
-			return new CommandDone(index);
+			try {
+				int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
+				return new CommandDone(index);
+			} catch (NumberFormatException e){
+				return new CommandInvalid(ERROR_WRONG_NUMBER_FORMAT);
+			}
 		} else {
 			return new CommandInvalid(ERROR_MARK_INDEX_NOT_SPECIFIED);
 		}	
@@ -364,9 +374,13 @@ public class Parser {
 	
 	private static Command parseTagCmd(String[] words, String rawInput) {
 		if (words.length > TWO) {
-			int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
-			String tagName = words[THIRD_WORD_INDEX];
-			return new CommandTag(index, tagName);
+			try {
+				int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
+				String tagName = words[THIRD_WORD_INDEX];
+				return new CommandTag(index, tagName);
+			} catch (NumberFormatException e){
+				return new CommandInvalid(ERROR_WRONG_NUMBER_FORMAT);
+			}
 		} else {
 			return new CommandInvalid(ERROR_MARK_INDEX_NOT_SPECIFIED);
 		}	
@@ -389,7 +403,7 @@ public class Parser {
 	}
 	
 	private static Command parseInvalidCmd(String[] words, String rawInput){
-		return new CommandInvalid(rawInput);
+		return new CommandInvalid(ERROR_WRONG_CMD_TYPE);
 	}
 	
 	private static String removeEscapeCharacter(String rawInput){

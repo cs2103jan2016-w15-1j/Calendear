@@ -21,6 +21,9 @@ import calendear.util.CommandInvalid;
 import calendear.util.CommandLinkGoogle;
 import calendear.util.CommandLoadFromGoogle;
 import calendear.util.CommandRedo;
+import calendear.util.CommandSave;
+import calendear.util.CommandSearch;
+import calendear.util.CommandTag;
 import calendear.util.CommandUndo;
 import calendear.util.CommandUpdate;
 import calendear.util.TASK_TYPE;
@@ -71,12 +74,85 @@ public class ParserTest {
 		addCaseSyncGoogle();
 		addCaseUndo();
 		addCaseRedo();
+		addCaseTag();
+		addCaseInvalidTag();
+		addCaseSearchByName();
+		addCaseSearchMultipleCriteria();
+		addCaseInvalidSearch();
+		addCaseSave();
+		addCaseNoKeyword();
+	}
+
+	private void addCaseNoKeyword() {
+		caseDescriptions.add("user type in something which is not a command");
+		rawInputs.add("can you understand this command?");
+		expectedOutputs.add(new CommandInvalid("Wrong command type"));
+	}
+
+	private void addCaseSave() {
+		caseDescriptions.add("save by full path");
+		rawInputs.add("save C:\\Users\\Viet Thang\\Downloads\\textfile.txt");
+		expectedOutputs.add(new CommandSave("C:\\Users\\Viet Thang\\Downloads\\textfile.txt"));
+	}
+
+	private void addCaseSearchByName() {
+		caseDescriptions.add("search by name");
+		rawInputs.add("search name visit friends                ");
+		String name = "visit friends";
+		boolean[] checklist = new boolean[CHECKLIST_SIZE];
+		Object[] newInfo = new Object[CHECKLIST_SIZE];
+		checklist[INDEX_NAME] = true;
+		newInfo[INDEX_NAME] = name ;
+		expectedOutputs.add(new CommandSearch(checklist, newInfo));
+	}
+
+	private void addCaseInvalidSearch() {
+		caseDescriptions.add("search by name but forget to type name");
+		rawInputs.add("search drink");
+		expectedOutputs.add(new CommandInvalid("search drink"));
+	}
+
+	private void addCaseSearchMultipleCriteria() {
+		caseDescriptions.add("search by multiple criteria");
+		rawInputs.add("search name visit friends from 3/21/16 5:30pm to 21 Mar 2016 20:00 at garden .by the bay note bring cakes important");
+		String name = "visit friends";
+		GregorianCalendar startTime = new GregorianCalendar(2016, Calendar.MARCH, 21, 17, 30);
+		GregorianCalendar endTime = new GregorianCalendar(2016, Calendar.MARCH, 21, 20, 0);
+		boolean[] checklist = new boolean[CHECKLIST_SIZE];
+		Object[] newInfo = new Object[CHECKLIST_SIZE];
+		checklist[INDEX_NAME] = true;
+		newInfo[INDEX_NAME] = name ;
+		checklist[INDEX_TYPE] = true;
+		newInfo[INDEX_TYPE] = TASK_TYPE.EVENT;
+		checklist[INDEX_START_TIME] = true;
+		newInfo[INDEX_START_TIME] = startTime;
+		checklist[INDEX_END_TIME] = true;
+		newInfo[INDEX_END_TIME] = endTime;
+		checklist[INDEX_IMPORTANT] = true;
+		newInfo[INDEX_IMPORTANT] = true;
+		checklist[INDEX_LOCATION] = true;
+		newInfo[INDEX_LOCATION] = "garden by the bay";
+		checklist[INDEX_NOTE] = true;
+		newInfo[INDEX_NOTE] = "bring cakes";
+		expectedOutputs.add(new CommandSearch(checklist, newInfo));
+	}
+
+	private void addCaseInvalidTag() {
+		caseDescriptions.add("case tag wrong format");
+		rawInputs.add("tag two sometag");
+		expectedOutputs.add(new CommandInvalid("Please enter the task id as a number"));
+	}
+
+	private void addCaseTag() {
+		caseDescriptions.add("case tag");
+		rawInputs.add("tag 2 sometag");
+		expectedOutputs.add(new CommandTag(2, "sometag"));
 	}
 
 	private void addCaseInvalidLinkGoogle() {
 		caseDescriptions.add("linkGoogle");
 		rawInputs.add(" linkgoogle ");
-		expectedOutputs.add(new CommandInvalid("linkgoogle"));
+		expectedOutputs.add(new CommandInvalid("Wrong command type"));
 	}
 
 	private void addCaseRedo() {
@@ -367,6 +443,12 @@ public class ParserTest {
 				case DELETE:
 					assertDeleteCmd(i, description);
 					break;
+				case TAG:
+					assertTagCmd(i, description);
+					break;
+				case SEARCH:
+					assertSearchCmd(i, description);
+					break;
 				case EXIT:
 					assertExitCmd(i, description);
 					break;
@@ -382,31 +464,59 @@ public class ParserTest {
 				case LOAD_FROM_GOOGLE:
 					assertLoadFromGoogleCmd(i, description);
 					break;
+				case SAVE:
+					assertSaveCmd(i, description);
+					break;
 				case INVALID:
 					assertInvalidCmd(i, description);
+					break;
+				default :
 					break;
 			}
 		}
 	}
 
+	private void assertSaveCmd(int i, String description) {
+		CommandSave expected = (CommandSave) expectedOutputs.get(i);
+		CommandSave actual = (CommandSave) Parser.parse(rawInputs.get(i));
+		assertEquals(description, expected.getPath(), actual.getPath());
+	}
+
+	private void assertSearchCmd(int i, String description) {
+		CommandSearch expected = (CommandSearch) expectedOutputs.get(i);
+		CommandSearch actual = (CommandSearch) Parser.parse(rawInputs.get(i));
+		boolean[] expectedChecklist = expected.getArrToShow();
+		boolean[] actualChecklist = actual.getArrToShow();
+		Object[] expectedNewInfo = expected.getArrSearchWith();
+		Object[] actualNewInfo = actual.getArrSearchWith();
+		assertArrayEquals(description, expectedChecklist, actualChecklist);
+		assertArrayEquals(description, expectedNewInfo, actualNewInfo);
+	}
+
+	private void assertTagCmd(int i, String description) {
+		CommandTag expected = (CommandTag) expectedOutputs.get(i);
+		CommandTag actual = (CommandTag) Parser.parse(rawInputs.get(i));
+		assertEquals(description, expected.getIndex(), actual.getIndex());
+	}
+
 	private void assertLoadFromGoogleCmd(int i, String description) {
 		Command actual = Parser.parse(rawInputs.get(i));
-		assertTrue(actual instanceof CommandLoadFromGoogle);
+		assertTrue(description, actual instanceof CommandLoadFromGoogle);
 	}
 
 	private void assertLinkGoogleCmd(int i, String description) {
 		Command actual = Parser.parse(rawInputs.get(i));
-		assertTrue(actual instanceof CommandLinkGoogle);
+		assertTrue(description, actual instanceof CommandLinkGoogle);
 	}
 
 	private void assertRedoCmd(int i, String description) {
 		Command actual = Parser.parse(rawInputs.get(i));
-		assertTrue(actual instanceof CommandRedo);
+		assertTrue(description, actual instanceof CommandRedo);
 	}
 
 	private void assertUndoCmd(int i, String description) {
 		Command actual = Parser.parse(rawInputs.get(i));
-		assertTrue(actual instanceof CommandUndo);
+		assertTrue(description, actual instanceof CommandUndo);
 	}
 
 	private void assertAddCmd(int i, String description) throws ArrayComparisonFailure {
@@ -445,7 +555,7 @@ public class ParserTest {
 
 	private void assertExitCmd(int i, String description) {
 		Command actual = Parser.parse(rawInputs.get(i));
-		assertTrue(actual instanceof CommandExit);
+		assertTrue(description, actual instanceof CommandExit);
 	}
 
 	private void assertInvalidCmd(int i, String description) {
