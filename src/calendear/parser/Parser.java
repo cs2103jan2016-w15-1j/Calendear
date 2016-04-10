@@ -9,6 +9,15 @@ import java.text.ParseException;
 
 public class Parser {
 	
+	private static final int FORTH_GROUP = 4;
+	private static final int THIRD_GROUP = 3;
+	private static final String ERROR_WRONG_NUMBER_FORMAT = "Please enter the task id as a number";
+	private static final int TWO = 2;
+	private static final int THIRD_WORD_INDEX = 2;
+	private static final int ONE = 1;
+	private static final String ERROR_DELETE_INDEX_NOT_SPECIFIED = "Please provide task index to delete";
+	private static final String ERROR_MARK_INDEX_NOT_SPECIFIED = "Please provide task index to mark";
+	private static final int SECOND_GROUP = 2;
 	private static final int SECOND_WORD_INDEX = 1;
 	private static final int FIRST_WORD_INDEX = 0;
 	private static final String PATTERN_SPACES = " +";
@@ -93,14 +102,20 @@ public class Parser {
 	private static final int NUM_OF_UPDATE_KEYWORD = 10;
 	private static final int NUM_OF_TASK_ATTRIBUTES = 9;
 	
+	
 	public static Command parse(String rawInput){	
 		rawInput = rawInput.trim();
 		rawInput = changeEscapeCharacter(rawInput);
 		String[] words = rawInput.split(PATTERN_SPACES);
-		return parseCommand(words, rawInput);
+		try {
+			return parseCommand(words, rawInput);
+		}
+		catch (NumberFormatException e) {
+			return new CommandInvalid(ERROR_WRONG_NUMBER_FORMAT);
+		}
 	}
 	
-	private static Command parseCommand(String[] words, String rawInput){
+	private static Command parseCommand(String[] words, String rawInput) throws NumberFormatException {
 		
 		switch (words[FIRST_WORD_INDEX]){
 			case ADD:
@@ -143,18 +158,14 @@ public class Parser {
 	}
 	
 	private static Command parseSave(String[] words, String rawInput) {
-		if (words.length<=2){
-			Pattern pattern = Pattern.compile(PATTERN_SAVE);
-			Matcher matcher = pattern.matcher(rawInput);
-			if (matcher.find()){
-				String filePath = matcher.group(2);
-				filePath = changeBackEscapeCharacter(filePath);
-				return new CommandSave(filePath);
-			}
-			return new CommandInvalid(rawInput);
-		} else {
-			return new CommandInvalid(rawInput);
+		Pattern pattern = Pattern.compile(PATTERN_SAVE);
+		Matcher matcher = pattern.matcher(rawInput);
+		if (matcher.find()){
+			String filePath = matcher.group(SECOND_GROUP);
+			filePath = changeBackEscapeCharacter(filePath);
+			return new CommandSave(filePath);
 		}
+		return new CommandInvalid(rawInput);
 	}
 
 	private static Command parseAddCmd(String[] words, String rawInput){
@@ -162,7 +173,7 @@ public class Parser {
 		Matcher matcher = pattern.matcher(rawInput);
 		if (matcher.find()){
 			try {	
-				String name = removeEscapeCharacter(matcher.group(2));
+				String name = removeEscapeCharacter(matcher.group(SECOND_GROUP));
 				boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
 				Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
 				makeCheckList(matcher, checkList, newInfo);
@@ -176,7 +187,7 @@ public class Parser {
 		pattern = Pattern.compile(PATTERN_ADD_FLOAT);
 		matcher = pattern.matcher(rawInput);
 		if (matcher.find()){
-			String name = removeEscapeCharacter(matcher.group(2));
+			String name = removeEscapeCharacter(matcher.group(SECOND_GROUP));
 			boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
 			Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
 			checkList[CommandUpdate.CODE_UPDATE_NAME] = true;
@@ -189,7 +200,7 @@ public class Parser {
 	}
 	
 	private static Command parseDisplayCmd(String[] words, String rawInput){
-		if (words.length>1 && words[1].equals(IMPORTANT)){
+		if (words.length > ONE && words[SECOND_WORD_INDEX].equals(IMPORTANT)){
 			return new CommandDisplay(true);
 		} else {
 			return new CommandDisplay(false);
@@ -202,14 +213,14 @@ public class Parser {
 		Matcher matcher = pattern.matcher(rawInput);
 		if (matcher.find()){
 			try {	
-				int index = Integer.parseInt(matcher.group(2));
+				int index = Integer.parseInt(matcher.group(FORTH_GROUP));
 				boolean[] checkList = new boolean[NUM_OF_TASK_ATTRIBUTES];
 				Object[] newInfo = new Object[NUM_OF_TASK_ATTRIBUTES];
 				makeCheckList(matcher, checkList, newInfo);
 				return new CommandUpdate(index, checkList, newInfo);
 			}
 			catch (NumberFormatException e){
-				return new CommandInvalid(matcher.group(2) + " is not a valid index");
+				return new CommandInvalid(ERROR_WRONG_NUMBER_FORMAT);
 			}
 			catch (ParseException e){
 				return new CommandInvalid(rawInput);
@@ -222,38 +233,38 @@ public class Parser {
 	private static void makeCheckList(Matcher matcher, boolean[] checkList, Object[] newInfo) 
 	throws ParseException {
 		for (int i=0; i<NUM_OF_UPDATE_KEYWORD; i++){
-			if (matcher.group(3 + 2*i) != null){
+			if (matcher.group(THIRD_GROUP + TWO*i) != null){
 				/* for both int[]updateChesklist and String[]newInfo 
 				[0:name][1:type][2:starttime]
 				[3:endtime][4:location][5:note]
 				[6:tag][7:important][8:finished]
 				*/
 				String argument;
-				switch (matcher.group(3 + 2*i)){
+				switch (matcher.group(THIRD_GROUP + TWO*i)){
 					case NAME:
 						checkList[CommandUpdate.CODE_UPDATE_NAME] = true;
-						argument = removeEscapeCharacter(matcher.group(4+2*i));
+						argument = removeEscapeCharacter(matcher.group(FORTH_GROUP + TWO*i));
 						newInfo[CommandUpdate.CODE_UPDATE_NAME] = argument;
 						break;
 					case BY:
 						checkList[CommandUpdate.CODE_UPDATE_TYPE] = true;
 						newInfo[CommandUpdate.CODE_UPDATE_TYPE] = TASK_TYPE.DEADLINE;
 						checkList[CommandUpdate.CODE_UPDATE_END_TIME] = true;
-						argument = removeEscapeCharacter(matcher.group(4+2*i));
+						argument = removeEscapeCharacter(matcher.group(FORTH_GROUP + TWO*i));
 						newInfo[CommandUpdate.CODE_UPDATE_END_TIME] = DateParser.parse(argument);
 						break;
 					case FROM:
 						checkList[CommandUpdate.CODE_UPDATE_TYPE] = true;
 						newInfo[CommandUpdate.CODE_UPDATE_TYPE] = TASK_TYPE.EVENT;
 						checkList[CommandUpdate.CODE_UPDATE_START_TIME] = true;
-						argument = removeEscapeCharacter(matcher.group(4+2*i));
+						argument = removeEscapeCharacter(matcher.group(FORTH_GROUP + TWO*i));
 						newInfo[CommandUpdate.CODE_UPDATE_START_TIME] = DateParser.parse(argument);
 						break;
 					case TO:
 						checkList[CommandUpdate.CODE_UPDATE_TYPE] = true;
 						newInfo[CommandUpdate.CODE_UPDATE_TYPE] = TASK_TYPE.EVENT;
 						checkList[CommandUpdate.CODE_UPDATE_END_TIME] = true;
-						argument = removeEscapeCharacter(matcher.group(4+2*i));
+						argument = removeEscapeCharacter(matcher.group(FORTH_GROUP + TWO*i));
 						newInfo[CommandUpdate.CODE_UPDATE_END_TIME] = DateParser.parse(argument);
 						break;
 					case FLOAT:
@@ -262,17 +273,17 @@ public class Parser {
 						break;
 					case AT:
 						checkList[CommandUpdate.CODE_UPDATE_LOCATION] = true;
-						argument = removeEscapeCharacter(matcher.group(4+2*i));
+						argument = removeEscapeCharacter(matcher.group(FORTH_GROUP + TWO*i));
 						newInfo[CommandUpdate.CODE_UPDATE_LOCATION] = argument;
 						break;
 					case NOTE:
 						checkList[CommandUpdate.CODE_UPDATE_NOTE] = true;
-						argument = removeEscapeCharacter(matcher.group(4+2*i));
+						argument = removeEscapeCharacter(matcher.group(FORTH_GROUP + TWO*i));
 						newInfo[CommandUpdate.CODE_UPDATE_NOTE] = argument;
 						break;
 					case TAG:
 						checkList[CommandUpdate.CODE_UPDATE_TAG] = true;
-						argument = removeEscapeCharacter(matcher.group(4+2*i));
+						argument = removeEscapeCharacter(matcher.group(FORTH_GROUP + TWO*i));
 						newInfo[CommandUpdate.CODE_UPDATE_TAG] = argument;
 						break;
 					case MARK:
@@ -289,8 +300,13 @@ public class Parser {
 	}
 	
 	private static Command parseDeleteCmd(String[] words, String rawInput){
-		int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
-		return new CommandDelete(index);
+		if (words.length > ONE) {
+			int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
+			return new CommandDelete(index);
+		} else {
+			return new CommandInvalid(ERROR_DELETE_INDEX_NOT_SPECIFIED);
+		}
+		
 	}
 	
 	private static Command parseSearchCmd(String[] words, String rawInput){
@@ -315,14 +331,22 @@ public class Parser {
 		return null;
 	}
 	
-	private static Command parseMarkCmd(String[] words, String rawInput){
-		int index = Integer.parseInt(words[1]);
-		return new CommandMark(index);
+	private static Command parseMarkCmd(String[] words, String rawInput) {
+		if (words.length > ONE) {
+			int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
+			return new CommandMark(index);
+		} else {
+			return new CommandInvalid(ERROR_MARK_INDEX_NOT_SPECIFIED);
+		}	
 	}
 	
 	private static Command parseDoneCmd(String[] words, String rawInput){
-		int index = Integer.parseInt(words[1]);
-		return new CommandDone(index);
+		if (words.length > ONE) {
+			int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
+			return new CommandDone(index);
+		} else {
+			return new CommandInvalid(ERROR_MARK_INDEX_NOT_SPECIFIED);
+		}	
 	}
 	
 	private static Command parseUndoCmd(String[] words, String rawInput){
@@ -337,10 +361,14 @@ public class Parser {
 		return new CommandClear();
 	}
 	
-	private static Command parseTagCmd(String[] words, String rawInput){
-		int index = Integer.parseInt(words[1]);
-		String tagName = words[2];
-		return new CommandTag(index, tagName);
+	private static Command parseTagCmd(String[] words, String rawInput) {
+		if (words.length > TWO) {
+			int index = Integer.parseInt(words[SECOND_WORD_INDEX]);
+			String tagName = words[THIRD_WORD_INDEX];
+			return new CommandTag(index, tagName);
+		} else {
+			return new CommandInvalid(ERROR_MARK_INDEX_NOT_SPECIFIED);
+		}	
 	}
 	
 	private static Command parseLinkGoogleCmd(String[] words, String rawInput){
