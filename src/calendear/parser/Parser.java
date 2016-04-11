@@ -110,6 +110,7 @@ public class Parser {
 	
 	
 	public static Command parse(String rawInput){	
+		assert(rawInput != null);
 		rawInput = rawInput.trim();
 		rawInput = changeEscapeCharacter(rawInput);
 		String[] words = rawInput.split(PATTERN_SPACES);

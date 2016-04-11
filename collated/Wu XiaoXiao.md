@@ -1,5 +1,5 @@
 # Wu XiaoXiao
-###### /src/calendear/action/Action.java
+###### \src\calendear\action\Action.java
 ``` java
  * Class for taking care of main logic
  *
@@ -259,7 +259,7 @@ public class Action {
 					throw endTimeBeforeStartTime;
 				}
 			} else if(infoList[ENDT_ID]){
-				GregorianCalendar startTime = toUpdate.getEndTime();
+				GregorianCalendar startTime = toUpdate.getStartTime();
 				GregorianCalendar endTime = (GregorianCalendar)newData[ENDT_ID];
 				
 				if(endTime != null && startTime != null && endTime.compareTo(startTime) < 0){
@@ -955,7 +955,7 @@ public class Action {
 		}
 	}
 ```
-###### /src/calendear/action/Action.java
+###### \src\calendear\action\Action.java
 ``` java
 	//--------------------------------------------------------------------------
 	//helper
@@ -1016,7 +1016,7 @@ public class Action {
 
 
 ```
-###### /src/test/ActionTest.java
+###### \src\test\ActionTest.java
 ``` java
 	 */
 	/**[0:name][1:type][2:start time]
