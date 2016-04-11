@@ -1,5 +1,5 @@
 # Phang Chun Rong
-###### /src/calendear/action/Action.java
+###### \src\calendear\action\Action.java
 ``` java
 	 */
 	public void exeLinkGoogle() throws IOException,Exception  {
@@ -25,7 +25,7 @@
 	}
 	
 ```
-###### /src/calendear/action/CDLogic.java
+###### \src\calendear\action\CDLogic.java
 ``` java
 
 package calendear.action;
@@ -40,7 +40,7 @@ import java.text.ParseException;
 
 /**
 ```
-###### /src/calendear/action/CDLogic.java
+###### \src\calendear\action\CDLogic.java
 ``` java
 
  * Facade Class for Logic Component
@@ -122,7 +122,7 @@ public class CDLogic {
 	}
 }
 ```
-###### /src/calendear/storage/DataManager.java
+###### \src\calendear\storage\DataManager.java
 ``` java
 package calendear.storage;
 
@@ -217,7 +217,7 @@ public class DataManager {
 
 }
 ```
-###### /src/calendear/storage/FileIO.java
+###### \src\calendear\storage\FileIO.java
 ``` java
 package calendear.storage;
 
@@ -319,7 +319,7 @@ public class FileIO {
 	}
 }
 ```
-###### /src/calendear/storage/GoogleIO.java
+###### \src\calendear\storage\GoogleIO.java
 ``` java
 
 package calendear.storage;
@@ -479,7 +479,7 @@ public class GoogleIO {
 	  
 }
 ```
-###### /src/calendear/util/Task.java
+###### \src\calendear\util\Task.java
 ``` java
 	 * @param startTime
 	 */
@@ -501,7 +501,7 @@ public class GoogleIO {
 		this.startTime = cal;
 	}
 ```
-###### /src/calendear/util/Task.java
+###### \src\calendear\util\Task.java
 ``` java
 	 * @param endTime
 	 */
@@ -524,7 +524,7 @@ public class GoogleIO {
 		this.endTime = cal;
 	}
 ```
-###### /src/calendear/util/Task.java
+###### \src\calendear\util\Task.java
 ``` java
 	 * @param strFinished
 	 */
@@ -537,7 +537,7 @@ public class GoogleIO {
 		}
 	}
 ```
-###### /src/calendear/util/Task.java
+###### \src\calendear\util\Task.java
 ``` java
 	 * @return Google Event
 	 */
@@ -636,7 +636,7 @@ public class GoogleIO {
 		return task;
 	}
 ```
-###### /src/calendear/util/Task.java
+###### \src\calendear\util\Task.java
 ``` java
 	private static long convertTimeZone(long currentTime) {
 		Calendar now = Calendar.getInstance();
@@ -647,7 +647,7 @@ public class GoogleIO {
 	
 }
 ```
-###### /src/calendear/view/Controller.java
+###### \src\calendear\view\Controller.java
 ``` java
 
 package calendear.view;
@@ -937,7 +937,7 @@ public class Controller {
 	}
 }
 ```
-###### /src/test/DataManagerTest.java
+###### \src\test\DataManagerTest.java
 ``` java
 package test;
 
@@ -987,7 +987,7 @@ public class DataManagerTest {
 
 }
 ```
-###### /src/test/TaskTest.java
+###### \src\test\TaskTest.java
 ``` java
 package test;
 
