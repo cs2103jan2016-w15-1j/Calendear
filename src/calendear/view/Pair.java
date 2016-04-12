@@ -3,7 +3,7 @@ package calendear.view;
 
 /**
  * Pair of index and task
- * @@author Pan Jiyun
+ * @@author A0107350U
  *
  * @param <T>
  * @param <Task>

@@ -1,5 +1,5 @@
 package test;
-//@@author Wu Xiao Xiao
+//@@author A0129998B
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -12,9 +12,7 @@ import org.junit.Test;
 import calendear.util.*;
 
 public class ActionTest {
-	/**
-	 * @@author Wu XiaoXiao
-	 */
+	
 	/**[0:name][1:type][2:start time]
 	[3:end time][4:location][5:note]
 	[6:tag][7:important][8:finished]
@@ -148,7 +146,7 @@ public class ActionTest {
 	}
 
 
-	//@@author Pan Jiyun
+	//@@author A0107350U
 
 	@Test
 	public void testSearchStartTime() throws ParseException, LogicException, IOException{

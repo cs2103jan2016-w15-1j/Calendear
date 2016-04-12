@@ -3,7 +3,7 @@ package calendear.view;
 
 /**
  * Different styles of lines for display
- * @@author Pan Jiyun
+ * @@author A0107350U
  *
  */
 

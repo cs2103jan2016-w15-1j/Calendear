@@ -1,4 +1,4 @@
-//@@author Phang Chun Rong
+//@@author A0139060M
 package calendear.storage;
 
 import java.io.BufferedReader;
@@ -26,10 +26,15 @@ public class FileIO {
 	public static void createFile(String fileName) throws IOException {
 		nameOfFile = fileName;
 		file = new File(nameOfFile);
-		file.createNewFile();
-	    		
+		file.createNewFile();   		
 	}
-
+	
+	/**
+	 * Reads data from the database into and returns it as an ArrayList of Tasks
+	 * @return
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public static ArrayList<Task> buildData() throws ParseException, IOException {
 		ArrayList<Task> tasks = new ArrayList<Task>();
 		FileReader fileReader = new FileReader(file);
@@ -49,6 +54,7 @@ public class FileIO {
 	/**
 	 * Takes in an ArrayList of Tasks and saves it into the database.
 	 * @param tasksList
+	 * @throws IOException
 	 */
 	public static void updateData(ArrayList<Task> tasksList) throws IOException {
 		wipeFile(); // Clears file content first

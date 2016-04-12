@@ -174,7 +174,7 @@ public class Task {
 	}
 	
 	/**
-	 * @@author Phang Chun Rong
+	 * @@author A0139060M
 	 * @param startTime
 	 */
 	public void setStartTime(EventDateTime startTime) {
@@ -201,7 +201,7 @@ public class Task {
 	}
 	
 	/**
-	 * @@author Phang Chun Rong
+	 * @@author A0139060M
 	 * @param endTime
 	 */
 	public void setEndTime(EventDateTime endTime) {
@@ -249,7 +249,7 @@ public class Task {
 	}
 	
 	/**
-	 * @@author Phang Chun Rong
+	 * @@author A0139060M
 	 * @param strFinished
 	 */
 	public void setIsFinishedByString(String strFinished) {
@@ -279,7 +279,7 @@ public class Task {
 	// @@author 
 
 	/**
-	 * @@author Phang Chun Rong
+	 * @@author A0139060M
 	 * @return Google Event
 	 */
 	public Event toGoogleEvent() {
@@ -321,7 +321,7 @@ public class Task {
 	}
 	
 	/**
-	 * @author Phang Chun Rong
+	 * @@author A0139060M
 	 * @param googleEvent
 	 * @return Task
 	 */
@@ -458,7 +458,7 @@ public class Task {
 		return new Task(name);
 	}
 	
-	//@@author Phang Chun Rong
+	//@@author A0139060M
 	private static long convertTimeZone(long currentTime) {
 		Calendar now = Calendar.getInstance();
 		TimeZone timeZone = now.getTimeZone();
