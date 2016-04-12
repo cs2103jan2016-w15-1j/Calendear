@@ -1,5 +1,5 @@
 # Pan Jiyun
-###### \src\calendear\view\Full.java
+###### /src/calendear/view/Full.java
 ``` java
  *
  */
@@ -103,7 +103,7 @@ public class Full {
 	}
 }
 ```
-###### \src\calendear\view\HelpTable.java
+###### /src/calendear/view/HelpTable.java
 ``` java
  *
  */
@@ -143,7 +143,7 @@ public class HelpTable {
 	
 }
 ```
-###### \src\calendear\view\Line.java
+###### /src/calendear/view/Line.java
 ``` java
  *
  */
@@ -237,7 +237,7 @@ public class Line {
 
 }
 ```
-###### \src\calendear\view\Pair.java
+###### /src/calendear/view/Pair.java
 ``` java
  *
  * @param <T>
@@ -270,7 +270,7 @@ public class Pair<T,Task> {
 	}
 }
 ```
-###### \src\calendear\view\PairComparator.java
+###### /src/calendear/view/PairComparator.java
 ``` java
  * 
  */
@@ -369,7 +369,7 @@ public class PairComparator implements Comparator<Pair<Integer,Task>> {
 	
 }
 ```
-###### \src\calendear\view\Table.java
+###### /src/calendear/view/Table.java
 ``` java
  * 
  */
@@ -745,7 +745,7 @@ public class Table {
 	}
 }
 ```
-###### \src\calendear\view\View.java
+###### /src/calendear/view/View.java
 ``` java
  *
  */
@@ -937,7 +937,7 @@ public class View {
 
 }
 ```
-###### \src\test\ActionTest.java
+###### /src/test/ActionTest.java
 ``` java
 
 	@Test
@@ -1200,7 +1200,7 @@ public class View {
 	}
 }
 ```
-###### \src\test\ViewTest.java
+###### /src/test/ViewTest.java
 ``` java
  *
  */

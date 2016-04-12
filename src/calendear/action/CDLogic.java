@@ -1,4 +1,4 @@
-//@@author Phang Chun Rong
+//@@author A0139060M
 
 package calendear.action;
 
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.text.ParseException;
 
 /**
- * @@author Phang Chun Rong
 
  * Facade Class for Logic Component
  * @author Phang Chun Rong

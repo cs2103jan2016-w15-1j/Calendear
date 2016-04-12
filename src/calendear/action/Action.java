@@ -970,7 +970,7 @@ public class Action {
 	//@@author
 	
 	/**
-	 * @@author Phang Chun Rong
+	 * @@author A0139060M
 	 */
 	public void exeLinkGoogle() throws IOException,Exception  {
 		if (!this._dataManager.isLogined()) {

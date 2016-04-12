@@ -1,5 +1,5 @@
 # Dinh Viet Thang
-###### \src\calendear\parser\DateParser.java
+###### /src/calendear/parser/DateParser.java
 ``` java
 package calendear.parser;
 
@@ -28,7 +28,7 @@ public class DateParser {
 	}
 }
 ```
-###### \src\calendear\parser\Parser.java
+###### /src/calendear/parser/Parser.java
 ``` java
 package calendear.parser;
 
@@ -141,6 +141,7 @@ public class Parser {
 	
 	
 	public static Command parse(String rawInput){	
+		assert(rawInput != null);
 		rawInput = rawInput.trim();
 		rawInput = changeEscapeCharacter(rawInput);
 		String[] words = rawInput.split(PATTERN_SPACES);
@@ -458,7 +459,7 @@ public class Parser {
 	
 }
 ```
-###### \src\calendear\util\CMD_TYPE.java
+###### /src/calendear/util/CMD_TYPE.java
 ``` java
 package calendear.util;
 
@@ -468,7 +469,7 @@ public enum CMD_TYPE {
 	LOAD_FROM_GOOGLE, CLEAR, SAVE, HELP
 }
 ```
-###### \src\calendear\util\Command.java
+###### /src/calendear/util/Command.java
 ``` java
 package calendear.util;
 
@@ -482,7 +483,7 @@ public abstract class Command {
 
 }
 ```
-###### \src\calendear\util\CommandAdd.java
+###### /src/calendear/util/CommandAdd.java
 ``` java
 package calendear.util;
 
@@ -529,7 +530,7 @@ public class CommandAdd extends Command {
 	
 }
 ```
-###### \src\calendear\util\CommandDelete.java
+###### /src/calendear/util/CommandDelete.java
 ``` java
 package calendear.util;
 
@@ -557,7 +558,7 @@ public class CommandDelete extends Command {
 	
 }
 ```
-###### \src\calendear\util\CommandDisplay.java
+###### /src/calendear/util/CommandDisplay.java
 ``` java
 package calendear.util;
 
@@ -576,7 +577,7 @@ public class CommandDisplay extends Command {
 	
 }
 ```
-###### \src\calendear\util\CommandDone.java
+###### /src/calendear/util/CommandDone.java
 ``` java
 package calendear.util;
 
@@ -610,7 +611,7 @@ public class CommandDone extends Command {
 	}
 }
 ```
-###### \src\calendear\util\CommandExit.java
+###### /src/calendear/util/CommandExit.java
 ``` java
 package calendear.util;
 
@@ -622,7 +623,7 @@ public class CommandExit extends Command {
 	
 }
 ```
-###### \src\calendear\util\CommandInvalid.java
+###### /src/calendear/util/CommandInvalid.java
 ``` java
 package calendear.util;
 
@@ -640,7 +641,7 @@ public class CommandInvalid extends Command {
 	}
 }
 ```
-###### \src\calendear\util\CommandLinkGoogle.java
+###### /src/calendear/util/CommandLinkGoogle.java
 ``` java
 package calendear.util;
 
@@ -652,7 +653,7 @@ public class CommandLinkGoogle extends Command {
 	
 }
 ```
-###### \src\calendear\util\CommandLoadFromGoogle.java
+###### /src/calendear/util/CommandLoadFromGoogle.java
 ``` java
 package calendear.util;
 
@@ -677,7 +678,7 @@ public class CommandLoadFromGoogle extends Command {
 	
 }
 ```
-###### \src\calendear\util\CommandMark.java
+###### /src/calendear/util/CommandMark.java
 ``` java
 package calendear.util;
 
@@ -711,7 +712,7 @@ public class CommandMark extends Command {
 	}
 }
 ```
-###### \src\calendear\util\CommandRedo.java
+###### /src/calendear/util/CommandRedo.java
 ``` java
 package calendear.util;
 
@@ -722,7 +723,7 @@ public class CommandRedo extends Command{
 	}
 }
 ```
-###### \src\calendear\util\CommandSave.java
+###### /src/calendear/util/CommandSave.java
 ``` java
 package calendear.util;
 
@@ -741,7 +742,7 @@ public class CommandSave extends Command {
 	
 }
 ```
-###### \src\calendear\util\CommandSearch.java
+###### /src/calendear/util/CommandSearch.java
 ``` java
 package calendear.util;
 
@@ -789,7 +790,7 @@ public class CommandSearch extends Command {
 	}
 }
 ```
-###### \src\calendear\util\CommandTag.java
+###### /src/calendear/util/CommandTag.java
 ``` java
 package calendear.util;
 
@@ -818,7 +819,7 @@ public class CommandTag extends Command {
 	}
 }
 ```
-###### \src\calendear\util\CommandUndo.java
+###### /src/calendear/util/CommandUndo.java
 ``` java
 package calendear.util;
 
@@ -830,7 +831,7 @@ public class CommandUndo extends Command {
 	
 }
 ```
-###### \src\calendear\util\CommandUpdate.java
+###### /src/calendear/util/CommandUpdate.java
 ``` java
 package calendear.util;
 
@@ -885,7 +886,7 @@ public class CommandUpdate extends Command {
 	
 }
 ```
-###### \src\calendear\util\EditDistance.java
+###### /src/calendear/util/EditDistance.java
 ``` java
 package calendear.util;
 
@@ -943,7 +944,7 @@ public class EditDistance {
     
 }
 ```
-###### \src\calendear\util\Task.java
+###### /src/calendear/util/Task.java
 ``` java
 package calendear.util;
 import java.text.ParseException;
@@ -1121,7 +1122,7 @@ public class Task {
 	
 	/**
 ```
-###### \src\calendear\util\Task.java
+###### /src/calendear/util/Task.java
 ``` java
 	
 	public void setEndTime(GregorianCalendar time) {
@@ -1130,7 +1131,7 @@ public class Task {
 	
 	/**
 ```
-###### \src\calendear\util\Task.java
+###### /src/calendear/util/Task.java
 ``` java
 	
 	public void setType (TASK_TYPE type) {
@@ -1159,7 +1160,7 @@ public class Task {
 	
 	/**
 ```
-###### \src\calendear\util\Task.java
+###### /src/calendear/util/Task.java
 ``` java
 	
 	public String toSaveable() {
@@ -1177,7 +1178,7 @@ public class Task {
 		return res;
 	}
 ```
-###### \src\calendear\util\Task.java
+###### /src/calendear/util/Task.java
 ``` java
 	public static Task parseSaveable(String allString) throws ParseException {
 		String[] members = allString.split(PATTERN_OBJ_SEPERATOR);
@@ -1259,7 +1260,7 @@ public class Task {
 	}
 	
 ```
-###### \src\calendear\util\TASK_TYPE.java
+###### /src/calendear/util/TASK_TYPE.java
 ``` java
 package calendear.util;
 
@@ -1267,7 +1268,7 @@ public enum TASK_TYPE {
 	EVENT, DEADLINE, FLOATING, RECURRING
 }
 ```
-###### \src\test\ParserTest.java
+###### /src/test/ParserTest.java
 ``` java
 package test;
 
