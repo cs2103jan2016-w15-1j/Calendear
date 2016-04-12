@@ -1,4 +1,4 @@
-// @@author A0126513
+// @@author A0126513N
 package calendear.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -194,7 +194,7 @@ public class Task {
 		cal.setTimeInMillis(timeValue);
 		this.startTime = cal;
 	}
-	//@@author Dinh Viet Thang
+	// @@author A0126513N
 	
 	public void setEndTime(GregorianCalendar time) {
 		this.endTime = time;
@@ -222,7 +222,7 @@ public class Task {
 		cal.setTimeInMillis(timeValue);
 		this.endTime = cal;
 	}
-	//@@author Dinh Viet Thang
+	// @@author A0126513N
 	
 	public void setType (TASK_TYPE type) {
 		this.type = type;
@@ -260,7 +260,7 @@ public class Task {
 			this.isFinished = false;
 		}
 	}
-	//@@author Dinh Viet Thang
+	// @@author A0126513N
 	
 	public String toSaveable() {
 		String res;
@@ -378,7 +378,7 @@ public class Task {
 	}
 	// @@author
 	
-	// @@author Dinh Viet Thang
+	// @@author A0126513N
 	public static Task parseSaveable(String allString) throws ParseException {
 		String[] members = allString.split(PATTERN_OBJ_SEPERATOR);
 		String typeStr = members[SAVING_INDEX_TYPE];

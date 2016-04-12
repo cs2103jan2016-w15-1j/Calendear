@@ -1,4 +1,4 @@
-// @@author Dinh Viet Thang
+// @@author A0126513N
 package calendear.parser;
 
 import java.text.ParseException;
