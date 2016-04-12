@@ -1,4 +1,4 @@
-// @@author Dinh Viet Thang
+// @@author A0126513
 package calendear.parser;
 
 import java.util.regex.Matcher;
