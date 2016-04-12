@@ -1,5 +1,5 @@
 package test;
-//@@author Wu Xiao Xiao
+//@@author A0129998B
 import static org.junit.Assert.*;
 
 import java.io.IOException;
