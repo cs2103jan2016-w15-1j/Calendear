@@ -1,3 +1,4 @@
+//@@author A0129998B
 package calendear.action;
 
 import java.text.ParseException;
@@ -13,7 +14,7 @@ import calendear.storage.DataManager;
 
 /**
  * 
- * @@author Wu XiaoXiao
+ * @@author A0129998B
  * Class for taking care of main logic
  *
  */
@@ -994,7 +995,7 @@ public class Action {
 		this._dataManager.changeFilePath(path);
 	}
 	
-	//@@author Wu XiaoXiao
+	//@@author A0129998B
 	//--------------------------------------------------------------------------
 	//helper
 	/**
