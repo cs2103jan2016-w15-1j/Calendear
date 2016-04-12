@@ -146,7 +146,7 @@ public class ActionTest {
 	}
 
 
-	//@@author Pan Jiyun
+	//@@author A0107350U
 
 	@Test
 	public void testSearchStartTime() throws ParseException, LogicException, IOException{

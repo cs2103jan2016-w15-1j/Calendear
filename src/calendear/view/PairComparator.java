@@ -8,7 +8,7 @@ import calendear.util.Task;
 
 /**
  * Comparator for sorting Pairs
- * @@author Pan Jiyun
+ * @@author A0107350U
  * 
  */
 

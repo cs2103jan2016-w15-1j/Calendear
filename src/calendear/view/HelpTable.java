@@ -2,7 +2,7 @@ package calendear.view;
 
 /**
  * Table containing command instructions for display
- * @@author Pan Jiyun 
+ * @@author A0107350U 
  *
  */
 

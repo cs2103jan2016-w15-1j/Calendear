@@ -5,7 +5,7 @@ import calendear.util.Task;
 
 /**
  * View containing methods to be called for display
- * @@author Pan Jiyun
+ * @@author A0107350U
  *
  */
 

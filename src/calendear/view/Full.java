@@ -7,7 +7,7 @@ import calendear.util.Task;
 
 /**
  * Full attributes of tasks for display
- * @@author Pan Jiyun
+ * @@author A0107350U
  *
  */
 public class Full {
