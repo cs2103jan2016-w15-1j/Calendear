@@ -1,12 +1,8 @@
-// @@author A0126513N
+// @@author A0129998B
 package calendear.util;
 
 import java.util.ArrayList;
-/**
- * 
- * @author Wu XiaoXiao
- *
- */
+
 public class CommandClear extends Command{
 	ArrayList<Task> listBeforeClear;
 	boolean isLoggedToGoogle;
